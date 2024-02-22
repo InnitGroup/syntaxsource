@@ -1,0 +1,52 @@
+{% extends '__layout__.html' %}
+{% block title %}Settings{% endblock %}
+{% block head %}
+<link href="/static/css/settings.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="settings-container">
+        <h1>Account Settings</h1>
+        <div class="linebreak"></div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="d-flex align-items-center mb-2">
+            <p style="width: fit-content;height: 100%;" class="me-auto">Username: <b>{{currentuser.username}}</b></p>
+            <a class="btn btn-primary btn-sm d-flex fw-bold text-decoration-none" href="/settings/update-username">Edit Username</a>
+        </div>
+        <div class="d-flex align-items-center mb-2">
+            <p style="width: fit-content;height: 100%;" class="me-auto">Password: <b>************</b></p>
+            <a class="btn btn-primary btn-sm d-flex fw-bold text-decoration-none" href="/settings/update-password">Edit Password</a>
+        </div>
+        <div class="d-flex align-items-center mb-2">
+            <p style="width: fit-content;height: 100%;" class="me-auto">Email: {% if LinkedEmailObj %}<b>{{HiddenEmail}}</b>{%if LinkedEmailObj.verified %}<span class="text-success"> Verified</span>{%else%}<span class="text-warning"> Unverified</span>{%endif%}{%else%}<b>No Email Linked</b>{%endif%}</p>
+            <a class="btn btn-primary btn-sm d-flex fw-bold text-decoration-none" href="/settings/update-email">{% if LinkedEmailObj %}Edit Email{%else%}Add email{%endif%}</a>
+        </div>
+        <div class="d-flex align-items-center mb-2">
+            <p style="width: fit-content;height: 100%;" class="me-auto">Authenticator App Authentication: {% if TOTPenabled: %}<b>Enabled</b>{% else %}<b>Disabled</b>{% endif %}</p>
+            {% if not TOTPenabled: %}<a href="/settings/enableTOTP" class="text-decoration-none"><button class="btn btn-success btn-sm d-flex fw-bold">Enable Authenticator</button></a>{% endif %}
+        </div>
+        <div class="d-flex align-items-center mb-2">
+            <p style="width: fit-content;height: 100%;" class="me-auto">Discord Account: {% if DiscordUserInfoObj != None: %}<img src="{{DiscordUserInfoObj.GetAvatarURL()}}" height="30px" class="border rounded-3" style="aspect-ratio: 1/1;"><b class="ms-2">{{DiscordUserInfoObj.Username}}#{{DiscordUserInfoObj.Discriminator}}</b><span> ({{DiscordUserInfoObj.UserId}})</span>{%else%}<b>Not Linked</b>{%endif%}</p>
+            {% if DiscordUserInfoObj == None: %}<a href="/settings/discord_link" class="text-decoration-none"><button class="btn btn-success btn-sm d-flex fw-bold">Link Discord</button></a>{%else%}<form action="/settings/unlink_discord" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/><button class="btn btn-danger btn-sm d-flex fw-bold">Unlink Discord</button></form>{% endif %}
+        </div>
+        <h5>Description</h5>
+        <form action="/settings/description" method="POST">
+            <textarea class="form-control" id="description" rows="3" maxlength="256" name="description" placeholder="Enter a description about yourself here... ( 256 chars max )">{{description}}</textarea>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary mt-2">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

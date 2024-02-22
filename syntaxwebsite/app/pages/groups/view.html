@@ -1,0 +1,207 @@
+{% extends '__layout__.html' %}
+{% block title %}{{groupObj.name}}{% endblock %}
+{% block head %}
+<style>
+    .group-bg {
+        background-color: rgb(30,30,30);
+    }
+    .text-secondary {
+        color: rgb(200,200,200) !important;
+    }
+    .bg-drop {
+        box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);
+    }
+</style>
+<script src="/static/js/groupMembers.js"></script>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="ms-auto me-auto ps-2 pe-2 mb-3" style="width: 1200px;min-height: 100vh;margin-top: 120px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="row">
+            <div class="col-2" style="max-height: 400px;">
+                <a class="btn btn-primary w-100 mb-0 rounded-bottom-0 bg-drop" href="/groups/create"><i class="bi bi-plus-circle"></i> Create Group</a>
+                <a class="btn btn-success w-100 mb-0 rounded-0" href="/groups/search"><i class="bi bi-search"></i> Search Groups</a>
+                <div class="rounded h-100 group-bg rounded-top-0 bg-drop" style="overflow-y: auto;">
+                    {% for userMember in UserGroups: %}
+                        <a href="/groups/{{userMember.group.id}}/" class="text-decoration-none p-2 d-flex align-items-center" {% if groupObj == userMember.group %}style="background-color: rgba(0,0,0,0.5);"{% endif %}>
+                            <img src="/Thumbs/GroupIcon.ashx?groupid={{userMember.group.id}}&x=48&y=48" class="rounded-2" width="48px" height="48px">
+                            <p class="text-truncate m-0 ms-2 flex-fill text-white" style="font-size: 12px;">{{userMember.group.name}}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-10">
+                <div class="rounded p-3 group-bg bg-drop">
+                    <div class="d-flex">
+                        <img src="/Thumbs/GroupIcon.ashx?groupid={{groupObj.id}}&x=150&y=150" class="rounded border me-3" width="130px" style="aspect-ratio: 1/1;">
+                        <div>
+                            <h1 class="m-0">{{groupObj.name}}</h1>
+                            <p class="m-0">Owned By {% if groupObj.owner_id != None: %}<a href="/users/{{groupObj.owner.id}}/profile" class="text-decoration-none">{{groupObj.owner.username}}</a>{%else%}<span class="text-white">No One!</span>{%endif%}</p>
+                            <div class="mt-3 d-flex">
+                                <p class="text-white fw-bold">{{groupservice.GetGroupMemberCount(groupObj)}} <span class="text-secondary fw-normal">Members</span></p>
+                                {% if UserCurrentRole.rank != 0: %}
+                                <p class="text-white fw-bold ms-4">{{UserCurrentRole.name}} <span class="text-secondary fw-normal">Rank</span></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="ms-auto">
+                            <div class="dropdown d-flex justify-content-end">
+                                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    {% if isGroupAdmin: %}
+                                    <li><a class="dropdown-item" href="/groups/admin/{{groupObj.id}}">Group Admin</a></li>
+                                    {%endif%}
+                                    {% if UserCurrentRole.rank != 0: %}
+                                    <li><form action="/groups/leave/{{groupObj.id}}" method="post"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="dropdown-item" type="submit">Leave Group</button></form></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            {% if UserCurrentRole.rank == 0 and CurrentJoinRequest == None: %}
+                            <form action="/groups/join/{{groupObj.id}}" method="post">
+                                <button class="btn btn-outline-primary text-white w-100 mt-2 bg-drop">Join Group</button>
+                                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            </form>
+                            {% endif %}
+                            {% if CurrentJoinRequest != None %}
+                            <form action="/groups/leave/{{groupObj.id}}" method="post">
+                                <button class="btn btn-outline-danger text-white w-100 mt-2 bg-drop">Cancel Join Request</button>
+                                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            </form>
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded p-2 group-bg mt-2 bg-drop">
+                    <h3 class="m-0">Description</h3>
+                    <div class="text-secondary mb-2 mt-2">
+                        {% for line in groupObj.description.split('\n'): %}
+                            {% if line.strip() != '' %}
+                            <p class=" m-0">{{line}}</p>
+                            {%else%}
+                            <br>
+                            {%endif%}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if UserCurrentRole.permissions.view_status: %}
+                    {% if GroupStatus != None: %}
+                    <div class="rounded p-2 group-bg mt-2 bg-drop">
+                        <div class="d-flex">
+                            <a href="/users/{{GroupStatus.poster_id}}/profile"><img src="/Thumbs/Head.ashx?x=48&y=48&userId={{GroupStatus.poster_id}}" style="aspect-ratio: 1/1;" class="rounded-3 border"></a>
+                            <div class="flex-fill border bg-dark p-2 ms-2 rounded position-relative">
+                                <p class="m-0 mb-3 text-white">{{GroupStatus.content}}</p>
+                                <p class="m-0 mt-auto text-secondary position-absolute w-100" style="font-size: 13px;bottom: 5px;"><a class="text-decoration-none" href="/users/{{GroupStatus.poster_id}}/profile">{{GroupStatus.poster.username}}</a> Posted at {{GroupStatus.created_at.strftime("%b %d, %Y %I:%M %p")}} UTC</p>
+                            </div>
+                        </div>
+                    </div>
+                    {%endif%}
+                {% endif %}
+                {% if UserCurrentRole.permissions.post_to_status: %}
+                <div class="rounded p-2 group-bg mt-2 bg-drop">
+                    <form method="post" action="/groups/update_status/{{groupObj.id}}">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                        <div class="d-flex">
+                            <input type="text" class="form-control" name="status" placeholder="Update Group Status ( Leave blank to remove )"></input>
+                            <button class="btn btn-primary ms-2">Post</button>
+                        </div>
+                    </form>
+                </div>
+                {%endif%}
+                <div class="rounded p-2 group-bg mt-2 bg-drop group-member-list" data-groupid="{{groupObj.id}}">
+                    <div class="d-flex align-items-center">
+                        <h3 class="m-0">Members</h3>
+                        <div class="ms-auto">
+                            <select class="form-control members-select-role">
+                                {% for role in GroupRoles: %}
+                                    {% if role.rank != 0: %}
+                                    <option value="{{role.id}}">{{role.name}} ({{role.member_count}})</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="user-card-container mt-2" style="min-height: 100px;display: flex;flex-wrap: wrap;justify-content: flex-start;gap: 7px;">
+                    </div>
+                    <div class="align-items-center d-flex justify-content-center mt-2">
+                        <button class="btn btn-sm text-white btn-primary me-2 pagination-back-btn" disabled>Previous</button><p class="m-0 pagination-page-number">Page 1</p><button class="btn btn-sm text-white btn-primary ms-2 pagination-next-btn" disabled>Next</button>
+                    </div>
+                </div>
+                {% if UserCurrentRole.permissions.view_wall: %}
+                    <div class="rounded p-2 group-bg mt-2 bg-drop">
+                        <h5>Group Wall</h5>
+                        {% if UserCurrentRole.permissions.post_to_wall: %}
+                            <form method="post" action="/groups/wall_post/{{groupObj.id}}" class="d-flex">
+                                <div class="form-floating flex-fill">
+                                    <textarea name="post_content" class="form-control" placeholder="Post a message" id="floatingTextarea2" style="max-height: 100px;min-height: 100px;" name="message"></textarea>
+                                    <label for="floatingTextarea2">Message</label>
+                                </div>
+                                <div>
+                                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                                    <button class="btn btn-primary ms-2 mt-auto" type="submit">Post</button>
+                                </div>
+                            </form>
+                        {% endif %}
+                        <div class="mt-3 border-bottom">
+                            {% for WallPost in GroupWall.items %}
+                            <div class="border-top p-2">
+                                <div class="d-flex" style="overflow: hidden;">
+                                    <img class="rounded" src="/Thumbs/Avatar.ashx?userId={{WallPost.poster.id}}&x=150&y=150" width="150px" height="150px">
+                                    <div class="h-100 position-relative flex-fill" style="min-height: 150px;">
+                                        <a class="fw-bold text-white text-decoration-none" href="/users/{{WallPost.poster.id}}/profile" style="font-size: 20px;">{{WallPost.poster.username}}</a>
+                                        <div class="text-secondary">
+                                            {% for ContentLine in WallPost.content.split('\n'): %}
+                                                <p class="m-0">{{ContentLine}}</p>
+                                            {% endfor %}
+                                        </div>
+                                        <p class="m-0 mt-auto text-secondary position-absolute w-100" style="font-size: 13px;bottom: 0;">Posted at {{WallPost.created_at.strftime("%b %d, %Y %I:%M %p")}} UTC </p>
+                                        {% if WallPost.poster.id == currentuser.id or UserCurrentRole.permissions.delete_from_wall: %}
+                                        <div class="dropdown d-flex justify-content-end position-absolute" style="top: 0; right: 0;">
+                                            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><form action="/groups/{{groupObj.id}}/delete_post/{{WallPost.id}}" method="post"><button class="dropdown-item" type="submit">Delete Post</button></form></li>
+                                            </ul>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="align-items-center d-flex justify-content-center mt-2">
+                            <a class="btn btn-sm text-white btn-primary me-2 pagination-back-btn {% if not isTherePreviousPage: %}disabled {% endif %}" {% if isTherePreviousPage: %}href="/groups/{{groupObj.id}}/{{slug}}?page={{PageNumber-1}}"{%endif%}>Previous</a>
+                            <p class="m-0 pagination-page-number">Page {{PageNumber}}</p>
+                            <a class="btn btn-sm text-white btn-primary ms-2 pagination-next-btn {% if not isThereNextPage: %}disabled {% endif %}" {% if isThereNextPage: %}href="/groups/{{groupObj.id}}/{{slug}}?page={{PageNumber+1}}"{%endif%}>Next</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<a class="text-decoration-none user-card-template" style="display: none;" href="/users/1/profile">
+    <img width="90px" height="90px" class="border rounded avatar-img">
+    <p class="m-0 text-center user-name text-truncate" style="font-size: 13px;width: 90px;"></p>
+</a>
+{% endblock %}

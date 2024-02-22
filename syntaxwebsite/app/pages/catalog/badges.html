@@ -1,0 +1,53 @@
+{% extends '__layout__.html' %}
+{% block title %}{{badge.name}}{% endblock %}
+{% block head %}
+<link href="/static/css/catalog.css" rel="stylesheet"/>
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container ps-5 pe-5 ps-md-0 pe-md-0" style="max-width: 800px;">
+        <h1>{{badge.name}}</h1>
+        <div class="row">
+            <div class="col-md-5 col-12">
+                <div class="p-2 rounded overflow-hidden position-relative{% if AssociatedPlaceAssetObj != None %} rounded-bottom-0 {%endif%}" style="background-color: rgb(36, 36, 36);">
+                    <img width="100%" src="/Thumbs/Asset.ashx?assetId={{badge.icon_image_id}}&x=420&y=420" style="aspect-ratio: 1/1;" alt="{{badge.name}}">
+                </div>
+                {% if AssociatedPlaceAssetObj != None: %}
+                    <div class="rounded-bottom overflow-hidden d-flex p-1" style="background-color: rgb(29, 29, 29);">
+                        <p class="m-0 text-secondary me-2" style="font-size: 13px;">Earn this Badge in: <a class="text-decoration-none text-white" href="/games/{{AssociatedPlaceAssetObj.id}}/">{{AssociatedPlaceAssetObj.name}}</a></p>
+                        <a class="text-decoration-none ms-auto" href="/games/{{AssociatedPlaceAssetObj.id}}/"><img src="/Thumbs/PlaceIcon.ashx?assetId={{AssociatedPlaceAssetObj.id}}&x=60&y=60" height="60px" width="60px" class="rounded"></a>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 p-1">
+                <div class="d-flex mt-3 mt-md-0">
+                    {% if AssociatedPlaceAssetObj.creator_type == 0 :%}
+                    <img width="80" height="80" src="/Thumbs/Avatar.ashx?userId={{creator.id}}&x=100&y=100" alt="{{creator.username}}">
+                    <div style="font-size:13px;">
+                        <p class="m-0 text-secondary">Creator: <a href="/users/{{creator.id}}/profile" class="text-decoration-none">{{creator.username}}</a></p>
+                        <p class="m-0 text-secondary">Created: <span class="text-white">{{createddate}}</span></p>
+                        <p class="m-0 text-secondary">Updated: <span class="text-white">{{updateddate}}</span></p>
+                    </div>
+                    {% else %}
+                    <img width="80" height="80" src="/Thumbs/GroupIcon.ashx?groupid={{creator.id}}&x=100&y=100" alt="{{creator.name}}">
+                    <div style="font-size:13px;">
+                        <p class="m-0 text-secondary">Creator: <a href="/groups/{{creator.id}}/--" class="text-decoration-none">{{creator.name}}</a></p>
+                        <p class="m-0 text-secondary">Created: <span class="text-white">{{createddate}}</span></p>
+                        <p class="m-0 text-secondary">Updated: <span class="text-white">{{updateddate}}</span></p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="linebreak"></div>
+                <p>
+                    {{badge.description}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

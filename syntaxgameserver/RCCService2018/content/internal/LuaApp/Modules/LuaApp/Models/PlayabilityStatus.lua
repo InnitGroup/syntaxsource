@@ -1,0 +1,49 @@
+--[[
+	{
+		universeId: string,
+		isPlayable: bool,
+		playabilityStatus: string,
+	}
+]]
+
+local Modules = game:GetService("CoreGui").RobloxGui.Modules
+local Result = require(Modules.LuaApp.Result)
+local PlayabilityStatusEnum = require(Modules.LuaApp.Enum.PlayabilityStatus)
+
+local PlayabilityStatus = {}
+
+function PlayabilityStatus.new()
+	local self = {}
+
+	return self
+end
+
+function PlayabilityStatus.mock()
+	local self = PlayabilityStatus.new()
+	self.universeId = "149757"
+	self.isPlayable = true
+	self.playabilityStatus = PlayabilityStatusEnum.Playable
+
+	return self
+end
+
+function PlayabilityStatus.fromJsonData(playabilityStatusJson)
+	if type(playabilityStatusJson.universeId) ~= "number" and type(playabilityStatusJson.universeId) ~= "string" then
+		return Result.error("PlayabilityStatus.fromJsonData expects universeId to be a number or a string")
+	end
+	if type(playabilityStatusJson.isPlayable) ~= "boolean" then
+		return Result.error("PlayabilityStatus.fromJsonData expects isPlayable to be a boolean")
+	end
+	if type(playabilityStatusJson.playabilityStatus) ~= "string" then
+		return Result.error("PlayabilityStatus.fromJsonData expects playabilityStatus to be a string")
+	end
+
+	local self = PlayabilityStatus.new()
+	self.universeId = tostring(playabilityStatusJson.universeId)
+	self.isPlayable = playabilityStatusJson.isPlayable
+	self.playabilityStatus = playabilityStatusJson.playabilityStatus
+
+	return Result.success(self)
+end
+
+return PlayabilityStatus

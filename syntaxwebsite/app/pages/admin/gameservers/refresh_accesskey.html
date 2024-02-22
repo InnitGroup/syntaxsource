@@ -1,0 +1,24 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(175, 175, 175) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <h1>Are you sure?</h1>
+        <p class="m-0 d-flex text-secondary">Are you sure you want to refresh the AccessKey for {{gameserver.serverName}} ( {{gameserver.serverId}} )</p>
+        <form method="post" class="mt-2">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="hidden" name="serverId" value="{{gameserver.serverId}}">
+            <button type="submit" class="btn btn-light"><i class="bi bi-arrow-clockwise"></i> Refresh Key</button>
+            <a class="btn border-primary" href="/admin/gameservers/{{gameserver.serverId}}">Back</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

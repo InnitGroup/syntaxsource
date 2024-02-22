@@ -1,0 +1,32 @@
+{% extends '__layout__.html' %}
+{% block title %}Login{% endblock %}
+{% block head %}
+<link href="/static/css/login.css" rel="stylesheet"/>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="rounded p-2 login-container">
+        <div style="padding: 10px;min-width:330px;" class="ps-md-4 pe-md-4">
+            <h1>SYNTAX</h1>
+            <p>experience joy with freedom</p>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div>
+            {% for message in messages %}
+                <div class="alert border border-danger p-2 text-center messagealerts">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <p class="m-0 mb-2">Please enter the OTP code from your authenticator app</p>
+            <form method="POST">
+                <input type="text" placeholder="123456" name="totpCode" class="form-control" required>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-primary mt-2">Verify</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

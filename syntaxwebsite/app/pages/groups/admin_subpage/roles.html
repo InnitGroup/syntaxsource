@@ -1,0 +1,198 @@
+{% extends 'groups/admin_template.html' %}
+{% block page_content%}
+<style>
+    .role-list {
+        width: 140px;
+    }
+    .role-list a {
+        display: block;
+        color: rgb(220,220,220);
+        text-decoration: none;
+        margin-left: 10px;
+        margin-right: 5px;
+        margin-bottom: 6px;
+        transition: 0.1s;
+    }
+    .role-list a.selected {
+        color: rgb(255,255,255);
+    }
+    .role-list a:hover {
+        color: rgb(255,255,255);
+        transition: 0.1s;
+    }
+    .role-container h5 {
+        font-size: 15px;
+        margin-bottom: 5px !important;
+    }
+    .role-category {
+        background-color: rgb(32, 32, 32);
+        width: 100%;
+        padding: 8px;
+        box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);
+    }
+    .role-permissions h5 {
+        font-size: 25px;
+    }
+    .role-row p {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 500;
+        color: rgb(255,255,255);
+    }
+    .role-row {
+        padding: 3px;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgb(18, 18, 18);
+    }
+</style>
+<div class="d-flex">
+    <div class="me-2">
+        <div class="border-end p-2" style="border-color: rgb(50,50,50) !important;">
+            <h5 class="m-0 mb-1">Roles</h5>
+            <div class="role-list">
+                {% for role in roles %}
+                <a href="/groups/admin/{{group.id}}/roles/{{role.id}}/view" class="text-truncate">{{role.name}}</a>
+                {% endfor %}
+            </div>
+            <a class="btn btn-sm btn-light p-1 ps-3 pe-3 mt-2 w-100 {% if group.owner_id != currentuser.id %}disabled{%endif%}" {% if group.owner_id == currentuser.id %}href="/groups/admin/{{group.id}}/roles/create"{%endif%}>Create Role</a>
+        </div>
+    </div>
+    <div class="flex-fill mt-2">
+        <form method="post" action="/groups/admin/{{group.id}}/roles/{{selectedrole.id}}/update" class="role-container">
+            <div class="">
+                <h5 class="m-0">Name</h5>
+                <input type="text" class="form-control" name="role-name" placeholder="Name" value="{{selectedrole.name}}" required {% if selectedrole.rank == 0 %}disabled{%endif%}>
+            </div>
+            <div class="mt-2">
+                <h5 class="m-0">Description</h5>
+                <textarea class="form-control" placeholder="Description" name="role-description" style="height: 100px" required {% if selectedrole.rank == 0 %}disabled{%endif%}>{{selectedrole.description}}</textarea>
+            </div>
+            <div class="mt-2">
+                <h5 class="m-0">Rank ( 0-255 )</h5>
+                <input type="number" class="form-control" name="role-rank" placeholder="Rank" value="{{selectedrole.rank}}" max="254" min="1" required {% if selectedrole.rank == 0 or selectedrole.rank == 255 %}disabled{%endif%}>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="role-permissions mt-2">
+                <h5>Posts</h5>
+                <div class="role-category">
+                    <div class="role-row">
+                        <p>View group wall</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="view_wall" {% if selectedrole.permissions.view_wall %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row">
+                        <p>Post on group wall</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="post_to_wall" {% if selectedrole.permissions.post_to_wall %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row">
+                        <p>Delete group wall posts</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="delete_from_wall" {% if selectedrole.permissions.delete_from_wall %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row">
+                        <p>View group shout</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="view_status" {% if selectedrole.permissions.view_status %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row border-bottom-0">
+                        <p>Post group shout</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="post_to_status" {% if selectedrole.permissions.post_to_status %}checked{%endif%}>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="mt-3">Members</h5>
+                <div class="role-category">
+                    <div class="role-row">
+                        <p>Manage lower-ranked member ranks</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="change_rank" {% if selectedrole.permissions.change_rank %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row">
+                        <p>Accept join requests</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="invite_members" {% if selectedrole.permissions.invite_members %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row border-bottom-0">
+                        <p>Kick lower-ranked members</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="remove_members" {% if selectedrole.permissions.remove_members %}checked{%endif%}>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="mt-3">Assets</h5>
+                <div class="role-category">
+                    <div class="role-row">
+                        <p>Create Assets</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="create_items" {% if selectedrole.permissions.create_items %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row">
+                        <p>Manage Assets</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="manage_items" {% if selectedrole.permissions.manage_items %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row border-bottom-0">
+                        <p>Manage Group Games</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="manage_group_games" {% if selectedrole.permissions.manage_group_games %}checked{%endif%}>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="mt-3">Miscellaneous</h5>
+                <div class="role-category">
+                    <div class="role-row">
+                        <p>Manage allies and enemies</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="manage_relationships" {% if selectedrole.permissions.manage_relationships %}checked{%endif%}>
+                        </div>
+                    </div>
+                    <div class="role-row border-bottom-0">
+                        <p>View audit log</p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="view_audit_logs" {% if selectedrole.permissions.view_audit_logs %}checked{%endif%}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <button type="submit" class="btn btn-light mt-3 ms-auto" {% if group.owner_id != currentuser.id %}disabled{%endif%}>Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% if selectedrole.rank == 255 or group.owner_id != currentuser.id %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const all_checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        all_checkboxes.forEach(checkbox => {
+            checkbox.disabled = true;
+        });
+    });
+</script>
+{%endif%}
+{% if group.owner_id != currentuser.id %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const rank_input = document.querySelector('input[name="role-rank"]');
+        const name_input = document.querySelector('input[name="role-name"]');
+        const description_input = document.querySelector('textarea[name="role-description"]');
+        rank_input.disabled = true;
+        name_input.disabled = true;
+        description_input.disabled = true;
+    });
+</script>
+{%endif%}
+{%endblock%}

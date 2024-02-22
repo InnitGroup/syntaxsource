@@ -1,0 +1,43 @@
+{% extends '__layout__.html' %}
+{% block title %}New Message{% endblock %}
+{% block head %}
+<link href="/static/css/message.css" rel="stylesheet"/>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h4>New Message</h4>
+        <div class="input-group mb-2">
+            <span class="input-group-text">Recipient</span>
+            <input class="form-control" type="text" value="{{targetuser.username}}" readonly>
+        </div>
+        <form method="post" class="w-100">
+            <div class="input-group mb-2">
+                <span class="input-group-text">Subject</span>
+                <input class="form-control" type="text" name="subject" {% if not replymessage %}required{%endif%}{% if replymessage %} disabled value='RE: {{replymessage.subject}}'{%endif%}>
+            </div>
+            <textarea class="form-control rounded" placeholder="Message ( 1024 Chars limit )" name="message" style="min-height:200px" required></textarea>
+            <p class="m-0" style="font-size: 12px;">Do not send any personal or sensitive information about yourself! A staff member will never ask for your password or email.</p>
+            <div class="d-flex justify-content-end align-items-top mt-2">
+                <div class="cf-turnstile" data-theme="dark" data-sitekey="{{turnstilekey}}"></div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="ms-3">
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

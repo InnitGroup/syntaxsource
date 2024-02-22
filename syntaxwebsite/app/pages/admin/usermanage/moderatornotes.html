@@ -1,0 +1,61 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .show-on-hover {
+        filter: blur(4px);
+        transition: 0.2s;
+    }
+    .show-on-hover:hover {
+        filter: blur(0px);
+        transition: 0.2s;
+    }
+    .bg-dark {
+        background-color: rgb(32, 32, 32) !important;
+        box-shadow: 0px 0px 5px 0px rgb(0,0,0);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a class="mb-2" href="/admin/manage-users/{{userObj.id}}"> < Return to User Page</a>
+        <div class="d-flex align-items-center">
+            <img height="100px" style="aspect-ratio: 1/1;" class="rounded-2" src="/Thumbs/Avatar.ashx?userId={{userObj.id}}&x=100&y=100">
+            <div>
+                <h1 class="m-0 {% if userObj.accountstatus == 1 %}text-white{% elif userObj.accountstatus == 2 %}text-warning{% elif userObj.accountstatus == 3%}text-danger{% else %}text-decoration-line-through text-white{%endif%}">{{userObj.username}}<span class="text-secondary"> Moderator Notes</span></h1>
+                <p class="text-secondary m-0" style="font-size: 12px;">UserId: <span class="text-white">{{userObj.id}}</span></p>
+            </div>
+        </div>
+        <div>
+            {% for note in UserModeratorNotes.items %}
+            <div class="rounded border bg-dark p-2 mb-1">
+                <div class="d-flex align-items-center">
+                    <img height="40px" style="aspect-ratio: 1/1;" class="rounded-2 border" src="/Thumbs/Head.ashx?userId={{note.note_creator_id}}&x=50&y=50">
+                    <div class="ms-1">
+                        <h5 class="m-0 text-white">{{ GetUserName(note.note_creator_id) }}</h5>
+                        <p class="m-0" style="font-size: 12px;color: rgb(200,200,200);">Created at {{note.created_at}} UTC</p>
+                    </div>
+                </div>
+                <div class="p-1 border w-100 mt-1">
+                    {% for note_line in note.note.split("\n") %}
+                        <p class="m-0 text-white">{{note_line}}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if len(UserModeratorNotes.items) == 0 %}
+        <div class="alert alert-danger">
+            This user currently has no moderator notes.
+        </div>
+        {% endif %}
+        <div class="align-items-center d-flex justify-content-center mt-2 mb-2">
+            <a class="ms-auto m-0 text-decoration-none {% if not UserModeratorNotes.has_prev %}text-secondary{%endif%}" {% if UserModeratorNotes.has_prev %}href="/admin/manage-users/{{userObj.id}}/moderator-notes?page={{UserModeratorNotes.prev_num}}"{%endif%}>Previous</a>
+            <p class="ms-2 me-2 text-white m-0">Page {{UserModeratorNotes.page}} of {{UserModeratorNotes.pages}}</p>
+            <a class="me-auto m-0 text-decoration-none {% if not UserModeratorNotes.has_next %}text-secondary{%endif%}" {% if UserModeratorNotes.has_next %}href="/admin/manage-users/{{userObj.id}}/moderator-notes?page={{UserModeratorNotes.next_num}}"{%endif%}>Next</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

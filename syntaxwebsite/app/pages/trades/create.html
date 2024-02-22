@@ -1,0 +1,133 @@
+{% extends '__layout__.html' %}
+{% block title %}New Trade{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-weight: 600;
+    }
+    .bg-dark {
+        background-color: rgb(30,30,30) !important;
+    }
+</style>
+<script src="/static/js/newTrade.js"></script>
+{% endblock %}
+{% block content %}
+<div class="col-md-2 mb-2" id="item-card-template" style="display: none;">
+    <div class="position-relative">
+        <img src="" width="100px" height="100px" class="border p-1 item-card-image">
+        <p class="position-absolute bg-dark p-1 item-card-serial text-white" style="bottom: -16px;left: 0px;font-size: 12px;">#2</p>
+    </div>
+    <a class="text-center m-0 d-block text-decoration-none item-card-name" href="/catalog/45/" target="_blank" style="font-size: 12px;width: 100px;">Test</a>
+</div>
+<div id="trade-info" data-totp-enabled="{{AuthenticatedUser.TOTPEnabled}}" data-requester-userid="{{currentuser.id}}" data-target-userid="{{TargetUser.id}}" data-xcsrf-token="{{csrf_token()}}"></div>
+<div class="container position-relative" style="min-height: 100vh;margin-top: 100px;">
+    <div class="d-flex align-items-center">
+        <h1 class="m-0 me-3">New Trade</h1>
+        <a class="m-0 text-secondary text-decoration-none" href="/users/{{TargetUser.id}}/profile" target="_blank">Trading with {{TargetUser.username}}<img class="rounded-5 ms-2" width="30" height="30" src="/Thumbs/Head.ashx?x=48&y=48&userId={{TargetUser.id}}"></a>
+    </div>
+    <div class="linebreak"></div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="rounded bg-dark p-3">
+                <div class="d-flex">
+                    <h4>Your Offer</h4>
+                    <div class="ms-auto">
+                        <p class="m-0 text-secondary">Value: <span class="text-robux" id="requester-offer-value">R$ 0</span></p>
+                    </div>
+                </div>
+                <div class="mt-2 row" id="requester-item-offer-container">
+                    <div class="col p-1">
+                        <div class="border rounded w-100 h-100" style="aspect-ratio: 1/1;">
+                            <img width="100%" height="100%" class="item-image d-none">
+                        </div>
+                    </div>
+                    <div class="col p-1">
+                        <div class="border rounded w-100 h-100" style="aspect-ratio: 1/1;">
+                            <img width="100%" height="100%" class="item-image d-none">
+                        </div>
+                    </div>
+                    <div class="col p-1">
+                        <div class="border rounded w-100 h-100" style="aspect-ratio: 1/1;">
+                            <img width="100%" height="100%" class="item-image d-none">
+                        </div>
+                    </div>
+                    <div class="col p-1">
+                        <div class="border rounded w-100 h-100" style="aspect-ratio: 1/1;">
+                            <img width="100%" height="100%" class="item-image d-none">
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center">
+                    <p class="m-0 text-secondary me-2" style="font-size: 19px;">*Plus <span class="text-robux">R$</span></p>
+                    <input type="number" class="form-control mt-2" id="requester-offer-robux-input" placeholder="Enter Amount" style="max-width: 150px;">
+                </div>
+            </div>
+            <div class="linebreak"></div>
+            <div class="rounded bg-dark p-3">
+                <div class="d-flex">
+                    <h4>Your Request</h4>
+                    <div class="ms-auto">
+                        <p class="m-0 text-secondary">Value: <span class="text-robux" id="target-offer-value">R$ 0</span></p>
+                    </div>
+                </div>
+                <div class="mt-2 row" id="target-item-offer-container">
+                    <div class="col p-1">
+                        <div class="border rounded w-100 h-100" style="aspect-ratio: 1/1;">
+                            <img width="100%" height="100%" class="item-image d-none">
+                        </div>
+                    </div>
+                    <div class="col p-1">
+                        <div class="border rounded w-100 h-100" style="aspect-ratio: 1/1;">
+                            <img width="100%" height="100%" class="item-image d-none">
+                        </div>
+                    </div>
+                    <div class="col p-1">
+                        <div class="border rounded w-100 h-100" style="aspect-ratio: 1/1;">
+                            <img width="100%" height="100%" class="item-image d-none">
+                        </div>
+                    </div>
+                    <div class="col p-1">
+                        <div class="border rounded w-100 h-100" style="aspect-ratio: 1/1;">
+                            <img width="100%" height="100%" class="item-image d-none">
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center">
+                    <p class="m-0 text-secondary me-2" style="font-size: 19px;">*Plus <span class="text-robux">R$</span></p>
+                    <input type="number" class="form-control mt-2" id="target-offer-robux-input" placeholder="Enter Amount" style="max-width: 150px;">
+                </div>
+            </div>
+            <div class="mt-2">
+                <input type="text" class="form-control mb-2" id="otp-code-input" style="display: none;" placeholder="2FA Authenticator Code">
+                <button class="btn btn-primary fw-bold w-100" id="trade-submit-btn">Send Trade Request</button>
+                <p class="text-danger m-0" id="submit-btn-feedback" style="font-size: 13px; display: none;">400: Invalid Data</p>
+            </div>
+            <p class="text-secondary mt-2" style="font-size: 12px;">* Syntax will take a 30% fee from the amount </p>
+        </div>
+        <div class="col-md-8">
+            <div>
+                <h5>My Inventory</h5>
+                <div class="row mb-2" id="requester-inventory-container">
+                </div>
+                <div class="align-items-center d-flex justify-content-center">
+                    <button class="btn btn-sm text-white btn-primary me-2 pagination-back-btn" disabled>Previous</button><p class="m-0 pagination-page-number">Page 1</p><button class="btn btn-sm text-white btn-primary ms-2 pagination-next-btn" disabled>Next</button>
+                </div>
+            </div>
+            <div class="linebreak"></div>
+            <div>
+                <h5>{{TargetUser.username}}'s Inventory</h5>
+                <div class="row mb-2" id="target-inventory-container">
+                </div>
+                <div class="align-items-center d-flex justify-content-center">
+                    <button class="btn btn-sm text-white btn-primary me-2 pagination-back-btn" disabled>Previous</button><p class="m-0 pagination-page-number">Page 1</p><button class="btn btn-sm text-white btn-primary ms-2 pagination-next-btn" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="position-absolute w-100 h-100" id="transparent-background-top" style="top: 0;left: 0;background-color: rgba(0,0,0,0.5);display: none;"></div>
+{% endblock %}

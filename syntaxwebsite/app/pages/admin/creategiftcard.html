@@ -1,0 +1,67 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Create Giftcard</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post">
+            <div class="form-floating">
+                <select id="floatingSelect" class="form-control" name="giftcard-type">
+                    <option value="0">Outrageous Builders Club</option>
+                    <option value="1">Turbo Builders Club</option>
+                    <option value="2">Robux</option>
+                    <option value="3">Tickets</option>
+                    <option value="4">Item</option>
+                </select>
+                <label for="floatingSelect">Giftcard Type</label>
+            </div>
+            <div class="form-floating mt-2">
+                <input type="number" class="form-control" id="floatingNumber" placeholder="Value" name="copies" required>
+                <label for="floatingNumber">Copies</label>
+            </div>
+            <div class="form-floating mt-2">
+                <input type="text" class="form-control" id="floatingInput" placeholder="Value" name="value" required>
+                <label for="floatingInput">Value</label>
+            </div>
+            <p class="m-0" style="font-size: 13px;">OBC GC Value = How many months</p>
+            <p class="m-0" style="font-size: 13px;">TBC GC Value = How many weeks</p>
+            <p class="m-0" style="font-size: 13px;">Robux and Tickets GC Value = How much currency</p>
+            <p class="m-0" style="font-size: 13px;">Item GC Value = Asset ID</p>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-primary mt-2 w-100 btn-sm" type="submit">Create Giftcard</button>
+        </form>
+        {% if codes: %}
+            <div class="linebreak"></div>
+            <h2>Giftcard Codes</h2>
+            <div class="border rounded p-2">
+                {% for code in codes: %}
+                    <span class="m-0">{{code}}</span>
+                    <br>
+                {%endfor%}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

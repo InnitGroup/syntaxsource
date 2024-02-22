@@ -1,0 +1,80 @@
+{% extends '__layout__.html' %}
+{% block title %}Membership{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .text-robux {
+        color: rgb(32, 219, 104) !important;
+    }
+    .border-0 {
+        border: none !important;
+    }
+    .border-0 td {
+        border: none !important;
+    }
+    .border-0 th {
+        border: none !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="margin-top:120px;min-height: 100vh;">
+    <table class="table text-white text-center">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col"><h4>Free</h4><img class="mb-2" src="/static/img/NBC.png"></th>
+            <th scope="col"><h3>Classic</h3><img class="mb-2" src="/static/img/BC.png"></th>
+            <th scope="col"><h2>Turbo</h2><img class="mb-2" src="/static/img/TBC.png"></th>
+            <th scope="col"><h1>OBC</h1><img class="mb-2" src="/static/img/OBC.png"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="align-items-center">
+            <th scope="row"><h5>Daily Robux</h5></th>
+            <td><h4 class="text-secondary">None</h4></td>
+            <td><h4 class="text-robux">R$ 10</h4></td>
+            <td><h4 class="text-robux">R$ 45</h4></td>
+            <td><h4 class="text-robux">R$ 80</h4></td>
+          </tr>
+          <tr class="align-items-center">
+            <th scope="row"><h5>Active Places</h5></th>
+            <td><h4 class="text-secondary">2</h4></td>
+            <td><h4 class="text-robux">6</h4></td>
+            <td><h4 class="text-robux">12</h4></td>
+            <td><h4 class="text-robux">32</h4></td>
+          </tr>
+          <tr class="align-items-center">
+            <th scope="row"><h5>Groups Limit</h5></th>
+            <td><h4 class="text-secondary">5</h4></td>
+            <td><h4 class="text-robux">10</h4></td>
+            <td><h4 class="text-robux">20</h4></td>
+            <td><h4 class="text-robux">100</h4></td>
+          </tr>
+          <tr class="align-items-center">
+            <th scope="row"><h5>Sell Items</h5></th>
+            <td><h4 class="text-danger">No</h4></td>
+            <td><h4 class="text-robux">Yes</h4></td>
+            <td><h4 class="text-robux">Yes</h4></td>
+            <td><h4 class="text-robux">Yes</h4></td>
+          </tr>
+          <tr class="align-items-center">
+            <th scope="row"><h5>Trade Items</h5></th>
+            <td><h4 class="text-danger">No</h4></td>
+            <td><h4 class="text-robux">Yes</h4></td>
+            <td><h4 class="text-robux">Yes</h4></td>
+            <td><h4 class="text-robux">Yes</h4></td>
+          </tr>
+          <tr class="align-items-center border-0">
+            <th scope="row"></th>
+            <td><h4 class="text-danger"></td>
+            <td><a class="btn btn-md btn-primary fw-bold text-decoration-none" href="/settings">Link Discord</a></td>
+            <td><a class="btn btn-md btn-warning fw-bold text-decoration-none" href="https://discord.gg/cBMp3Z52UM">Boost Discord</a></td>
+            <td><a class="btn btn-md btn-danger fw-bold text-decoration-none" href="/membership/payment_methods">Donate $5</a></td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+{% endblock %}

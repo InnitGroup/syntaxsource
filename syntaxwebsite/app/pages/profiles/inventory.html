@@ -1,0 +1,183 @@
+{% extends '__layout__.html' %}
+{% block title %}{{profile.username}} - Inventory{% endblock %}
+{% block head %}
+<link href="/static/css/profile.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .category-list a {
+        background-color: rgb(31,31,31);
+        color: rgb(200, 200, 200);
+        padding: 8px;
+        transition: 0.1s;
+        box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);
+        margin-top: 6px;
+        margin-bottom: 6px;
+        text-decoration: none;
+        width: 100%;
+        display: block;
+        border-left: 0px solid;
+    }
+    .category-list a:hover {
+        border-left: 5px solid rgb(160, 160, 160);
+        transition: 0.1s;
+        color: rgb(255,255,255);
+    }
+    .category-list a.selected {
+        border-left: 5px solid rgb(255,255,255);
+        transition: 0.1s;
+        color: rgb(255,255,255);
+    }
+
+    .item-results a {
+        text-decoration: none !important;
+        color: inherit;
+    }
+    .text-tickets {
+        color: rgb(224, 224, 60) !important;
+        font-size: small;
+        font-weight: 600;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-size: small;
+        font-weight: 600;
+    }
+    .text-limited {
+        color: rgb(255,255,255) !important;
+        background-color: rgb(9, 136, 62);
+        width: fit-content;
+        padding-left: 10px;
+        font-size: 10px;
+        border-top-right-radius: 5px;
+        margin: 0;
+    }
+    .text-limitedu {
+        color: rgb(0,0,0) !important;
+        background-color: rgb(245, 245, 52);
+        padding-right: 3px;
+        font-weight: 800;
+        border-top-right-radius: 5px;
+        padding-left: 3px;
+    }
+    .text-remaining {
+        color: rgb(197, 21, 21) !important;
+        font-size: 10px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 1200px;min-width: 800px;">
+        <div class="d-flex align-items-center">
+            <a href="/users/{{profile.id}}/profile">
+                <img src="/Thumbs/Head.ashx?x=100&y=100&userId={{profile.id}}" width="80px" height="80px" class="rounded-2">
+            </a>
+            <h2 class="ms-3">{{profile.username}}'s Inventory</h2>
+        </div>
+        <div class="d-flex">
+            <div class="p-1 category-list" style="width: 20%;">
+                <a href="/users/{{profile.id}}/inventory?category=0" class="{% if CategoryIndex == 0 %}selected{%endif%}">
+                    Accessories
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=1" class="{% if CategoryIndex == 1 %}selected{%endif%}">
+                    Audio
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=10" class="{% if CategoryIndex == 10 %}selected{%endif%}">
+                    Gears
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=3" class="{% if CategoryIndex == 3 %}selected{%endif%}">
+                    Faces
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=4" class="{% if CategoryIndex == 4 %}selected{%endif%}">
+                    Heads
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=5" class="{% if CategoryIndex == 5 %}selected{%endif%}">
+                    Hats
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=6" class="{% if CategoryIndex == 6 %}selected{%endif%}">
+                    Passes
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=2" class="{% if CategoryIndex == 2 %}selected{%endif%}">
+                    Packages
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=7" class="{% if CategoryIndex == 7 %}selected{%endif%}">
+                    T-Shirt
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=8" class="{% if CategoryIndex == 8 %}selected{%endif%}">
+                    Shirts
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=9" class="{% if CategoryIndex == 9 %}selected{%endif%}">
+                    Pants
+                </a>
+                <a href="/users/{{profile.id}}/inventory?category=11" class="{% if CategoryIndex == 11 %}selected{%endif%}">
+                    Badges
+                </a>
+            </div>
+            <div class="p-1 ps-3" style="width: 80%;">
+                <h3 class="m-0 mb-1">{{CategoryName}}</h3>
+                <div class="row item-results">
+                    {% for item in SearchQuery %}
+                        <div class="col-md-2 col-3 p-1">
+                            <a href="{% if CategoryIndex != 11 %}/catalog/{{item.asset.id}}/{%else%}/badges/{{item.badge_id}}/{%endif%}">
+                            <div class="rounded item-card p-2">
+                                <div class="border rounded overflow-hidden position-relative">
+                                    <img src="/Thumbs/Asset.ashx?x=180&y=180&assetId={% if CategoryIndex != 11 %}{{item.asset.id}}{%else%}{{item.badge.icon_image_id}}{%endif%}" width="100%" style="aspect-ratio: 1/1;" alt="{% if CategoryIndex != 11 %}{{item.asset.name}}{%else%}{{item.badge.name}}{%endif%}">
+                                    {% if CategoryIndex != 11 %}
+                                        {% if item.asset.is_limited: %}<p class="position-absolute m-0 fw-bold text-limited" style="bottom:-1px;left:0px;">LIMITED {%if item.asset.is_limited_unique: %}<span class="text-limitedu">U</span>{%else%}<span class="me-2"></span>{%endif%}</p>{% endif %}
+                                        {% if item.asset.offsale_at != None %}<p class="position-absolute bg-danger m-0" style="top: 0px;right: 0px;border-bottom-left-radius: 10px;padding: 5px;"><i class="bi bi-alarm text-white"></i></p>{% endif %}
+                                        {% if item.serial != None %}<p class="position-absolute m-0 rounded p-1 fw-bold bg-black border text-white" style="top: 5px; left: 5px;aspect-ratio: 1/1;font-size: 12px;">#{{item.serial}}</p>{%endif%}
+                                    {% endif %}
+                                </div>
+                                <p class="text-secondary m-0" style="font-size:12px;">{% if CategoryIndex != 11 %}{{item.asset.name}}{%else%}{{item.badge.name}}{%endif%}</p>
+                                {% if CategoryIndex != 11 %}
+                                    {% if item.asset.is_for_sale: %}
+                                        {% if item.asset.price_robux == 0 and item.asset.price_tix == 0: %}
+                                            <p class="text-robux m-0 ">FREE</p>
+                                        {% else %}
+                                            {% if item.asset.price_robux != 0: %}
+                                                <p class="text-robux m-0">R$ {{item.asset.price_robux}}</p>
+                                            {% endif %}
+                                            {% if item.asset.price_tix != 0: %}
+                                                <p class="text-tickets m-0">T$ {{item.asset.price_tix}}</p>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if item.asset.is_limited_unique : %}
+                                            <p class="text-remaining m-0">Remaining: <span class="text-white">{{item.asset.serial_count - item.asset.sale_count}}</span></p>
+                                        {%endif%}
+                                    {% else %}
+                                        {% if item.asset.is_limited: %}
+                                            {% if item.asset.price_robux == 0 and item.asset.price_tix != 0: %}
+                                                <p class="text-tickets m-0"><span class="text-secondary fw-normal">was</span> T$ {{item.asset.price_tix or "-"}}</p>
+                                            {% elif item.asset.price_robux != 0 and item.asset.price_tix != 0: %}
+                                                <p class="text-robux m-0"><span class="text-secondary fw-normal">was</span> R$ {{item.asset.price_robux or "-"}}</p>
+                                            {% elif item.asset.price_robux != 0 and item.asset.price_tix == 0: %}
+                                                <p class="text-robux m-0"><span class="text-secondary fw-normal">was</span> R$ {{item.asset.price_robux or "-"}}</p>
+                                            {% else %}
+                                            <p class="text-robux m-0"><span class="text-secondary fw-normal">was</span> FREE</p>
+                                            {% endif %}
+                                            <p class="text-robux m-0"><span class="text-secondary fw-normal">now</span> R$ {{item.best_price}}</p>
+                                        {%else%}
+                                            <p class="text-secondary m-0 ">Offsale</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </div></a>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if len(SearchQuery.items) == 0: %}
+                <p class="w-100 text-center mt-5 mb-5">No items found</p>
+                {% endif %}
+                <div class="align-items-center d-flex justify-content-center mt-2 mb-2">
+                    <a class="ms-auto m-0 text-decoration-none {% if not SearchQuery.has_prev %}text-secondary{%endif%}" {% if SearchQuery.has_prev %}href="/users/{{profile.id}}/inventory?page={{SearchQuery.prev_num}}&category={{CategoryIndex}}"{%endif%}>Previous</a>
+                    <p class="ms-2 me-2 text-white m-0">Page {{SearchQuery.page}} of {{SearchQuery.pages}}</p>
+                    <a class="me-auto m-0 text-decoration-none {% if not SearchQuery.has_next %}text-secondary{%endif%}" {% if SearchQuery.has_next %}href="/users/{{profile.id}}/inventory?page={{SearchQuery.next_num}}&category={{CategoryIndex}}"{%endif%}>Next</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

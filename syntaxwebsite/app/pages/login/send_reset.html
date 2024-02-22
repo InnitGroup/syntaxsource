@@ -1,0 +1,43 @@
+{% extends '__layout__.html' %}
+{% block title %}Reset Password{% endblock %}
+{% block head %}
+<link href="/static/css/login.css" rel="stylesheet"/>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="login-container d-flex align-items-center justify-content-center">
+        <div style="padding: 10px;min-width:390px;" class="ps-md-4 pe-md-4">
+            <h1>SYNTAX</h1>
+            <p>Please enter the email linked to your SYNTAX account</p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div>
+                {% for category, message in messages %}
+                    {% if category == 'error': %}
+                    <div class="alert border p-2 text-center alert-danger border-danger">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                    {% if category == 'success': %}
+                    <div class="alert border p-2 text-center alert-success border-success">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
+            <form method="post">
+                <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="" required>
+                <div class="cf-turnstile d-table mb-2 mt-2" style="margin: 0 auto;" data-theme="dark" data-sitekey="{{turnstilekey}}"></div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-primary mb-3">Reset Password</button>
+            </form>
+            <div class="text-center mt-2">
+                <p>Remember your password? <a href="/login">Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

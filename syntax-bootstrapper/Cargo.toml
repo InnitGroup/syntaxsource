@@ -1,0 +1,33 @@
+[package]
+name = "syntax_bootstrapper"
+version = "1.4.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+term_size = "0.3.2"
+colored = "2.0.4"
+chrono = "0.4.26"
+dirs = "5.0.1"
+indicatif = "0.17.6"
+reqwest = { version = "0.11.20", features = ["stream"]}
+futures = "0.3.28"
+tokio = { version = "1.32.0", features=["full"]}
+futures-util = "0.3.28"
+md5 = "0.7.0"
+zip-extract = "0.1.2"
+sha1 = "0.10.6"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.51.0"
+
+[build-dependencies]
+chrono = "0.4.26"
+winres = "0.1.12"
+
+[profile.release]
+strip = true
+lto = true
+opt-level = "z"
+codegen-units = 1

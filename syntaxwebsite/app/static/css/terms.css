@@ -1,0 +1,15 @@
+h1 {
+    font-weight: 700;
+}
+
+h5 {
+    color : rgb(230,230,230);
+    font-weight: 400;
+}
+
+
+p {
+    margin-left: 10px;
+    color: rgb(230, 230, 230);
+    font-size: large;
+}

@@ -1,0 +1,84 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(175, 175, 175) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="overflow-x:scroll;">
+        <a href="/admin/fflags" class="btn border-primary btn-sm mb-2">Back to FFlag Groups</a><a href="/admin/fflags/{{group.id}}/delete" class="btn border-danger btn-sm mb-2 ms-2">Delete Group</a>
+        <h1 class="m-0">{{group.name}}</h1>
+        <p class="m-0 d-flex">{{group.description}}</p>
+        <div class="p-2 border mt-2 mb-2 rounded">
+            <div class="row">
+                <div class="col-md-4">
+                    <p class="text-secondary m-0">Created: <span class="text-white">{{group.created_at}}</span></p>
+                </div>
+                <div class="col-md-4">
+                    <p class="text-secondary m-0">Last Updated: <span class="text-white">{{group.updated_at}}</span></p>
+                </div>
+                <div class="col-md-4">
+                    <p class="text-secondary m-0">Enabled: <span class="text-white">{{ group.enabled }}</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="linebreak"></div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h4 class="m-0">Import from file</h4>
+        <p class="m-0">Note: This will remove all current flags and replace them with the file</p>
+        <form method="post" action="/admin/fflags/{{group.group_id}}/import" enctype="multipart/form-data">
+            <div class="mb-3">
+                <input class="form-control" type="file" id="file" name="file" required>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" class="btn btn-primary btn-sm">Import</button>
+        </form>
+        <div class="linebreak"></div>
+        <h4>Flags ({{flagcount}})</h4>
+        <form method="get" action="/admin/fflags/{{group.group_id}}">
+            <div class="mb-3 d-flex">
+                <input class="form-control rounded-end-0" type="text" id="search" name="search" placeholder="Search" value="{% if search %}{{search}}{%endif%}">
+                <button type="submit" class="btn btn-primary btn-sm rounded-start-0">Search</button>
+            </div>
+        </form>
+        <table class="table table-striped-columns">
+            <thead>
+              <tr>
+                <th scope="col-3">Name</th>
+                <th scope="col-2">Type</th>
+                <th scope="col-7">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for fflag in FFlagsLookupResults %}
+                <tr>
+                    <th scope="row">{{fflag.name}}</th>
+                    <td>{% if fflag.flag_type == 1: %}boolean{% endif %}{% if fflag.flag_type == 2: %}number{% endif %}{% if fflag.flag_type == 3: %}string{% endif %}</td>
+                    <td class="text-wrap w-100">{{ b64decode(fflag.flag_value).decode('utf-8') }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+        <div class="d-flex w-100 mt-2" style="font-size: 14px;">
+            <a class="text-decoration-none ms-auto {% if not FFlagsLookupResults.has_prev: %}text-secondary{%endif%}" {% if FFlagsLookupResults.has_prev: %}href="/admin/fflags/{{group.group_id}}?page={{FFlagsLookupResults.prev_num}}{% if search %}?search={{search}}{%endif%}"{%endif%}>Previous</a>
+            <p class="m-0 ms-2 me-2 text-white">Page {{FFlagsLookupResults.page}} of {{FFlagsLookupResults.pages}}</p>
+            <a class="text-decoration-none me-auto {% if not FFlagsLookupResults.has_next: %}text-secondary{%endif%}" {% if FFlagsLookupResults.has_next: %}href="/admin/fflags/{{group.group_id}}?page={{FFlagsLookupResults.next_num}}{% if search %}?search={{search}}{%endif%}"{%endif%}>Next</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'develop/games/manage-template.html' %}
+{% block subcontent %}
+    <h4>Access</h4>
+    <form method="post">
+        <label for="MaxPlayersInput" class="form-label">Max Players ( 2 - 50 )</label>
+        <input class="form-control mb-1" type="number" name="maxplayers" id="MaxPlayersInput" placeholder="Max Players" required value="{{PlaceObj.maxplayers}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mt-2">
+            <button type="submit" class="btn btn-success btn-sm w-100">Save</button>
+        </div>
+    </form>
+{% endblock %}

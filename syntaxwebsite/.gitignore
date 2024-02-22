@@ -1,0 +1,10 @@
+config.py
+__pycache__/
+assets/
+proxies.txt
+*.pem
+logs/*.log*
+download_cache/*
+*.key
+*.crt
+!download_cache/KEEPME

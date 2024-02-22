@@ -1,0 +1,74 @@
+{% extends '__layout__.html' %}
+{% block title %}Cryptomus Dashboard{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div style="min-height: 100vh;width: 100%;padding: 20px;margin-top: 100px;max-width: 1200px;" class="ms-auto me-auto">
+    <a href="/membership/payment_methods" class="text-white text-decoration-none"><i class="bi bi-caret-left"></i> Return to payment methods</a>
+    <div class="d-flex align-items-center">
+        <h1 class="m-0">Pay with Cryptomus</h1>
+        <button class="btn btn-light btn-lg ms-auto" id="pay-button" data-csrf-token="{{ csrf_token() }}"><i class="bi bi-coin"></i> Donate $5</button>
+    </div>
+    <div class="linebreak"></div>
+    <div>
+        <div class="p-1 mt-1">
+            {% if len(UserInvoices.items) == 0 %}
+            <p class="text-secondary w-100 text-center mt-5 mb-5" style="font-size: 14px;">No past payments</p>
+            {% else %}
+                {% for invoice in UserInvoices.items %}
+                <div class="p-2 d-flex align-items-center mb-2" style="background-color: rgb(15,15,15);border: 1px solid rgb(60,60,60);border-radius: 4px;">
+                    <div>
+                        <h5 class="m-0">{{invoice.cryptomus_invoice_id}}</h5>
+                        <div class="d-flex align-items-center">
+                            <p class="text-secondary m-0" style="font-size: 14px;">{{invoice.created_at.strftime("%d/%m/%Y %H:%M:%S UTC")}}</p>
+                            <p class="text-secondary m-0 ms-2" style="font-size: 14px;"> | {{invoice.status.name}}</p>
+                        </div>
+                    </div>
+                    <a href="/cryptomus_service/view_payment/{{invoice.id}}" class="btn btn-light ms-auto" style="font-weight: 600;">View Payment</a>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="d-flex w-100 mt-2" style="font-size: 14px;">
+            <a class="text-decoration-none ms-auto {% if not UserInvoices.has_prev: %}text-secondary{%endif%}" {% if UserInvoices.has_prev: %}href="/cryptomus_service/dashboard?page={{UserInvoices.prev_num}}"{%endif%}>Previous</a>
+            <p class="m-0 ms-2 me-2 text-white">Page {{UserInvoices.page}} of {{UserInvoices.pages}}</p>
+            <a class="text-decoration-none me-auto {% if not UserInvoices.has_next: %}text-secondary{%endif%}" {% if UserInvoices.has_next: %}href="/cryptomus_service/dashboard?page={{UserInvoices.next_num}}"{%endif%}>Next</a>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const payButton = document.getElementById('pay-button');
+        payButton.addEventListener('click', function() {
+            if (payButton.classList.contains('disabled')) {
+                return;
+            }
+            var csrfToken = payButton.getAttribute('data-csrf-token');
+
+            payButton.classList.add('disabled');
+            fetch('/cryptomus_service/create_payment/membership', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            })
+            .then(async response => {
+                if (!response.ok) {
+                    alert(`An error occurred while trying to create a payment, please try again later. Status: ${response.status}`)
+                    return;
+                } else {
+                    var data = await response.json();
+                    console.log(data);
+                    if (data.status == 'success') {
+                        window.location.href = data.payment_url;
+                    } else {
+                        alert(`An error occurred while trying to create a payment, please try again later.`)
+                    }
+                }
+            }).finally(() => {
+                payButton.classList.remove('disabled');
+            });
+        });
+    });
+</script>
+{% endblock %}

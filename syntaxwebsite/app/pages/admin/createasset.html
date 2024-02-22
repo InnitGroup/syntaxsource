@@ -1,0 +1,59 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Create Asset</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-floating mt-2">
+                <input type="text" class="form-control" id="asset-name-input" placeholder="Name" name="asset-name" required>
+                <label for="asset-name-input">Asset Name</label>
+            </div>
+            <div class="form-floating mt-2">
+                <select name="asset-type" class="form-control" required>
+                    <option value="8">Hat</option>
+                    <option value="17">Head</option>
+                    <option value="18">Face</option>
+                    <option value="19">Gear</option>
+                    <option value="41">Hair Accessory</option>
+                    <option value="42">Face Accessory</option>
+                    <option value="43">Neck Accessory</option>
+                    <option value="44">Shoulder Accessory</option>
+                    <option value="45">Front Accessory</option>
+                    <option value="46">Back Accessory</option>
+                    <option value="47">Waist Accessory</option>
+                    <option value="62">Video</option>
+                </select>
+                <label for="floatingNumber">Asset Type</label>
+            </div>
+
+            <input type="file" name="file" id="file" class="form-control mt-2" required/>
+            
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-light mt-2 w-100 btn-sm" type="submit">Create Asset</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

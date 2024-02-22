@@ -1,0 +1,102 @@
+{% extends '__layout__.html' %}
+{% block title %}Transactions{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .text-tickets {
+        color: rgb(224, 224, 60) !important;
+        font-weight: 600;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height: 100vh; margin-top: 100px;max-width: 1000px;">
+    <div class="d-flex align-items-center mb-2">
+        <div>
+            <h1 class="m-0">Transactions</h1>
+            <a href="/currency-exchange/" class="text-decoration-none m-0 ms-2">Currency Exchange</a>
+        </div>
+        <div class="ms-auto">
+            <div class="form-floating">
+                <select class="form-control" id="change-category-select">
+                    <option value="purchase" {%if PageCategory == "purchase"%}selected{%endif%}>Purchases</option>
+                    <option value="sale" {%if PageCategory == "sale"%}selected{%endif%}>Sales</option>
+                    <option value="group-payout" {%if PageCategory == "group-payout"%}selected{%endif%}>Group Payouts</option>
+                    <option value="stipends" {%if PageCategory == "stipends"%}selected{%endif%}>Stipends</option>
+                </select>
+                <label for="change-category-select">Category</label>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-dark table-striped">
+        <thead>
+          <tr class="rounded-top">
+            <th scope="col" style="width: 15%;">Date</th>
+            <th scope="col" style="width: 20%;">Source</th>
+            <th scope="col" style="width: 45%;">Description</th>
+            <th scope="col" style="width: 20%;">Amount</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider" style="border-color: rgb(20,20,20);">
+        {% for Transaction in TransactionInfo: %}
+          <tr>
+            <td>{{Transaction.created_at}}</td>
+            <td>
+                {% if Transaction["source"]["type"] == 0: %}
+                    <a href="/users/{{Transaction['source']['id']}}/profile" class="text-decoration-none text-white text-truncate">
+                        <img class="rounded-5 overflow-hidden me-2" width="38" height="38" src="/Thumbs/Head.ashx?x=48&amp;y=48&amp;userId={{Transaction['source']['id']}}" alt="{{Transaction['source']['name']}}">
+                        {{Transaction["source"]["name"]}}
+                    </a>
+                {% else %}
+                    <a href="/groups/{{Transaction['source']['id']}}/--" class="text-decoration-none text-white text-truncate">
+                        <img class="rounded-5 overflow-hidden me-2" width="38" height="38" src="/Thumbs/GroupIcon.ashx?x=48&amp;y=48&amp;groupid={{Transaction['source']['id']}}" alt="{{Transaction['source']['name']}}">
+                        {{Transaction["source"]["name"]}}
+                    </a>
+                {% endif %}
+            </td>
+            <td>
+                {% if Transaction['custom_text'] != None %}
+                    {{Transaction['custom_text']}}
+                {% else %}
+                    {% if Transaction['asset'] != None: %}
+                    <a href="/catalog/{{Transaction['asset']['id']}}/--" class="text-decoration-none text-white">
+                        <img class="rounded-2 overflow-hidden me-2 border" width="38" height="38" src="/Thumbs/Asset.ashx?x=48&y=48&assetId={{Transaction['asset']['id']}}" alt="{{Transaction['asset']['name']}}">
+                        {{Transaction['asset']['name']}}
+                    </a>
+                    {% else %}
+                    Unknown
+                    {%endif%}
+                {% endif %}
+            </td>
+            <td>
+                {% if Transaction['currency_type'] == 0 %}
+                <span class="text-robux">R$ {{Transaction['currency_amount']}}</span>
+                {% else %}
+                <span class="text-tickets">T$ {{Transaction['currency_amount']}}</span>
+                {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% if len(TransactionInfo) == 0: %}
+        <div class="text-center">
+            <p class="text-secondary">No transactions found</p>
+        </div>
+      {%endif%}
+
+      <div class="align-items-center d-flex justify-content-center mt-2 mb-2">
+        <a class="ms-auto m-0 text-decoration-none {% if not Pagination.has_prev %}text-secondary{%endif%}" {% if Pagination.has_prev %}href="/transactions/?page={{Pagination.prev_num}}&category={{PageCategory}}"{%endif%}>Previous</a>
+        <p class="ms-2 me-2 text-white m-0">Page {{Pagination.page}} of {{Pagination.pages}}</p>
+        <a class="me-auto m-0 text-decoration-none {% if not Pagination.has_next %}text-secondary{%endif%}" {% if Pagination.has_next %}href="/transactions/?page={{Pagination.next_num}}&category={{PageCategory}}"{%endif%}>Next</a>
+    </div>
+</div>
+<script>const s = document.getElementById("change-category-select");s.addEventListener("change", function() {var u = new URL(window.location.href);var sb = s.value;u.searchParams.set("category", sb);u.searchParams.set("page", 1);window.location.href = u;});</script>
+{%endblock%}

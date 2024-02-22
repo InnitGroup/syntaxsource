@@ -1,0 +1,64 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .bg-dark {
+        background-color: rgb(30,30,30) !important;
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+    }
+    .badge {
+        font-size: 12px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Lottery</h1>
+        <p class="m-0" style="font-size:small;">Give away limiteds under accounts which is deleted or inactive for more than 31 days. There must be at least 10 users online to give away any limiteds</p>
+        <div class="linebreak"></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post">
+            <button type="submit" class="btn btn-primary btn-sm mb-2 w-100">Give Away Selected User Limiteds</button>
+
+            <div style="display: flex;flex-wrap: wrap;gap: 2px;justify-content: flex-start;">
+            {% for User in EligibleUsers: %}
+                <div class="bg-dark p-2 d-flex mb-1 me-1" style="width: calc( 50% - 6px);">
+                    <img class="rounded-2 border overflow-hidden me-2" width="48" height="48" src="/Thumbs/Head.ashx?x=48&amp;y=48&amp;userId={{User.id}}">
+                    <div>
+                        <h5 class="m-0">{{User.username}} {% if User.accountstatus != 1: %}<span class="badge text-bg-danger me-1">Banned</span>{% endif %}{% if User.lastonline < InactiveTime %}<span class="badge text-bg-warning">Inactive</span>{% endif %}</h5>
+                        <p class="m-0">Total Limiteds: <span class="text-white">{{ GetTotalLimiteds(User) }}</span></p>
+                    </div>
+                    <input class="form-check-input h-100 ms-auto" style="aspect-ratio: 1/1;width: auto;" type="radio" value="{{User.id}}" id="user-checkbox-{{User.id}}" name="selected-user">
+                </div>
+            {% endfor %}
+            </div>
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        </form>
+        {% if len(EligibleUsers) == 0: %}
+        <p class="m-0 text-secondary mt-5 mb-5 text-center w-100">
+            No eligible users found
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

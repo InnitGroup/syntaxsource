@@ -1,0 +1,20 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Website wide message</h1>
+        <p class="m-0">plz do not put anything useless on here thxxx</p>
+        <div class="linebreak"></div>
+        <form method="post">
+            <input type="text" name="message" class="form-control" value="{{message}}" placeholder="Message">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="submit" class="btn btn-primary mt-2" value="Save">
+        </form>
+    </div>
+</div>
+{% endblock %}

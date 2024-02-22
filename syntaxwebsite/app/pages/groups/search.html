@@ -1,0 +1,61 @@
+{% extends '__layout__.html' %}
+{% block title %}Search Groups{% endblock %}
+{% block head %}
+<style>
+    .group-bg {
+        background-color: rgb(30,30,30);
+    }
+    .text-secondary {
+        color: rgb(200,200,200) !important;
+    }
+    .bg-drop {
+        box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);
+    }
+    h5 {
+        font-size: 15px;
+        margin-bottom: 5px !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="ms-auto me-auto ps-2 pe-2 mb-3" style="width: 700px;min-height: 100vh;margin-top: 120px;">
+    <h2>Search Groups</h2>
+    <form method="post">
+        <div class="input-group">
+            <div class="form-floating" style="width: 52%;">
+                <input type="text" class="form-control" id="search-input" name="query" {%if query != None: %}value="{{query}}"{%endif%} placeholder="Awesome Group">
+                <label for="search-input">Search</label>
+            </div>
+            <button type="submit" class="btn btn-outline-primary fw-bold" style="min-width: 50px;"><i class="bi bi-search"></i></button>
+        </div>
+    </form>
+    <div class="row mt-2">
+        {% for group in groups %}
+        <div class="col-12 mt-2">
+            <a href="/groups/{{group.id}}/" class="text-decoration-none m-0 p-0">
+                <div style="background-color: rgb(31,31,31);box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);overflow: hidden;" class="p-2">
+                    <div class="d-flex">
+                        <img src="/Thumbs/GroupIcon.ashx?x=100&y=100&groupid={{group.id}}" style="aspect-ratio: 1/1;height: 80px !important;" class="rounded border">
+                        <div class="ms-2 flex-fill" style="overflow: hidden;">
+                            <div class="d-flex w-100">
+                                <p class="text-white text-truncate m-0" style="font-size: 17px;">{{group.name}}</p>
+                                <p class="text-secondary m-0 ms-auto" style="font-size: 14px;"><i class="bi bi-people"></i> {{groupservice.GetGroupMemberCount(group.id)}} Members</p>
+                            </div>
+                            <p class="text-secondary m-0 w-100" style="font-size: 14px;">{{group.description}}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {%endfor%}
+    </div>
+    {% if len(groups.items) == 0 %}
+        <p class="mt-5 mb-5 w-100 text-center">No Results Found</p>
+    {%endif%}
+    <div class="d-flex w-100 mt-2" style="font-size: 14px;">
+        <a class="text-decoration-none ms-auto {% if not groups.has_prev: %}text-secondary{%endif%}" {% if groups.has_prev: %}href="/groups/search?page={{groups.prev_num}}{%if query != None %}&query={{query}}{%endif%}"{%endif%}>Previous</a>
+        <p class="m-0 ms-2 me-2 text-white">Page {{groups.page}} of {{groups.pages}}</p>
+        <a class="text-decoration-none me-auto {% if not groups.has_next: %}text-secondary{%endif%}" {% if groups.has_next: %}href="/groups/search?page={{groups.next_num}}{%if query != None %}&query={{query}}{%endif%}"{%endif%}>Next</a>
+    </div>
+</div>
+{% endblock %}

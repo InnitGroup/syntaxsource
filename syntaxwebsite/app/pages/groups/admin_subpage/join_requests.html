@@ -1,0 +1,52 @@
+{% extends 'groups/admin_template.html' %}
+{% block page_content%}
+<style>
+    h5 {
+        font-size: 15px;
+        margin-bottom: 5px !important;
+    }
+</style>
+<div class="d-flex align-items-center">
+    <h3 class="m-0">Join Requests</h3>
+    <div class="ms-auto d-flex align-items-center">
+        <form action="/groups/admin/{{group.id}}/members/requests/deny_all" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-sm btn-outline-danger">Deny All</button>
+        </form>
+    </div>
+</div>
+<div class="row mt-2">
+    {% for request in JoinRequests.items %}
+    <div class="col-4">
+        <div class="p-2" style="background-color: rgb(31, 31, 31);box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);">
+            <div class="d-flex">
+                <img src="/Thumbs/Head.ashx?x=100&y=100&userId={{request.user.id}}" width="60px" style="aspect-ratio: 1/1;" class="rounded border">
+                <a class="text-decoration-none text-white ms-2" href="/users/{{request.user.id}}/profile">{{request.user.username}}</a>
+            </div>
+            <div class="d-flex align-items-center mt-1">
+                <div class="w-50 p-1">
+                    <form action="/groups/admin/{{group.id}}/members/requests/deny/{{request.user.id}}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Decline</button>
+                    </form>
+                </div>
+                <div class="w-50 p-1">
+                    <form action="/groups/admin/{{group.id}}/members/requests/accept/{{request.user.id}}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-light w-100">Accept</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if len(JoinRequests.items) == 0 %}
+    <p class="mt-5 mb-5 w-100 text-center">No Results Found</p>
+{%endif%}
+<div class="d-flex w-100" style="font-size: 14px;">
+    <a class="text-decoration-none ms-auto {% if not JoinRequests.has_prev: %}text-secondary{%endif%}" {% if JoinRequests.has_prev: %}href="/groups/admin/{{group.id}}/members/requests?page={{JoinRequests.prev_num}}"{%endif%}>Previous</a>
+    <p class="m-0 ms-2 me-2 text-white">Page {{JoinRequests.page}} of {{JoinRequests.pages}}</p>
+    <a class="text-decoration-none me-auto {% if not JoinRequests.has_next: %}text-secondary{%endif%}" {% if JoinRequests.has_next: %}href="/groups/admin/{{group.id}}/members/requests?page={{JoinRequests.next_num}}"{%endif%}>Next</a>
+</div>
+{%endblock%}

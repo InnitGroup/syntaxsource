@@ -1,0 +1,208 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .show-on-hover {
+        filter: blur(4px);
+        transition: 0.2s;
+    }
+    .show-on-hover:hover {
+        filter: blur(0px);
+        transition: 0.2s;
+    }
+    .bg-dark {
+        background-color: rgb(32, 32, 32) !important;
+        box-shadow: 0px 0px 5px 0px rgb(0,0,0);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main" data-csrf-token="{{ csrf_token() }}" data-userid="{{userObj.id}}">
+    <div class="container" style="max-width: 800px;">
+        <a class="mb-2" href="/admin/manage-users/{{userObj.id}}"> < Return to User Page</a>
+        <div class="d-flex align-items-center">
+            <img height="100px" style="aspect-ratio: 1/1;" class="rounded-2" src="/Thumbs/Avatar.ashx?userId={{userObj.id}}&x=100&y=100">
+            <div>
+                <h1 class="m-0 {% if userObj.accountstatus == 1 %}text-white{% elif userObj.accountstatus == 2 %}text-warning{% elif userObj.accountstatus == 3%}text-danger{% else %}text-decoration-line-through text-white{%endif%}">{{userObj.username}}<span class="text-secondary"> Admin Permissions</span></h1>
+                <p class="text-secondary m-0" style="font-size: 12px;">UserId: <span class="text-white">{{userObj.id}}</span></p>
+            </div>
+        </div>
+        <div class="border rounded p-2 mt-2 mb-2">
+            <p class="mt-5 mb-5 w-100 text-center text-white" id="status-text" style="display: none;"></p>
+            <div id="data-container">
+                <div class="w-100 bg-dark p-2 mb-2 mt-2 admin-permission-template" style="display: none;">
+                    <div class="d-flex align-items-center w-100">
+                        <a data-bs-toggle="collapse" href="#admin-permission-info-PermissionName" role="button" class="mt-auto mb-auto me-2 permission-expand-info" style="font-size: 20px;"><i class="bi bi-info-circle"></i></a>
+                        <div class="d-flex align-items-center">
+                            <h5 class="m-0 permission-name-text">Admin Permission name</h5>
+                            <i class="bi ms-2 permission-icon" style="display: none;"></i>
+                        </div>
+                        <div class="form-check form-switch m-0 me-2 ms-auto">
+                            <input class="form-check-input" type="checkbox" role="switch">
+                        </div>
+                    </div>
+                    <div class="collapse mt-1 permission-info-container" id="admin-permission-info-PermissionName">
+                        <div class="border p-1">
+                            <p class="m-0 text-secondary" style="font-size: 13px;">Description: <span class="text-white permission-description-text">Permission Description</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="password" class="form-control mb-2" placeholder="2FA Code" id="2fa-code-input">
+        <input type="submit" class="btn btn-primary w-100 mb-2" value="Save Changes" id="save-changes-button">
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        const ActionCSRFToken = document.getElementById("main").getAttribute("data-csrf-token");
+        const userId = document.getElementById("main").getAttribute("data-userid");
+        const statusText = document.getElementById("status-text");
+        const dataContainer = document.getElementById("data-container");
+        const permissionTemplate = document.getElementsByClassName("admin-permission-template")[0];
+        const saveChangesButton = document.getElementById("save-changes-button");
+        const twoFactorCodeInput = document.getElementById("2fa-code-input");
+
+        var isPermissionsLoaded = false;
+
+        async function setStatusText( new_text ) {
+            if ( new_text ) {
+                statusText.innerText = new_text;
+                statusText.style.display = "block";
+            } else {
+                statusText.style.display = "none";
+            }
+        }
+
+        async function fetchUserPermissions() {
+            const response = await fetch(`/admin/manage-users/${userId}/manage-admin-permissions/api/fetch-permissions`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": ActionCSRFToken
+                }
+            });
+            const data = await response.json();
+            return data;
+        }
+
+        async function loadPermission( permission_data ) {
+            const newPermission = permissionTemplate.cloneNode(true);
+            newPermission.style.display = "block";
+            newPermission.classList.remove("admin-permission-template");
+            newPermission.classList.add("admin-permission-container");
+            newPermission.setAttribute("data-permission-internal-name", permission_data.internal_name);
+
+            newPermission.getElementsByClassName("permission-name-text")[0].innerText = permission_data.friendly_name;
+            newPermission.getElementsByClassName("permission-description-text")[0].innerText = permission_data.description;
+            newPermission.getElementsByClassName("form-check-input")[0].checked = permission_data.hasPermission;
+            newPermission.getElementsByClassName("permission-expand-info")[0].setAttribute("href", `#admin-permission-info-${permission_data.internal_name}`);
+            newPermission.getElementsByClassName("permission-info-container")[0].setAttribute("id", `admin-permission-info-${permission_data.internal_name}`);
+
+            if ( permission_data.bi_icon ) {
+                newPermission.getElementsByClassName("permission-icon")[0].style.display = "inline-block";
+                newPermission.getElementsByClassName("permission-icon")[0].classList.add(permission_data.bi_icon);
+            }
+
+            dataContainer.appendChild(newPermission);
+        }
+
+        async function refreshData( new_data ) {
+            dataContainer.innerHTML = "";
+
+            for ( const permission of new_data ) {
+                await loadPermission( permission );
+            }
+        }
+
+        async function attemptFetchAndLoad() {
+            dataContainer.innerHTML = "";
+            isPermissionsLoaded = false;
+            saveChangesButton.disabled = true;
+            twoFactorCodeInput.disabled = true;
+            setStatusText("Fetching Admin Permissions")
+
+            try{
+                const permissionsData = await fetchUserPermissions();
+                await refreshData( permissionsData );
+                setStatusText();
+                isPermissionsLoaded = true;
+                twoFactorCodeInput.disabled = false;
+            } catch (e) {
+                setStatusText("Failed to fetch Admin Permissions");
+                console.error(e);
+            }
+        }
+
+        twoFactorCodeInput.addEventListener("input", async function () {
+            if ( !isPermissionsLoaded ) {
+                return;
+            }
+
+            if ( twoFactorCodeInput.value.length != 6 ) {
+                saveChangesButton.disabled = true;
+            }
+
+            if ( twoFactorCodeInput.value.length == 6 ) {
+                saveChangesButton.disabled = false;
+            }
+        });
+
+        saveChangesButton.addEventListener("click", async function() {
+            if ( !isPermissionsLoaded ) {
+                return;
+            }
+            if ( twoFactorCodeInput.value.length != 6 ) {
+                return;
+            }
+
+            isPermissionsLoaded = false;
+            saveChangesButton.disabled = true;
+
+            const permissionsData = [];
+            const permissionContainers = document.getElementsByClassName("admin-permission-container");
+            for ( const permissionContainer of permissionContainers ) {
+                if ( permissionContainer.getElementsByClassName("form-check-input")[0].checked ) {
+                    permissionsData.push(permissionContainer.getAttribute("data-permission-internal-name"));
+                }
+            }
+
+            setStatusText("Saving Admin Permissions");
+
+            try {
+                const response = await fetch(`/admin/manage-users/${userId}/manage-admin-permissions/api/set-permissions`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-Token": ActionCSRFToken
+                    },
+                    body: JSON.stringify({
+                        "permissions": permissionsData,
+                        "2fa_code": twoFactorCodeInput.value
+                    })
+                });
+                const data = await response.json();
+                if ( data.success ) {
+                    alert("Successfully saved Admin Permissions");
+                    twoFactorCodeInput.value = "";
+                    await attemptFetchAndLoad();
+                    return;
+                } else {
+                    alert(`Failed to save Admin Permissions, reason: ${data.reason}`);
+                }
+            } catch (e) {
+                alert("Failed to save Admin Permissions");
+                console.error(e);
+            }
+
+            isPermissionsLoaded = true;
+            saveChangesButton.disabled = false;
+            twoFactorCodeInput.value = "";
+            twoFactorCodeInput.disabled = false;
+        })
+
+        await attemptFetchAndLoad();
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Create User</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingInput" placeholder="Username" name="username" required>
+                <label for="floatingInput">Username</label>
+            </div>
+            <div class="form-floating mt-2">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required>
+                <label for="floatingPassword">Password</label>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-primary mt-2 w-100 btn-sm" type="submit">Create User</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

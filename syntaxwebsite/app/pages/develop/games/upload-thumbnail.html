@@ -1,0 +1,25 @@
+{% extends 'develop/games/manage-template.html' %}
+{% block subcontent %}
+    <div class="row">
+        <div class="col-12">
+            <img src="/Thumbs/Asset.ashx?assetId={{PlaceAssetObj.id}}&x=1280&y=720&refresh={{RandomNumber}}" class="mt-2 rounded" width="100%" style="aspect-ratio: 16/9;">
+            <p class="m-0" style="font-size: 10px;">Note: Image may be cached so you may see the previous image after uploading</p>
+        </div>
+        <div class="col-12">
+            <h4 class="m-0">Upload Thumbnail</h4>
+            <p class="m-0 mb-2">Must have a 16:9 Aspect Ratio, Lesser than 2mb and be at max 1920x1080</p>
+            <form method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input class="form-control" type="file" id="file" name="file" required>
+                </div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-success btn-sm w-100">Upload Thumbnail</button>
+            </form>
+            <form method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="usegenerated" value="on">
+                <button type="submit" class="btn btn-primary mt-2 btn-sm w-100">Use Generated Thumbnail</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'groups/admin_template.html' %}
+{% block page_content%}
+<div class="d-flex align-items-center mb-2">
+    <h3 class="m-0">
+        Members
+    </h3>
+    {% if group.settings.approval_required and permissions.invite_members %}
+    <a href="/groups/admin/{{group.id}}/members/requests" class="m-0 ms-3 text-decoration-none">View Join Requests <span class="badge text-bg-primary">{{JoinRequestCount}}</span></a>
+    {% endif %}
+</div>
+<form method="post" class="mb-3" style="font-size: 14px;">
+    <div class="input-group">
+        <div class="form-floating" style="width: 52%;">
+            <input type="text" class="form-control" id="search-input" name="search-input" {%if searchByUsername != None: %}value="{{searchByUsername}}"{%endif%} placeholder="ROBLOX">
+            <label for="search-input">Search</label>
+        </div>
+        <div class="form-floating" style="min-width: 160px;">
+            <select class="form-select" id="search-by" name="search-by">
+                <option value="0">All Roles</option>
+                {% for roleObj in SortedRoles %}
+                    {% if roleObj.rank != 0 %}
+                    <option value="{{roleObj.id}}" {% if searchByRole.id == roleObj.id %}selected{%endif%}>{{roleObj.name}}</option>
+                    {%endif%}
+                {%endfor%}
+            </select>
+            <label for="search-by">Search in</label>
+        </div>
+        <button type="submit" class="btn btn-outline-primary fw-bold" style="min-width: 50px;"><i class="bi bi-search"></i></button>
+    </div>
+</form>
+<div class="row">
+    {% for groupMember in Members %}
+    <div class="col-4 col-sm-2 mb-3">
+        <div class="position-relative">
+            <img src="/Thumbs/Avatar.ashx?x=100&y=100&userId={{groupMember.user.id}}" width="100%" style="aspect-ratio: 1/1;" class="rounded border rounded-bottom-0 border-bottom-0">
+            {% if permissions.remove_members and groupMember.group_role.rank < role.rank %}
+            <button class="position-absolute btn-sm btn-outline-danger btn kick-btn" data-userid="{{groupMember.user.id}}" data-groupid="{{group.id}}" style="right: 5px;top: 5px;padding: 2px;">
+                <i class="bi bi-hammer"></i>
+            </button>
+            {%endif%}
+        </div>
+        {% if permissions.change_rank and groupMember.group_role.rank < role.rank: %}
+        <select style="font-size: 12px;padding: 4px;" class="form-select rounded-top-0 change-rank-select" data-userid="{{groupMember.user.id}}" data-groupid="{{group.id}}" data-currentrole="{{groupMember.group_role.id}}">
+            {% for roleObj in SortedRoles %}
+                {% if roleObj.rank != 0 and roleObj.rank < role.rank %}
+                <option value="{{roleObj.id}}" {% if groupMember.group_role.id == roleObj.id %}selected{%endif%}>{{roleObj.name}}</option>
+                {%endif%}
+            {%endfor%}
+        </select>
+        {%else%}
+        <p style="font-size: 12px;padding: 4px;" class="rounded-top-0 m-0 border rounded">{{groupMember.group_role.name}}</p>
+        {%endif%}
+        <a href="/users/{{groupMember.user.id}}/profile" class="text-decoration-none w-100 text-center d-block" style="font-size: 13px;">{{groupMember.user.username}}</a>
+    </div>
+    {%endfor%}
+</div>
+{% if len(Members.items) == 0 %}
+    <p class="mt-5 mb-5 w-100 text-center">No Results Found</p>
+{%endif%}
+<div class="d-flex w-100" style="font-size: 14px;">
+    <a class="text-decoration-none ms-auto {% if not Members.has_prev: %}text-secondary{%endif%}" {% if Members.has_prev: %}href="/groups/admin/{{group.id}}/members?page={{Members.prev_num}}{% if searchByUsername != None %}&search={{searchByUsername}}{%endif%}{%if searchByRole != None %}&role={{searchByRole.id}}{%endif%}"{%endif%}>Previous</a>
+    <p class="m-0 ms-2 me-2 text-white">Page {{pageNumber}} of {{Members.pages}}</p>
+    <a class="text-decoration-none me-auto {% if not Members.has_next: %}text-secondary{%endif%}" {% if Members.has_next: %}href="/groups/admin/{{group.id}}/members?page={{Members.next_num}}{% if searchByUsername != None %}&search={{searchByUsername}}{%endif%}{%if searchByRole != None %}&role={{searchByRole.id}}{%endif%}"{%endif%}>Next</a>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const XCSRFTOKEN = "{{ csrf_token() }}";
+        const backgroundOverlay = document.getElementById('transparent-background-top');
+        const changeRankSelects = document.querySelectorAll('.change-rank-select');
+        changeRankSelects.forEach(select => {
+            select.addEventListener('change', async () => {
+                const userId = select.dataset.userid;
+                const groupId = select.dataset.groupid;
+                const currentRole = select.dataset.currentrole;
+                const newRole = select.value;
+
+                if (newRole == currentRole) return;
+                
+                backgroundOverlay.style.display = 'block';
+                try {
+                    const response = await fetch(`/groups/admin/${groupId}/change_role/${userId}/${newRole}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': XCSRFTOKEN
+                        }
+                    });
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    location.reload();
+                }
+            })
+        })
+        const kickBtns = document.querySelectorAll('.kick-btn');
+        kickBtns.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const userId = btn.dataset.userid;
+                const groupId = btn.dataset.groupid;
+                backgroundOverlay.style.display = 'block';
+                try {
+                    const response = await fetch(`/groups/admin/${groupId}/kick/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': XCSRFTOKEN
+                        }
+                    });
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    location.reload();
+                }
+            })
+        })
+    })
+</script>
+{%endblock%}

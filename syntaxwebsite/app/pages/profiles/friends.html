@@ -1,0 +1,74 @@
+{% extends '__layout__.html' %}
+{% block title %}{{profile.username}}{% endblock %}
+{% block head %}
+<link href="/static/css/profile.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .border {
+        border-color: rgb(60,60,60) !important;
+    }
+    .nav-link {
+        color: rgb(199, 199, 199) !important;
+    }
+    .nav-link.active {
+        color: rgb(255, 255, 255) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <div class="d-flex align-items-center">
+            <a href="/users/{{profile.id}}/profile">
+                <img src="/Thumbs/Head.ashx?x=100&y=100&userId={{profile.id}}" width="80px" height="80px" class="rounded-2">
+            </a>
+            <h2 class="ms-3">{{profile.username}}'s Friends</h2>
+        </div>
+        <nav class="mt-2 rounded-top" style="background-color: rgb(40, 40, 40) !important;overflow: hidden;">
+            <div class="nav nav-underline nav-fill" id="nav-tab" role="tablist">
+              <a class="nav-link active" type="button" role="tab" aria-selected="true">Friends</a>
+              <a class="nav-link" type="button" role="tab" aria-selected="false" href="/users/{{profile.id}}/following">Following</a>
+              <a class="nav-link" type="button" role="tab" aria-selected="false" href="/users/{{profile.id}}/followers">Followers</a>
+              {% if profile.id == currentuser.id %}
+              <a class="nav-link" type="button" role="tab" aria-selected="true" href="/users/{{profile.id}}/requests">Requests{% if currentuser.friend_requests > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.friend_requests}}</span>{%endif%}</a>
+              {%endif%}
+            </div>
+        </nav>
+        <div>
+            <h4 class="m-0 mt-2">Friends ( {{FriendCount}} )</h4>
+            <div class="row mt-2">
+                {% for friend in FriendUsers: %}
+                <div class="col-6 col-sm-4 mb-2">
+                    <div class="bg-dark border p-2 rounded d-flex position-relative">
+                        <a href="/users/{{friend.id}}/profile">
+                            <img src="/Thumbs/Head.ashx?x=100&y=100&userId={{friend.id}}" width="80px" height="80px" class="rounded-2" alt="{{friend.username}}">
+                        </a>
+                        <a class="text-white text-decoration-none ms-2" style="font-size: 14px;" href="/users/{{friend.id}}/profile">{{friend.username}}</a>
+                        {% if currentuser.id == profile.id %}
+                        <div class="dropdown d-flex justify-content-end position-absolute" style="top: 0; right: 0;">
+                            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end p-1">
+                                <li><form action="/users/{{friend.id}}/unfriend?redirect=0" method="post"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="dropdown-item" type="submit">Unfriend</button></form></li>
+                            </ul>
+                        </div>
+                        {%endif%}
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+            {% if len(FriendUsers) <= 0: %}
+                <p class="w-100 text-secondary text-center text-white mt-4 mb-4">No results found</p>
+            {% endif %}
+        </div>
+        <div class="d-flex mt-2 align-items-center">
+            <a class="ms-auto text-decoration-none {%if not isTherePreviousPage:%}text-secondary{%endif%}" {%if isTherePreviousPage: %}href="/users/{{profile.id}}/friends?page={{PageNumber - 1}}{%endif%}">Previous</a>
+            <p class="m-0 ms-2 me-2 text-white">Page {{PageNumber}} of {{TotalPages}}</p>
+            <a class="me-auto text-decoration-none {%if not isThereNextPage: %}text-secondary{%endif%}" {%if isThereNextPage: %}href="/users/{{profile.id}}/friends?page={{PageNumber + 1}}{%endif%}">Next</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

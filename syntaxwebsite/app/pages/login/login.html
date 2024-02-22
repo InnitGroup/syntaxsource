@@ -1,0 +1,43 @@
+{% extends '__layout__.html' %}
+{% block title %}Login{% endblock %}
+{% block head %}
+<link href="/static/css/login.css" rel="stylesheet"/>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="login-container d-flex align-items-center justify-content-center">
+        <div style="padding: 10px;min-width:330px;" class="ps-md-4 pe-md-4">
+            <h1>SYNTAX</h1>
+            <p>experience joy with freedom</p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div>
+                {% for category, message in messages %}
+                    {% if category == 'error': %}
+                    <div class="alert border p-2 text-center alert-danger border-danger">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                    {% if category == 'success': %}
+                    <div class="alert border p-2 text-center alert-success border-success">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
+            <form action="/login" method="post">
+                <input type="text" id="username" name="username" class="form-control" placeholder="Username" value="" required>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password" value="" required>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-primary mb-3" {% if not loginEnabled: %}disabled{% endif %}>Login</button>
+            </form>
+            <div class="text-center mt-2">
+                <p>Don't have an account? <a href="/signup">Signup</a> • <a href="/reset-password">Forgot Password</a></p>
+            </div>
+        </div>
+        <img style="aspect-ratio: 7/4;min-height: 317px;max-height: 390px;" class="d-lg-block d-none" src="/static/img/LoginImage2.png" alt="Login Image">
+    </div>
+</div>
+{% endblock %}

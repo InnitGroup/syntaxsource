@@ -1,0 +1,36 @@
+{% extends '__layout__.html' %}
+{% block title %}Banned{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(200,200,200) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div style="display: flex;align-items: center;justify-content: center;min-height: 100vh;">
+    <div class="p-3 border" style="min-width: 700px;">
+        <h1 class="mb-0">{{banText}}</h1>
+        <div class="d-flex">
+            <p class="text-secondary m-0" style="font-size: 13px;">Banned On: <span class="text-white">{{userban.created_at}} UTC</span></p>
+            <p class="text-secondary m-0 ms-auto" style="font-size: 13px;">Expires On: <span class="text-white">{% if userban.expires_at != None%}{{userban.expires_at}} UTC{%else%}Never{%endif%}</span></p>
+        </div>
+        <div class="linebreak"></div>
+        <p class="text-secondary m-0" style="font-size: 16px;">Reason: <span class="text-white">{{userban.reason}}</span></p>
+        <div class="linebreak"></div>
+        <div class="w-100 d-flex align-items-center">
+            {% if not hasBanExpired: %}
+            <p class="text-secondary m-0" style="font-size: 13px;">If you wish to appeal this ban you can open a ticket on our <a class="text-decoration-none" href="https://discord.gg/cBMp3Z52UM">Discord Server</a></p>
+            <form action="/logout" method="post"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="btn border-primary btn-sm text-white ms-auto" type="submit">Logout</button></form>
+            {%else%}
+            <p class="text-secondary m-0" style="font-size: 13px;">By clicking Re-activate you agree to our <a href="/terms" class="text-decoration-none">Terms Of Service</a></p>
+            <form method="post" class="ms-auto">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                <button class="btn border-success btn-sm text-white" type="submit">Re-activate my Account</button>
+            </form>
+            <form action="/logout" method="post"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="btn border-primary btn-sm text-white ms-auto" type="submit">Logout</button></form>
+            {%endif%}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends '__layout__.html' %}
+{% block title %}{{asset.name}}{% endblock %}
+{% block head %}
+<link href="/static/css/catalog.css" rel="stylesheet"/>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a href="/catalog/{{asset.id}}/" class="text-decoration-none text-white">< Return to Item Page</a>
+        <h1>{{asset.name}}</h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% if userassetnotforsalecount > 0: %}
+            <div class="linebreak"></div>
+            <form method="post">
+                <select class="form-control w-100" name="uaid">
+                    {% for userasset in userassets %}
+                        {% if not userasset.is_for_sale: %}
+                        <option value="{{userasset.id}}">UAID: {{userasset.id}} | Serial: {% if asset.is_limited_unique: %}{{userasset.serial}}{%else%}N/A{%endif%}</option>
+                        {%endif%}
+                    {% endfor %}
+                </select>
+                <input type="number" class="form-control mt-3" name="itemprice" required placeholder="Price ( min: 1 )">
+                <p class="text-secondary m-0" style="font-size:small;">Note: Once sold you will only recieve 70% of the actual price it was sold for.</p>
+                {%if isOTPRequired: %}
+                    <input type="text" class="form-control mt-1" name="2fa-code" required placeholder="2FA Code">
+                    <p class="text-secondary m-0" style="font-size:small;">As you have 2FA Enabled it is required to authorise any sale of your items</p>
+                {%endif%}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-primary mt-4 w-100 fw-bold text-center">Resell Item</button>
+            </form>
+        {%endif%}
+        {% if userassetforsalecount > 0: %}
+            <div class="linebreak"></div>
+            <h5>Manage onsale items</h5>
+            {% for userasset in userassets %}
+                {% if userasset.is_for_sale: %}
+                <div class="border p-2 m-2 rounded">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h5 class="m-0">UAID: {{userasset.id}} | Serial: {% if asset.is_limited_unique: %}{{userasset.serial}}{%else%}N/A{%endif%}</h5>
+                            <p class="m-0 fs-6">Price: {{userasset.price}}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <form method="post" action="/catalog/resell/{{userasset.id}}/takeoff">
+                                <button type="submit" class="btn btn-danger btn-sm fw-bold">Take Offsale</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
+            {%endfor%}
+        {%endif%}
+    </div>
+</div>
+{% endblock %}

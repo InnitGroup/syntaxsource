@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+<!--[if IE 6]>
+  © COPYRIGHT 2024 SYNTAX.ECO
+  DO NOT COPY, MODIFY, OR REDISTRIBUTE THIS CODE
+  WITHOUT PERMISSION FROM SYNTAX.ECO
+
+  PAGE GENERATED AT : {{ datetime_utcnow() }} UTC
+<![endif]-->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="/static/img/syntax.ico" type="image/x-icon"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-7P5LY26BKG"></script>
+        <link href="/static/css/global.css" rel="stylesheet"/>
+        <script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);} gtag('js', new Date());gtag('config', 'G-7P5LY26BKG');</script>
+        <script type="text/javascript">
+          (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "l354hmqrfz");
+        </script>
+        {% if currentuser: %}<script src="/static/js/presence.js"></script>{% endif %}
+        <style>
+          .subnav-bar a {
+            color: rgb(199, 199, 199) !important;
+            font-size: 14px;
+            text-decoration: none;
+            margin-right: 15px;
+            margin-top: 0;
+          }
+          .subnav-bar a:hover {
+            color: rgb(255, 255, 255) !important;
+          }
+          .subnav-bar {
+            background-color: rgb(23, 23, 23);
+            padding: 3px;
+          }
+          @media screen and (max-width: 992px) {
+            .subnav-bar {
+              display: none;
+            }
+            .main-nav-dropdown {
+              display: block !important;
+            }
+          }
+          @media screen and (min-width: 992px) {
+            .main-nav-dropdown {
+              display: none;
+            }
+          }
+        </style>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <title>{% block title %}{% endblock %} - Syntax</title>
+        <meta name="robots" content="noindex">
+        {% block head %}{% endblock %}
+    </head>
+    <body {% if website_wide_message %}style="padding-top: 30px"{% endif %}>
+        <div class="fixed-top width-100">
+        {% if currentuser: %}
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+              <a class="navbar-brand position-relative me-md-2 " href="/home">
+                <h1 class="title-logo">SYNTAX</h1>
+              </a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/home">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/games">Games</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/catalog">Catalog</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/develop">Develop</a>
+                  </li>
+                  <div class="nav-item dropdown d-flexr main-nav-dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="height:28px;">
+                      Others{% if currentuser.unread_messages > 0 or currentuser.inbound_trades > 0: %} 🔴{%endif%}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="/users/{{currentuser.id}}/friends">Friends{% if currentuser.friend_requests > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.friend_requests}}</span>{%endif%}</a></li>
+                      <li><a class="dropdown-item" href="/groups">Groups</a></li>
+                      <li><a class="dropdown-item" href="/users">Users</a></li>
+                      <li><a class="dropdown-item" href="/avatar">Avatar</a></li>
+                      <li><a class="dropdown-item" href="/messages">Messages{% if currentuser.unread_messages > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.unread_messages}}</span>{%endif%}</a></li>
+                      <li><a class="dropdown-item" href="/trade">Trades{% if currentuser.inbound_trades > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.inbound_trades}}</span>{%endif%}</a></li>
+                      <li><a class="dropdown-item" href="/download">Downloads</a></li>
+                      <li><a class="dropdown-item" href="/discourse/">Forums</a></li>
+                      <!-- <li><a class="dropdown-item" href="https://synmons.com">Synmons</a></li> -->
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="https://discord.gg/cBMp3Z52UM">Discord</a></li>
+                      {% if currentuser.is_admin: %}
+                      <li><a class="dropdown-item" href="/admin/">Admin Panel{% if currentuser.pending_asset_count > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.pending_asset_count}}</span>{%endif%}</a></li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                </ul>
+                <div class="d-flex" id="currencydiv">
+                    <a style="margin-right:10px;font-weight: 600;text-decoration: none;" href="/users/{{currentuser.id}}/profile"><img class="rounded-5 overflow-hidden me-2" width="32" height="32" src="/Thumbs/Head.ashx?x=48&y=48&userId={{currentuser.id}}" alt="{{currentuser.username}}"/><span>{{currentuser.username}}</span></a>
+                    <a href="/transactions/"><span class="rbx-icon-nav-robux"></span></a>
+                    <span class="">{{currentuser.robux}}</span>
+                    <a href="/transactions/"><span class="rbx-icon-nav-tix"></span></a>
+                    <span>{{currentuser.tix}}</span>
+
+                    <div class="nav-item dropdown d-flex ms-3">
+                        <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="height:28px;">
+                          <span class="rbx-icon-nav-settings"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                          <!-- <li><a class="dropdown-item" href="/invite-keys">Invite Keys</a></li> -->
+                          <li><a class="dropdown-item" href="/membership">Membership</a></li>
+                          <li><a class="dropdown-item" href="/giftcard-redeem">Redeem Codes</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><form action="/logout" method="post"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="dropdown-item" style="color:rgb(255, 6, 60);font-weight:600;" type="submit">Logout</button></form></li>
+                        </ul>
+                      </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+          <div class="w-100 border-bottom subnav-bar ps-3 pe-3">
+            <a href="/users/{{currentuser.id}}/profile">Profile</a>
+            <a href="/users/{{currentuser.id}}/friends">Friends{% if currentuser.friend_requests > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.friend_requests}}</span>{%endif%}</a>
+            <a href="/users">Users</a>
+            <a href="/avatar">Avatar</a>
+            <a href="/messages">Messages{% if currentuser.unread_messages > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.unread_messages}}</span>{%endif%}</a>
+            <a href="/groups">Groups</a>
+            <a href="/trade">Trades{% if currentuser.inbound_trades > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.inbound_trades}}</span>{%endif%}</a>
+            <a href="/download">Downloads</a>
+            <a href="/discourse/">Forums</a>
+            <!-- <a href="https://synmons.com">Synmons</a> -->
+            <a href="https://discord.gg/cBMp3Z52UM">Discord</a>
+            {% if currentuser.is_admin: %}
+            <a href="/admin/">Admin Panel{% if currentuser.pending_asset_count > 0: %}<span class="badge text-bg-danger ms-1">{{currentuser.pending_asset_count}}</span>{%endif%}</a>
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if website_wide_message: %}
+        <div id="websitewidemessage" class="alert rounded-0 text-white p-1" role="alert">
+            <p>{{ website_wide_message | safe }}</p>
+        </div>
+        {% endif %}
+        </div>
+        {% block content %}{% endblock %}
+        {% if currentuser: %}
+        <div id="footer">
+            <div class="container pt-4 pb-4">
+                <div class="row">
+                    <div class="col-4">
+                        <b>©2024 syntax.eco</b>
+                        <p>syntax.eco is not affiliated or related to the Roblox Corporation or any of its subsidaries.</p>
+                    </div>
+                    <div class="col" id="footerlist">
+                        <a href="/terms">Terms of Service</a>
+                        <a href="/privacy">Privacy Policy</a>
+                        <a href="https://discord.gg/cBMp3Z52UM">Discord</a>
+                    </div>
+                    <div class="col" id="footerlist">
+                        <a href="/home">Home</a>
+                        <a href="/games">Games</a>
+                        <a href="/catalog">Catalog</a>
+                        <a href="/develop">Develop</a>
+                    </div>
+                    <div class="col" id="footerlist">
+                        <a href="/settings">Settings</a>
+                        <a href="/currency-exchange">Currency Exchange</a>
+                        <a href="/download">Downloads</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </body>
+</html>

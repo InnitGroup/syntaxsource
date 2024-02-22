@@ -1,0 +1,34 @@
+{% extends '__layout__.html' %}
+{% block title %}Enable TOTP{% endblock %}
+{% block head %}
+<link href="/static/css/settings.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="settings-container" style="max-width:350px !important;min-width: 350px !important;">
+        <h1>Enable TOTP</h1>
+        <div class="linebreak"></div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <p class="text-white">Scan the QR code below using a authenticator app (eg. Google Authenticator, Authy)</p>
+        <div class="d-flex align-items-center mb-2">
+            <img src="/settings/TOTP/image" class="rounded overflow-hidden d-flex" alt="QR Code" style="width:100%;">
+        </div>
+        <p class="m-0">Note: Once this is enabled, you <b>CANNOT</b> disable it ever.</p>
+        <form action="/settings/enableTOTP" method="POST" class="">
+            <input type="text" name="code" class="form-control w-100" placeholder="123456 ( Enter code from Authenticator )" required>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button class="btn btn-sm fw-bold mt-2 btn-primary w-100">Enable Authenticator</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

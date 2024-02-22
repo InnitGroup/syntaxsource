@@ -1,0 +1,42 @@
+{% extends 'groups/admin_template.html' %}
+{% block page_content%}
+<h3>
+    Group Information
+</h3>
+<style>
+    .upload-icon {
+        font-size: 13px;
+    }
+    .upload-icon::file-selector-button {
+        background-color: rgb(12, 12, 12);
+        border-radius: 5px;
+        padding: 5px;
+        color: rgb(200,200,200);
+        border: 1px solid rgb(50,50,50);
+    }
+    .upload-icon::file-selector-button:hover {
+        background-color: rgb(50,50,50);
+        cursor: pointer;
+    }
+</style>
+<form enctype="multipart/form-data" method="post">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="/Thumbs/GroupIcon.ashx?groupid={{group.id}}&x=420&y=420" width="100%" style="aspect-ratio: 1/1;" class="border rounded">
+            <div class="mt-2">
+                <input type="file" id="file" name="file" class="upload-icon">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="form-floating h-100 mt-2 mt-md-0">
+                <textarea class="form-control" name="description" id="description" style="height: 100%;">{{group.description}}</textarea>
+                <label for="description">Description</label>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="w-100 mt-3">
+        <button type="submit" class="btn btn-primary w-100 btn-sm" {% if group.owner_id != currentuser.id %}disabled{%endif%}>Save</button>
+    </div>
+</form>
+{%endblock%}

@@ -1,0 +1,74 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .show-on-hover {
+        filter: blur(4px);
+        transition: 0.2s;
+    }
+    .show-on-hover:hover {
+        filter: blur(0px);
+        transition: 0.2s;
+    }
+    .bg-dark {
+        background-color: rgb(32, 32, 32) !important;
+        box-shadow: 0px 0px 5px 0px rgb(0,0,0);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 1200px;">
+        <a class="mb-2" href="/admin/manage-users/{{userObj.id}}"> < Return to User Page</a>
+        <div class="d-flex align-items-center">
+            <img height="100px" style="aspect-ratio: 1/1;" class="rounded-2" src="/Thumbs/Avatar.ashx?userId={{userObj.id}}&x=100&y=100">
+            <div>
+                <h1 class="m-0 {% if userObj.accountstatus == 1 %}text-white{% elif userObj.accountstatus == 2 %}text-warning{% elif userObj.accountstatus == 3%}text-danger{% else %}text-decoration-line-through text-white{%endif%}">{{userObj.username}}<span class="text-secondary"> Invite Keys</span></h1>
+                <p class="text-secondary m-0" style="font-size: 12px;">UserId: <span class="text-white">{{userObj.id}}</span></p>
+            </div>
+        </div>
+        <table class="table table-dark table-striped">
+            <thead>
+              <tr class="rounded-top">
+                <th scope="col" style="width: 5%;">ID</th>
+                <th scope="col" style="width: 20%;">Key</th>
+                <th scope="col" style="width: 15%;">Created</th>
+                <th scope="col" style="width: 15%;">Used On</th>
+                <th scope="col" style="width: 45%;">Used By</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider" style="border-color: rgb(20,20,20);">
+            {% for invite in InviteKeys: %}
+              <tr>
+                <th scope="row">{{invite.id}}</th>
+                <td>{{invite.key}}</td>
+                <td>{{invite.created_at}} UTC</td>
+                <td>{% if invite.used_on != None: %}{{invite.used_on}} UTC{%else%}Unused{%endif%}</td>
+                <td>
+                    {% if invite.used_by != None: %}
+                    <a href="/admin/manage-users/{{invite.used_by}}" class="text-decoration-none text-truncate">
+                        <img class="rounded" style="aspect-ratio: 1/1;width: 35px;" src="/Thumbs/Head.ashx?x=48&y=48&userId={{invite.used_by}}">
+                         {{invite.user.username}}
+                    </a>
+                    {% else%}
+                    Unused
+                    {%endif%}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if len(InviteKeys.items) == 0: %}
+        <div class="text-center">
+            <p class="text-secondary">No Invite Keys found</p>
+        </div>
+        {%endif%}
+        <div class="align-items-center d-flex justify-content-center mt-2 mb-2">
+            <a class="ms-auto m-0 text-decoration-none {% if not InviteKeys.has_prev %}text-secondary{%endif%}" {% if InviteKeys.has_prev %}href="/admin/manage-users/{{userObj.id}}/invite-keys?page={{InviteKeys.prev_num}}"{%endif%}>Previous</a>
+            <p class="ms-2 me-2 text-white m-0">Page {{InviteKeys.page}} of {{InviteKeys.pages}}</p>
+            <a class="me-auto m-0 text-decoration-none {% if not InviteKeys.has_next %}text-secondary{%endif%}" {% if InviteKeys.has_next %}href="/admin/manage-users/{{userObj.id}}/invite-keys?page={{InviteKeys.next_num}}"{%endif%}>Next</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'develop/games/manage-template.html' %}
+{% block subcontent %}
+    <h4 class="m-0">Upload Place File</h4>
+    <p class="m-0 mb-2">Supported file types: .rbxl and .rbxlx Max File Size: 30mb</p>
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <input class="form-control" type="file" id="file" name="file" required>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-success btn-sm w-100">Upload File</button>
+    </form>
+{% endblock %}

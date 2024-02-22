@@ -1,0 +1,96 @@
+{% extends '__layout__.html' %}
+{% block title %}Home{% endblock %}
+{% block head %}
+<link href="/static/css/home.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        {% if not isEmailVerified: %}
+        <div class="alert p-2 alert-warning d-flex align-items-center">
+            <i class="bi bi-envelope-plus ms-2" style="font-size: 30px;"></i>
+            <div class="m-2">
+                Verify your email to secure your account and get a free item!
+            </div>
+            <a href="/settings/update-email" class="ms-auto text-decoration-none me-2"><button class="btn btn-warning btn-sm">Verify Email</button></a>
+        </div>
+        {%endif%}
+        {% if not isDiscordLinked: %}
+        <div class="alert p-2 alert-primary d-flex align-items-center">
+            <i class="bi bi-discord ms-2" style="font-size: 30px;"></i>
+            <div class="m-2">
+                Link your Discord Account and you will get a lifetime builders club membership for free
+            </div>
+            <a href="/settings/discord_link" class="ms-auto text-decoration-none me-2"><button class="btn btn-primary btn-sm">Link Discord</button></a>
+        </div>
+        {%endif%}
+        <div class="d-flex align-items-center">
+            <img class="rounded-5 overflow-hidden me-4" src="/Thumbs/Head.ashx?x=150&y=150&userId={{currentuser.id}}" style="width:auto;max-height: 130px;"/>
+            <div class="mt-2">
+                <h1>
+                    Hello, {{currentuser.username}}!
+                </h1>
+                {% if membershipValue == 1: %}
+                    <span class="rbx-icon-bc"></span>
+                {%endif%}
+                {% if membershipValue == 2: %}
+                    <span class="rbx-icon-tbc"></span>
+                {%endif%}
+                {% if membershipValue == 3: %}
+                    <span class="rbx-icon-negative-obc"></span>
+                {%endif%}
+            </div>
+        </div>
+        <h4>Friends ( {{friendcount}} )</h4>
+        <div class="w-100 p-2 d-flex card-container" style="overflow-x: hidden;min-height: 100px;">
+            {% for friend in friends %}
+                <a href="/users/{{friend.id}}/profile">
+                    <div style="height: fit-content; width:90px;" class="me-3">
+                        <div class="image-container">
+                            <img class="rounded w-100 d-table" src="/Thumbs/Head.ashx?x=100&y=100&userId={{friend.id}}" style="margin: 0 auto;height: fit-content; max-width: 100px;"/>
+                            {% if friend.isonline: %}<div class="status-icon {% if friend.ingame: %}status-icon-green{% endif %}"></div>{% endif %}
+                        </div>
+                        <p class="text-white w-100 text-center d-inline-block m-0 text-truncate" style="font-size: 12px;">{{friend.username}}</p>
+                    </div>
+                </a>
+            {% endfor %}
+            {% if friendcount == 0: %}
+                <p style="margin: auto auto;" class="d-table align-items-center d-flex">You have no friends <img width="21" height="21" src="https://media.tenor.com/jeYb8iK3YfsAAAAi/skull-skullgif.gif"></p>
+            {% endif %}
+        </div>
+        <h4 class="mt-2">Recently Played</h4>
+        <div class="w-100 p-2 d-flex" style="overflow-x: hidden;min-height: 100px;overflow-x: auto;">
+            {% for place in recentlyplayed %}
+                <a class="text-decoration-none" href="/games/{{place.id}}/">
+                    <div class="me-3 overflow-hidden rounded place-card">
+                        <div class="position-relative">
+                            <img width="100%" style="aspect-ratio: 1/1;" src="/Thumbs/PlaceIcon.ashx?assetId={{place.id}}&x=150&y=150">
+                            <div class="position-absolute" style="bottom: 0px;left: 0px;">
+                                <div class="fw-bold bg-dark text-white" style="font-size: 12px;padding: 3px;border-top-right-radius: 4px;">{{place.placeyear.value}}</div>
+                            </div>
+                        </div>
+                        <div class="p-1">
+                            <h5 class="mb-0" style="font-size: 17px;text-overflow: ellipsis;">{{place.name}}</h5>
+                            <div class="d-flex align-items-center">
+                                <p style="margin:0;font-size: 14px;" class="text-secondary"><i class="bi bi-people"></i> {{place.playercount}} <span style="font-size: 13px;">Playing</span></p>
+                            </div>
+                            <div class="w-100 votePercentageBackground">
+                                <div class="votePercentageFill" style="width: {{place.likePercentage}}%;"></div>
+                                <div>
+                                    <div class="segment" style="left: 18%;"></div>
+                                    <div class="segment" style="left: 38%;"></div>
+                                    <div class="segment" style="left: 58%;"></div>
+                                    <div class="segment" style="left: 78%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+            {% if recentlyplayedcount == 0: %}
+                <p style="margin: auto auto;" class="d-table">Looks like you havent played any games yet, maybe you should go <a class="text-decoration-none" href="/games">play</a> one right now!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

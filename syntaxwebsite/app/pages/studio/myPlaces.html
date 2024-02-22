@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+        <meta charset="UTF-8">
+        <title>SYNTAX</title>
+        <link href="/static/css/bootstrapv3.min.css" rel="stylesheet"/>
+        <script src="/static/js/bootstrapv3.min.js"></script>
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif !important;
+            }
+            .text-secondary {
+                color: #1a1a1a!important;
+            }
+            .m-0 {
+                margin: 0!important;
+            }
+            .login-container {
+                width: 300px;
+                display: block;
+                padding: .5rem;
+                margin-top: 150px;
+            }
+            .login-container h1 {
+                text-align: center;
+                margin-bottom: 0;
+                font-weight: 700;
+            }
+            .login-container p {
+                text-align: center;
+                padding: 0;
+                margin-bottom: 15px; 
+                font-size: small;
+            }
+            .login-container button {
+                width: 100%;
+                font-weight: 600;
+                font-size: larger;
+                padding: 3px;
+                margin-bottom: 0 !important;
+            }
+
+            #password {
+                max-width: 300px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .messagealerts {
+                background: rgba(248, 17, 17, 0.507);
+                color: rgb(7, 7, 7);
+                word-wrap: break-word;
+                border: 2px solid rgb(223, 26, 26);
+            }
+
+            .form-text {
+                /* wrap the text*/
+                word-wrap: break-word;
+            }
+        </style>
+    </head>
+    <body>
+        {% if not currentuser: %}
+        <div class="row">
+            <div class="col-xs-12">
+            <div class="login-container center-block">
+                <h1>SYNTAX</h1>
+                <p>relive those childhood memories</p>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div>
+                {% for message in messages %}
+                    <div class="alert border border-danger p-1 text-center messagealerts">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+                <form action="/login?studio=1" method="post">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" value="" required>
+                    <input type="password" name="password" id="password" class="form-control btn-dark" placeholder="Password" value="" required>
+                    <input type="text" name="2fa" id="password" class="form-control btn-dark" placeholder="2FA ( if enabled )" value="">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-primary mb-3">Login</button>
+                </form>
+            </div>
+        </div>
+        </div>
+        {%else%}
+            <h1>Logged in</h1>
+        {%endif%}
+    </body>
+</html>

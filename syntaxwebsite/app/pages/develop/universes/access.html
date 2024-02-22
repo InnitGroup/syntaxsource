@@ -1,0 +1,24 @@
+{% extends 'develop/universes/manage-template.html' %}
+{% block subcontent %}
+    <h4>Access</h4>
+    <form method="post">
+        <label for="MinAccountAgeInput" class="form-label">Minimum Account Age ( 0 - 365 )</label>
+        <input class="form-control mb-1" type="number" name="minaccountage" id="MinAccountAgeInput" placeholder="Min Account Age" required value="{{UniverseObj.minimum_account_age}}">
+        <div class="w-100">
+            <input class="form-check-input" type="checkbox" name="ispublic" id="isPublicCheckbox" {%if UniverseObj.is_public%}checked{%endif%}>
+            <label class="form-check-label" for="isPublicCheckbox">
+                <p class="text-white m-0">Public</p>
+            </label>
+        </div>
+        <div class="w-100 mt-1">
+            <input class="form-check-input" type="checkbox" name="bcrequired" id="BCRequiredCheckbox" {%if UniverseObj.bc_required%}checked{%endif%}>
+            <label class="form-check-label" for="BCRequiredCheckbox">
+                <p class="text-white m-0">Builders Club members only</p>
+            </label>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mt-2">
+            <button type="submit" class="btn btn-success btn-sm w-100">Save</button>
+        </div>
+    </form>
+{% endblock %}

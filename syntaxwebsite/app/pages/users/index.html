@@ -1,0 +1,70 @@
+{% extends '__layout__.html' %}
+{% block title %}Search Users{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(200,200,200) !important;
+    }
+    .status-icon {
+        position: absolute;
+        bottom : -4px;
+        right: -4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: rgb(0, 139, 219);
+        border: 1px solid rgb(30,30,30);
+    }
+
+    .status-icon-green {
+        background-color: rgb(15, 211, 80) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="ms-auto me-auto ps-2 pe-2 mb-3" style="width: 700px;min-height: 100vh;margin-top: 120px;">
+    <h2>Users</h2>
+    <form method="post">
+        <div class="input-group">
+            <div class="form-floating" style="width: 52%;">
+                <input type="text" class="form-control" id="search-input" name="q" {%if SearchQuery != None: %}value="{{SearchQuery}}"{%endif%} placeholder="Username">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                <label for="search-input">Search</label>
+            </div>
+            <button type="submit" class="btn btn-outline-primary fw-bold" style="min-width: 50px;"><i class="bi bi-search"></i></button>
+        </div>
+    </form>
+    <div class="row mt-2">
+        {% for userObj in UserLookupResults.items %}
+        <div class="col-12 mt-2">
+            <a href="/users/{{userObj.id}}/profile" class="text-decoration-none m-0 p-0">
+                <div class="bg-dark border p-2 d-flex">
+                    <div class="position-relative">
+                        <img src="/Thumbs/Head.ashx?x=100&y=100&userId={{userObj.id}}" style="aspect-ratio: 1/1;height: 80px !important;" class="rounded border" alt="{{userObj.username}}">
+                        {% if userObj.lastonline > MinOnlineTime %}
+                            <div class="status-icon {% if IsInGame(userObj ) %}status-icon-green{%endif%}"></div>
+                        {%endif%}
+                    </div>
+                    <div class="ms-2" style="max-height: 80px;overflow-y: hidden;">
+                        <h5 class="m-0">{{userObj.username}}</h5>
+                        <p class="text-secondary m-0 mt-1" style="font-size: 13px;">{{userObj.description}}</p>
+                    </div>
+                    <div class="ms-auto text-center" style="min-width: 120px;">
+                        <p class="text-secondary m-0" style="font-size: 13px;">Last Online</p>
+                        <p class="text-white m-0" style="font-size: 15px;font-weight:400;">{{GetTimeAgoTime( userObj )}}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {%endfor%}
+    </div>
+    {% if len(UserLookupResults.items) == 0 %}
+        <p class="mt-5 mb-5 w-100 text-center">No Results Found</p>
+    {%endif%}
+    <div class="d-flex w-100 mt-2" style="font-size: 14px;">
+        <a class="text-decoration-none ms-auto {% if not UserLookupResults.has_prev: %}text-secondary{%endif%}" {% if UserLookupResults.has_prev: %}href="/users?page={{UserLookupResults.prev_num}}{%if SearchQuery != None %}&q={{SearchQuery}}{%endif%}"{%endif%}>Previous</a>
+        <p class="m-0 ms-2 me-2 text-white">Page {{UserLookupResults.page}} of {{UserLookupResults.pages}}</p>
+        <a class="text-decoration-none me-auto {% if not UserLookupResults.has_next: %}text-secondary{%endif%}" {% if UserLookupResults.has_next: %}href="/users?page={{UserLookupResults.next_num}}{%if SearchQuery != None %}&q={{SearchQuery}}{%endif%}"{%endif%}>Next</a>
+    </div>
+</div>
+{% endblock %}

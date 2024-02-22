@@ -1,0 +1,25 @@
+{% extends 'develop/games/manage-template.html' %}
+{% block subcontent %}
+    <h4 class="m-0">Version History</h4>
+    <div class="linebreak"></div>
+    <div>
+        {% for AssetVer in AssetVersions.items: %}
+        <div class="bg-dark p-2 rounded w-100 mt-2">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h5 class="m-0">Version {{AssetVer.version}}</h5>
+                    <p class="text-secondary m-0" style="font-size: 13px;">Created on {{AssetVer.created_at.strftime("%d/%m/%Y at %H:%M:%S UTC")}} | ID: {{AssetVer.id}}</p>
+                </div>
+                <a href="{{CDN_URL}}/{{AssetVer.content_hash}}" class="ms-auto text-white me-1" style="font-size: 20px;">
+                    <i class="bi bi-download"></i> 
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="align-items-center d-flex justify-content-center mt-2">
+        <a class="ms-auto m-0 text-decoration-none {% if not AssetVersions.has_prev %}text-secondary{%endif%}" {% if AssetVersions.has_prev %}href="/develop/universes/{{UniverseObj.id}}/place/{{PlaceAssetObj.id}}/version-history?page={{AssetVersions.prev_num}}"{%endif%}>Previous</a>
+        <p class="ms-2 me-2 text-white m-0">Page {{AssetVersions.page}} of {{AssetVersions.pages}}</p>
+        <a class="me-auto m-0 text-decoration-none {% if not AssetVersions.has_next %}text-secondary{%endif%}" {% if AssetVersions.has_next %}href="/develop/universes/{{UniverseObj.id}}/place/{{PlaceAssetObj.id}}/version-history?page={{AssetVersions.next_num}}"{%endif%}>Next</a>
+    </div>
+{% endblock %}

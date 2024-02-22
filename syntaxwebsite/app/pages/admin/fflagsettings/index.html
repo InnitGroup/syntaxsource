@@ -1,0 +1,41 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(175, 175, 175) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a><a href="/admin/fflags/create" class="btn border-success btn-sm mb-2 ms-2">Create New Group</a>
+        <h1>FFlags Groups</h1>
+        <div class="linebreak"></div>
+        <div class="row">
+            {% for fflaggroup in groups %}
+                <div class="col-12">
+                    <a href="/admin/fflags/{{fflaggroup.group_id}}">
+                        <div class="rounded border p-2 mb-2">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h2 class="m-0">{{fflaggroup.name}}</h2>
+                                    <p class="m-0 text-secondary">{{fflaggroup.description}}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="text-secondary m-0">Created: <span class="text-white">{{fflaggroup.created_at}}</span></p>
+                                    <p class="text-secondary m-0">Last Updated: <span class="text-white">{{fflaggroup.updated_at}}</span></p>
+                                    <p class="text-secondary m-0">Enabled: <span class="text-white">{{ fflaggroup.enabled }}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="linebreak"></div>
+    </div>
+</div>
+{% endblock %}

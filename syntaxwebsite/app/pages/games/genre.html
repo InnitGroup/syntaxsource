@@ -1,0 +1,47 @@
+{% extends '__layout__.html' %}
+{% block title %}Games{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .wide-place-card {
+        aspect-ratio: 16/9;
+        border-radius: 5px;
+        box-shadow: 0px 0px 8px 0px rgb(0 0 0 / 50%);
+        transition: 0.2s;
+    }
+    .wide-place-card:hover {
+        transform: scale(1.05);
+        transition: 0.2s;
+        z-index: 999;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="w-100 ps-4 pe-4 ms-auto me-auto" style="margin-top:100px;min-height: 100vh;max-width: 1950px;">
+    <h1>{{ViewerFacingGenre}}</h1>
+    <div class="p-2 w-100 row">
+        {% for universe in Games: %}
+        <a class="text-decoration-none p-1 col-xxl-2 col-lg-3 col-md-4 col-sm-6" href="/games/{{universe.root_place_id}}/">
+            <div class="overflow-hidden wide-place-card w-100 position-relative">
+                <img width="100%" style="aspect-ratio: 16/9;" src="/Thumbs/Asset.ashx?assetId={{universe.root_place_id}}&x=352&y=352" alt="{{getRootPlace(universe).assetObj.name}}">
+                <div class="position-absolute" style="bottom: 0;padding: 5px;width: 100%;background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0));">
+                    <h5 style="font-size: 17px;font-weight: 700;color:rgb(230,230,230);" class="text-truncate m-0">{{getRootPlace(universe).assetObj.name}}</h5>
+                    <div class="d-flex">
+                        <p class="text-secondary m-0 ms-1 me-auto" style="font-size: 12px;"><span class="bi bi-person"></span> <span class="text-secondary">{{getPlayerCount(universe)}}</span> Playing</p>
+                        <p class="text-secondary m-0 ms-auto me-auto" style="font-size: 12px;"><span class="bi bi-eye"></span> <span class="text-secondary">{{universe.visit_count}}</span> Visits</p>
+                        <p class="text-secondary m-0 me-1 ms-auto" style="font-size: 12px;"><span class="bi bi-hand-thumbs-up"></span> <span class="text-secondary">{{getAssetVotePercentage(universe.root_place_id)}}%</span> Rating</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {%endfor%}
+    </div>
+    <div class="mt-2 mb-2 w-100 d-flex">
+        <a class="m-0 text-decoration-none ms-auto {% if not Games.has_prev %}text-secondary{%endif%}" {% if Games.has_prev %}href="/games/{{Genre}}/view?page={{Games.prev_num}}"{%endif%}>Previous</a>
+        <p class="m-0 ms-2 me-2 text-white">Page {{Games.page}} of {{Games.pages}}</p>
+        <a class="m-0 text-decoration-none me-auto {% if not Games.has_next %}text-secondary{%endif%}" {% if Games.has_next %}href="/games/{{Genre}}/view?page={{Games.next_num}}"{%endif%}>Next</a>
+    </div>
+</div>
+{% endblock %}

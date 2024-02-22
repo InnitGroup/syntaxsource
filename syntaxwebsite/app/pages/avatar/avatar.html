@@ -1,0 +1,125 @@
+{% extends '__layout__.html' %}
+{% block title %}Avatar{% endblock %}
+{% block head %}
+<link href="/static/css/avatar.css" rel="stylesheet"/>
+<script src="/static/js/AvatarEditor.js?ver=4"></script>
+<div class="col-3 p-1 asset-card-template" style="display: none;">
+    <div class="position-relative">
+        <img width="100%" src="" class="asset-card-img rounded" alt="Item">
+        <button class="btn-sm btn-primary btn position-absolute p-1 asset-card-button" style="top:10px;right:20px;font-size: 12px;">Wear</button>
+    </div>
+    <a class="text-decoration-none m-0 text-center w-100 asset-card-assetname" href="/catalog/12345676/" style="font-size:12px;">Test Item</a>
+</div>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 900px;">
+        <h1>Avatar</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="position-relative">
+                    <img width="100%" style="height: auto;" class="rounded border p-1" id="avatar-image" src="/Thumbs/Avatar.ashx?x=420&y=420&userId={{user.id}}" alt="Your Avatar">
+                    <!--<button class="btn btn-primary btn-sm position-absolute" style="bottom: 10px;right: 20px;">Refresh</button>-->
+                    <div class="position-absolute w-100" style="bottom: 20px;display:none;" id="render-waiting-text">
+                        <p class="fw-bold rounded text-white text-center m-0 ms-auto me-auto w-fit p-1 border" style="width:fit-content;background-color: rgba(31, 31, 31, 0.5);">Rendering in progress</p>
+                    </div>
+                    <button class="btn-outline-primary btn position-absolute" style="top: 20px;right: 20px;aspect-ratio: 1/1;padding: 0px;width: 35px;height: 35px;text-align: center;" id="change-rigtype-btn">R15</button>
+                </div>
+                <button class="btn btn-success fw-bold btn-sm w-100 mt-1" id="savechanges-btn" onclick="UpdateAvatar()" style="display: none;">Save Changes</button>
+                <div class="mt-1">
+                    <p class="m-0" style="font-size:small;">Avatar isn't loading correctly? <a class="text-primary text-decoration-none" style="cursor:pointer;" onclick="RedrawAvatar()">Redraw</a></p>
+                    <div class="w-100 mt-3 position-relative" style="min-height: 360px;">
+                        <h5>Body Colors</h5>
+                        <div class="overlay p-1" id="color-picker-overlay" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <h5 class="text-center m-0 ms-4">Select Body Color</h5>
+                                <div class="ms-auto">
+                                    <button class="btn btn-close" id="color-picker-close"></button>
+                                </div>
+                            </div>
+                            <div class="row p-2" id="color-picker-content"></div>
+                        </div>
+                        <div class="head" id="head-bodycolor"></div>
+                        <div class="torso" id="torso-bodycolor">
+                            <div class="leftArm" id="rightarm-bodycolor"></div>
+                            <div class="rightArm" id="leftarm-bodycolor"></div>
+                        </div>
+                        <div class="legs">
+                            <div class="leftLeg" id="rightleg-bodycolor"></div>
+                            <div class="rightLeg" id="leftleg-bodycolor"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control mb-1" id="select-tab-input">
+                    <option data-tab="1">Wear</option>
+                    <option data-tab="2">Scaling</option>
+                </select>
+                <div id="equip-assets-tab">
+                    <select class="form-control" id="select-asset-type">
+                        <option data-type="17">Head</option>
+                        <option data-type="18">Faces</option>
+                        <option data-type="2">T-Shirts</option>
+                        <option data-type="11" selected>Shirts</option>
+                        <option data-type="12">Pants</option>
+                        <option data-type="19">Gear</option>
+                        <option data-type="8">Hats</option>
+                        <option data-type="41">Hair Accessory</option>
+                        <option data-type="42">Face Accessory</option>
+                        <option data-type="43">Neck Accessory</option>
+                        <option data-type="44">Shoulder Accessory</option>
+                        <option data-type="45">Front Accessory</option>
+                        <option data-type="46">Back Accessory</option>
+                        <option data-type="47">Waist Accessory</option>
+                        <option data-type="27">Torso</option>
+                        <option data-type="29">Left Arms</option>
+                        <option data-type="28">Right Arms</option>
+                        <option data-type="30">Left Legs</option>
+                        <option data-type="31">Right Legs</option>
+                    </select>
+                    <div class="row" id="assets-card-holder">
+                    </div>
+                    <div class="align-items-center d-flex justify-content-center">
+                        <button class="btn btn-sm text-white btn-primary me-2" id="pagination-back-btn" disabled>Previous</button><p class="m-0" id="pagination-page-number">Page 1</p><button id="pagination-next-btn" class="btn btn-sm text-white btn-primary ms-2" disabled>Next</button>
+                    </div>
+                    <div class="linebreak"></div>
+                    <h5>Currently Wearing</h5>
+                    <div class="row" id="currentlywearing-card-holder">
+                    </div>
+                </div>
+                <div id="avatar-scaling-tab" style="display: none;">
+                    <div id="height-scale-group">
+                        <div class="d-flex align-items-center">
+                            <label for="height-scaling" class="form-label">Height</label>
+                            <p class="m-0 ms-auto text-white scaling-value">100%</p>
+                        </div>
+                        <input type="range" class="form-range scaling-slider" min="0" max="5" step="0.5">
+                    </div>
+                    <div id="width-scale-group">
+                        <div class="d-flex align-items-center">
+                            <label for="width-scaling" class="form-label">Width</label>
+                            <p class="m-0 ms-auto text-white scaling-value">100%</p>
+                        </div>
+                        <input type="range" class="form-range scaling-slider" min="0" max="5" step="0.5">
+                    </div>
+                    <div id="head-scale-group">
+                        <div class="d-flex align-items-center">
+                            <label for="head-scaling" class="form-label">Head</label>
+                            <p class="m-0 ms-auto text-white scaling-value">100%</p>
+                        </div>
+                        <input type="range" class="form-range scaling-slider" min="0" max="5" step="0.5">
+                    </div>
+                    <div id="proportion-scale-group">
+                        <div class="d-flex align-items-center">
+                            <label for="proportion-scaling" class="form-label">Proportion</label>
+                            <p class="m-0 ms-auto text-white scaling-value">100%</p>
+                        </div>
+                        <input type="range" class="form-range scaling-slider" min="0" max="5" step="0.5">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

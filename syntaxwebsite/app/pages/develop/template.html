@@ -1,0 +1,54 @@
+{% extends '__layout__.html' %}
+{% block title %}Develop{% endblock %}
+{% block head %}
+<link href="/static/css/develop.css" rel="stylesheet"/>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 900px;">
+        <h1>Develop</h1>
+        <select class="form-control w-100 mb-2" id="select-creator">
+            <option value="-1">Created by you</option>
+            {% for group in UserGroups: %}
+            <option value="{{group.id}}" {% if GroupIdContext == group.id: %}selected{%endif%}>{{group.name}}</option>
+            {% endfor %}
+        </select>
+        <select class="form-control w-100 mb-2" id="select-asset-type">
+            <option value="9" {% if PageType == 9: %}selected{%endif%}>Games</option>
+            <option value="1" {% if PageType == 1: %}selected{%endif%}>Image</option>
+            <option value="3" {% if PageType == 3: %}selected{%endif%}>Audio</option>
+            <option value="11" {% if PageType == 11: %}selected{%endif%}>Shirts</option>
+            <option value="12" {% if PageType == 12: %}selected{%endif%}>Pants</option>
+            <option value="2" {% if PageType == 2: %}selected{%endif%}>T-Shirts</option>
+        </select>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="linebreak"></div>
+        {% block subcontent %}{% endblock %}
+        <div class="d-flex">
+            {% if PreviousPage > 0: %}
+            <a href="/develop?type={{PageType}}&page={{PreviousPage}}{% if GroupIdContext != None %}&groupId={{GroupIdContext}}{%endif%}" class="ms-auto text-decoration-none text-primary">Previous</a>
+            {%else%}
+            <a class="ms-auto text-decoration-none text-secondary">Previous</a>
+            {% endif %}
+            <p class="ms-1 me-1">{{PageNumber}}</p>
+            {% if NextPage > 0: %}
+            <a href="/develop?type={{PageType}}&page={{NextPage}}{% if GroupIdContext != None %}&groupId={{GroupIdContext}}{%endif%}" class="me-auto text-decoration-none text-primary">Next</a>
+            {%else%}
+            <a class="me-auto text-decoration-none text-secondary">Next</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script>const s = document.getElementById("select-asset-type");s.addEventListener("change", function() {var u = new URL(window.location.href);var sb = s.value;u.searchParams.set("type", sb);;window.location.href = u;});</script>
+<script>const c = document.getElementById("select-creator");c.addEventListener("change", function() {var u = new URL(window.location.href);var sb = c.value;if (sb < 1 ){ u.searchParams.delete("groupId") } else { u.searchParams.set("groupId", sb) };u.searchParams.delete("type");window.location.href = u;});</script>
+{% endblock %}

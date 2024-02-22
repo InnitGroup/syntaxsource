@@ -1,0 +1,43 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .bg-dark {
+        background-color: rgb(30,30,30) !important;
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Website Features</h1>
+        <p class="m-0" style="font-size:small;">Only turn off certain features when its an emergency!</p>
+        <div class="row p-2">
+            {% for feature in SitesFeaturesStatus: %}
+            <div class="col-3 p-2">
+                <div class="bg-dark ps-0 pe-0 rounded-top">
+                    <div class="{% if feature.enabled: %}bg-success{%else%}bg-danger{%endif%} w-100 rounded-top" style="min-height: 25px;"></div>
+                    <div class="p-2 w-100">
+                        <h3>{{feature.name}}</h3>
+                        {% if feature.enabled: %}
+                        <form action="/admin/manage-website-features/{{feature.name}}/disable" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-outline-danger btn-sm w-100">Disable</button>
+                        </form>
+                        {% else %}
+                        <form action="/admin/manage-website-features/{{feature.name}}/enable" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-outline-success btn-sm w-100">Enable</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends '__layout__.html' %}
+{% block title %}Invite Keys{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height: 100vh; margin-top: 120px;max-width: 1000px;">
+    <div class="d-flex align-items-center">
+        <h1>Invite Keys</h1>
+        <form action="/invite-keys/create" method="post" class="ms-auto">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-outline-warning ms-auto">
+                Create R$20
+            </button>
+        </form>
+    </div>
+    <p style="font-size: 14px;" class="text-secondary m-0">Note: It is not recommended to give away your invite key to strangers as you may be responsible for their actions.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    <table class="table table-dark table-striped mt-2">
+        <thead>
+          <tr class="rounded-top">
+            <th scope="col">Created</th>
+            <th scope="col">Key</th>
+            <th scope="col">Used By</th>
+            <th scope="col">Used On</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider" style="border-color: rgb(20,20,20);">
+        {% for key in createdKeys.items %}
+            <tr>
+                <td>{{key.created_at.strftime("%d/%m/%Y")}}</td>
+                <td>{{key.key}}</td>
+                <td>
+                    {% if key.used_by %}
+                    <a href="/users/{{key.used_by}}/profile" class="text-decoration-none">
+                        <img class="rounded" style="aspect-ratio: 1/1;max-width: 35px;" src="/Thumbs/Head.ashx?x=48&y=48&userId={{key.used_by}}" alt="{{key.user.username}}">
+                        <span class="ms-1">{{key.user.username}}</span>
+                    </a>
+                    {% endif %}
+                </td>
+                <td>{% if key.used_on %}{{key.used_on.strftime("%d/%m/%Y")}}{%else%}None{%endif%}</td>
+            </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+    {% if len(createdKeys.items) == 0 %}
+    <p class="w-100 text-center ps-5 pe-5 mt-4 mb-4">No results found</p>
+    {%endif%}
+    <div class="align-items-center d-flex justify-content-center mt-2">
+        <a class="ms-auto m-0 text-decoration-none {% if not createdKeys.has_prev %}text-secondary{%endif%}" {% if createdKeys.has_prev %}href="/invite-keys?page={{createdKeys.prev_num}}"{%endif%}>Previous</a>
+        <p class="ms-2 me-2 text-white m-0">Page {{createdKeys.page}} of {{createdKeys.pages}}</p>
+        <a class="me-auto m-0 text-decoration-none {% if not createdKeys.has_next %}text-secondary{%endif%}" {% if createdKeys.has_next %}href="/invite-keys?page={{createdKeys.next_num}}"{%endif%}>Next</a>
+    </div>
+
+</div>
+{%endblock%}

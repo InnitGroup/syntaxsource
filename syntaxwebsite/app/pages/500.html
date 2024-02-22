@@ -1,0 +1,25 @@
+{% extends '__layout__.html' %}
+{% block title %}Not Found{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div style="min-height: 100vh;width: 100%;" class="d-flex align-items-center justify-content-center">
+    <div class="p-3" style="background-color: rgb(31,31,31);box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);">
+        <h1 class="mb-1">500 Internal Server Error</h1>
+        <p class="mb-2">Uh oh, something went wrong on our end, we apologise for any inconvenience caused.</p>
+        {% if error %}
+        <div class="form-floating">
+            <textarea class="form-control" style="resize: none;min-height: 250px;" readonly>
+ExecType: {{error.type}}
+ExecValue: {{error.value}}
+===== TRACEBACK =====
+{{error.traceback}}
+======== END ========
+            </textarea>
+            <label for="floatingTextarea2">Error Info</label>
+        </div>
+        {% endif %}
+        <p class="text-secondary" style="font-size:12px" class="mt-2">Route: {{page}} | Please report this error in our Discord Server</p>
+    </div>
+</div>
+{% endblock %}

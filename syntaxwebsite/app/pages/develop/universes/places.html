@@ -1,0 +1,27 @@
+{% extends 'develop/universes/manage-template.html' %}
+{% block subcontent %}
+    <div class="d-flex align-items-center">
+        <div>
+            <h4 class="m-0">Places</h4>
+            <p class="text-secondary m-0" style="font-size: 13px;">{{TotalAmountPlacesCreated}} / 10 Places used</p>
+        </div>
+        <div class="ms-auto">
+            <a class="btn btn-light btn-sm" href="/develop/universes/{{UniverseObj.id}}/create-place">Create Place</a>
+        </div>
+    </div>
+    <div class="w-100 mt-2">
+        {% for placeObj in universePlaces: %}
+        <div class="p-1 w-100 d-flex mb-1">
+            <img src="/Thumbs/PlaceIcon.ashx?assetId={{placeObj.placeid}}&x=100&y=100" class="rounded" height="100px" width="100px">
+            <div class="ms-2">
+                <a href="/games/{{placeObj.placeid}}/--" class="text-decoration-none"><h5 class="m-0">{{placeObj.assetObj.name}}</h5></a>
+                {% if UniverseObj.root_place_id == placeObj.placeid %}<p class="text-secondary m-0" style="font-size: 14px;"><i class="bi bi-star-fill text-warning"></i> Start Place</p>{% endif %}
+                <p class="text-secondary m-0" style="font-size: 14px;">Place ID: <span class="text-white">{{placeObj.placeid}}</span></p>
+            </div>
+            <div class="ms-auto">
+                <a class="btn btn-outline-light btn-sm" href="/develop/universes/{{UniverseObj.id}}/place/{{placeObj.placeid}}/manage">Manage Place</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

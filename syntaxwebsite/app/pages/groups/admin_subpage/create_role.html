@@ -1,0 +1,29 @@
+{% extends 'groups/admin_template.html' %}
+{% block page_content%}
+<style>
+    h5 {
+        font-size: 15px;
+        margin-bottom: 5px !important;
+    }
+</style>
+<h3>Create Role</h3>
+<form method="post">
+    <div class="mt-3">
+        <h5 class="mb-1">Role Name</h5>
+        <input type="text" name="name" class="form-control" placeholder="Name" required>
+    </div>
+    <div class="mt-3">
+        <h5 class="mb-1">Role Description</h5>
+        <textarea name="description" class="form-control" placeholder="Description" style="height: 100px" required></textarea>
+    </div>
+    <div class="mt-3">
+        <h5 class="mb-1">Rank ( 1 - 254 )</h5>
+        <input type="number" name="rank" class="form-control" placeholder="Rank" max="254" min="1" required>
+    </div>
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="d-flex w-100 justify-content-end">
+        <button type="submit" class="btn btn-light mt-3 ms-auto">Create R$25</button>
+    </div>
+</form>
+{%endblock%}

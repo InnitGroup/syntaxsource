@@ -1,0 +1,191 @@
+{
+	"platform": "pc",
+    "atlas":
+    {
+		"pc": {
+			"width": 2048,
+			"height": 2048,
+			"tileSize": 256,
+			"tileCount": 6,
+
+			"sliceSize": 512,
+
+			"borderSize": 42
+		},
+		"ios": {
+			"width": 2048,
+			"height": 2048,
+			"tileSize": 256,
+			"tileCount": 6,
+
+			"borderSize": 42
+		},
+		"android": {
+			"width": 2048,
+			"height": 2048,
+			"tileSize": 256,
+			"tileCount": 6,
+
+			"borderSize": 42
+		},
+        "durango": {
+            "width": 32,
+            "height": 32,
+            "tileSize": 4,
+            "tileCount": 6,
+
+			"sliceSize": 512,
+
+            "borderSize": 42
+        }
+	},
+    "materials":
+    [
+		{
+            "name": "Air"
+        },
+        {
+            "name": "Water",
+            "water": 0.5
+        },
+        {
+            "name": "Grass",
+            "base_color": [ 106, 127, 63 ],
+            "texture_top": { "tiling": 0.25, "detiling_legacy": 0.25, "detiling": 4, "rotation": 1.0 },
+            "texture_side": { "tiling": 0.2, "detiling_legacy": 0.2, "detiling": 5},
+            "texture_bottom": { "tiling": 0.45, "detiling_legacy": 0.45, "detiling": 2.222 }
+        },
+        {
+            "name": "Slate",
+            "base_color": [ 63, 127, 107 ],
+            "shift": 0.1,
+            "texture": { "tiling": 0.55, "detiling_legacy": 0.55, "detiling": 1.818 }
+        },
+        {
+            "name": "Concrete",
+            "base_color": [ 127, 102, 63 ],
+            "quantize": 0.5,
+			"type": "hard",
+            "texture_top": { "tiling": 0.5, "detiling_legacy": 0.8, "detiling": 1.25 },
+            "texture_side": { "tiling": 0.4, "detiling_legacy": 0.4, "detiling": 2.5 }
+        },
+        {
+            "name": "Brick",
+            "base_color": [ 138, 86, 62 ],
+            "cubify": 1,
+			"type": "hard",
+			"mapping": "cube",
+            "texture": { "tiling": 0.80, "detiling_legacy": 0.20, "detiling": 5.0  }
+        },
+        {
+            "name": "Sand",
+            "base_color": [ 143, 126, 95 ],
+            "texture_top": { "tiling": 0.25, "detiling_legacy": 0.25, "detiling": 4.0 },
+            "texture_side": { "tiling": 0.25, "detiling_legacy": 0.55, "detiling": 1.818 }
+        },
+        {
+            "name": "WoodPlanks",
+            "base_color": [ 139, 109, 79 ],
+			"cubify": 1.0,
+			"type": "hard",
+			"mapping": "cube",
+            "texture": { "tiling": 0.8, "detiling_legacy": 0.5, "detiling": 2.0 }
+        },
+        {
+            "name": "Rock",
+            "base_color": [ 102, 108, 111 ],
+            "shift": 0.3,
+			"type": "hardsoft",
+            "texture": { "tiling": 0.55, "detiling_legacy": 0.55, "detiling": 1.818, "rotation": 0.5 }
+        },
+        {
+            "name": "Glacier",
+            "base_color": [ 101, 176, 234 ],
+            "texture_top": { "tiling": 0.23, "detiling_legacy": 0.55, "detiling": 1.818 },
+            "texture_side": { "tiling": 0.2, "detiling_legacy": 0.9, "detiling": 1.111 },
+            "texture_bottom": { "tiling": 0.23, "detiling_legacy": 0.6, "detiling": 1.666 }
+        },
+        {
+            "name": "Snow",
+            "base_color": [ 195, 199, 218 ],
+            "texture": { "tiling": 0.3, "detiling_legacy": 0.3, "detiling": 0.3 }
+        },
+        {
+            "name": "Sandstone",
+            "base_color": [ 137, 90, 71 ],
+            "texture_top": { "tiling": 0.5, "detiling_legacy": 0.7, "detiling": 0.7, "rotation": 0.5 },
+            "texture_side": { "tiling": 0.3, "detiling_legacy": 0.5003, "detiling": 2.0 },
+            "texture_bottom": { "tiling": 0.45, "detiling_legacy": 0.45, "detiling": 3.333 }
+        },
+        {
+            "name": "Mud",
+            "base_color": [ 58, 46, 36 ],
+            "texture": { "tiling": 0.3, "detiling_legacy": 0.1, "detiling": 10 }
+        },
+        {
+            "name": "Basalt",
+            "base_color": [ 30, 30, 37 ],
+            "shift": 0.2,
+			"type": "hardsoft",
+            "texture": { "tiling": 0.55, "detiling_legacy": 0.55, "detiling": 1.818 }
+        },
+        {
+            "name": "Ground",
+            "base_color": [ 102, 92, 59 ],
+            "texture": { "tiling": 0.3, "detiling_legacy": 0.3, "detiling": 3.333, "rotation": 0.5 }
+        },
+		{
+            "name": "CrackedLava",
+            "base_color": [ 232, 156, 74 ],
+			"shift": 0.1,
+            "texture": { "tiling": 0.28, "detiling_legacy": 0.3, "detiling": 3.333, "rotation": 0.5 }
+        },
+        {
+            "name": "Asphalt",
+            "base_color": [ 115, 123, 107 ],
+            "texture_top": { "tiling": 0.25, "detiling_legacy": 0.23, "detiling": 4.34782 },
+            "texture_side": { "tiling": 0.2, "detiling_legacy": 0.9, "detiling": 1.111 }
+        },
+        {
+            "name": "Cobblestone",
+            "base_color": [ 132, 123, 90 ],
+			"quantize": 0.15,
+			"type": "hardsoft",
+            "texture_top": { "tiling": 0.23, "detiling_legacy": 0.25, "detiling": 4.0  },
+            "texture_side": { "tiling": 0.2, "detiling_legacy": 0.9, "detiling": 1.111 }
+        },
+        {
+            "name": "Ice",
+            "base_color": [ 129, 194, 224 ],
+			"shift": 0.15,
+            "texture_top": { "tiling": 0.25, "detiling_legacy": 0.25, "detiling": 4.0, "rotation": 0.1 },
+            "texture_side": { "tiling": 0.25, "detiling_legacy": 0.25, "detiling": 4.0 }
+        },
+        {
+            "name": "LeafyGrass",
+            "base_color": [ 115, 132, 74 ],
+            "texture_top": { "tiling": 0.25, "detiling_legacy": 0.33, "detiling": 3.030, "rotation": 1 },
+            "texture_side": { "tiling": 0.25, "detiling_legacy": 0.25, "detiling": 4.0 }
+        },
+        {
+            "name": "Salt",
+            "base_color": [ 198, 189, 181 ],
+            "texture_top": { "tiling": 0.23, "detiling_legacy": 0.55, "detiling": 1.818 },
+            "texture_side": { "tiling": 0.2, "detiling_legacy": 0.9, "detiling": 1.111 }
+        },
+        {
+            "name": "Limestone",
+            "base_color": [ 206, 173, 148 ],
+            "texture_top": { "tiling": 0.25, "detiling_legacy": 0.55, "detiling": 1.818, "rotation": 0.1 },
+            "texture_side": { "tiling": 0.25, "detiling_legacy": 0.5, "detiling": 2.0 }
+        },
+        {
+            "name": "Pavement",
+            "base_color": [ 148, 148, 140 ],
+			"quantize": 0.25,
+			"type": "hardsoft",
+            "texture_top": { "tiling": 0.46, "detiling_legacy": 0.25, "detiling": 4.0 },
+            "texture_side": { "tiling": 0.46, "detiling_legacy": 0.25, "detiling": 4.0 }
+        }
+	]
+}

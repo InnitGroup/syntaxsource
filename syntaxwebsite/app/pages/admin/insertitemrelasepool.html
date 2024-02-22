@@ -1,0 +1,101 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin/manage-assets/{{asset.id}}" class="btn border-primary btn-sm mb-2">Back to Asset Manager</a>
+        <h1 class="text-secondary">Insert <span class="text-white">{{asset.name}}</span> into Item Release Pool</h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% if asset %}
+        <form method="post">
+            <label for="assetnameinput" class="form-label m-0">Asset Name</label>
+            <input type="text" name="assetname" id="assetnameinput" class="form-control" placeholder="Name" value="{{asset.name}}">
+            <label for="assetdescriptioninput" class="form-label m-0">Asset Description</label>
+            <textarea type="text" name="assetdescription" id="assetdescriptioninput" class="form-control" placeholder="Description">{{asset.description}}</textarea>
+            <div class="row">
+                <div class="col">
+                    <label for="assetpricerobuxinput" class="form-label m-0">Robux Price</label>
+                    <input type="number" name="assetpricerobux" id="assetpricerobuxinput" class="form-control" placeholder="Robux Price" value="{{asset.price_robux}}">
+                </div>
+                <div class="col">
+                    <label for="assetpricetixinput" class="form-label m-0">Tickets Price</label>
+                    <input type="number" name="assetpricetix" id="assetpricetixinput" class="form-control" placeholder="Tix Price" value="{{asset.price_tix}}">
+                </div>
+            </div>
+            <p class="m-0 text-secondary" style="font-size: small;">note: if you want an item to be free both robux and tix prices have to be set to 0</p>
+            <div class="linebreak"></div>
+            <div class="mt-2">
+                <h5 class="text-center">Offsale After</h5>
+                <div class="row">
+                    <div class="col-2 ms-auto">
+                        <div class="form-floating">
+                            <input type="number" name="offsale-at-hours" id="offsale-at-hours" class="form-control" placeholder="Hours">
+                            <label for="offsale-at-hours" class="form-label m-0">Hours</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-floating">
+                            <input type="number" name="offsale-at-minutes" id="offsale-at-minutes" class="form-control" placeholder="Minutes">
+                            <label for="offsale-at-minutes" class="form-label m-0">Minutes</label>
+                        </div>
+                    </div>
+                    <div class="col-2 me-auto">
+                        <div class="form-floating">
+                            <input type="number" name="offsale-at-seconds" id="offsale-at-seconds" class="form-control" placeholder="Seconds">
+                            <label for="offsale-at-seconds" class="form-label m-0">Seconds</label>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-secondary m-0 text-center" style="font-size: 13px;">Amount of time item before the item goes offsale after it releases | Leave empty if you do not want an offsale time</p>
+            </div>
+            <div class="linebreak"></div>
+            <label for="assetserialamount" class="form-label m-0">Serial Amount</label>
+            <input type="number" name="assetserialamount" id="assetserialamount" class="form-control" placeholder="Serial Amount" value="{{asset.serial_count}}">
+            <div class="row mt-3">
+                <div class="col">
+                    <input class="form-check-input" name="isLimited" type="checkbox" id="isLimitedCheckbox" {% if asset.is_limited: %}checked{% endif %}>
+                    <label class="form-check-label" for="isLimitedCheckbox">
+                        <p>Limited</p>
+                    </label>
+                </div>
+                <div class="col">
+                    <input class="form-check-input" name="isLimitedUnique" type="checkbox" id="isLimitedUniqueCheckbox" {% if asset.is_limited_unique: %}checked{% endif %}>
+                    <label class="form-check-label" for="isLimitedUniqueCheckbox">
+                        <p>Limited Unique</p>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p clas="m-0 text-secondary">Created: <span class="text-white">{{asset.created_at}}</span></p>
+                </div>
+                <div class="col">
+                    <p clas="m-0 text-secondary">Updated: <span class="text-white">{{asset.updated_at}}</span></p>
+                </div>
+                <div class="col">
+                    <p clas="m-0 text-secondary">Original Roblox AssetId: <span class="text-white">{{asset.roblox_asset_id}}</span></p>
+                </div>
+                <div class="col">
+                    <p clas="m-0 text-secondary">AssetType: <span class="text-white">{{asset.asset_type.name}}</span></p>
+                </div>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="submit" class="btn btn-primary mt-1 w-100 btn-sm fw-bold" value="Insert Item">
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

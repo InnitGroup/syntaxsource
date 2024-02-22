@@ -1,0 +1,105 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .show-on-hover {
+        filter: blur(4px);
+        transition: 0.2s;
+    }
+    .show-on-hover:hover {
+        filter: blur(0px);
+        transition: 0.2s;
+    }
+    .bg-dark {
+        background-color: rgb(32, 32, 32) !important;
+        box-shadow: 0px 0px 5px 0px rgb(0,0,0);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a class="mb-2" href="/admin/manage-users/{{userObj.id}}"> < Return to User Page</a>
+        <div class="d-flex align-items-center">
+            <img height="100px" style="aspect-ratio: 1/1;" class="rounded-2" src="/Thumbs/Avatar.ashx?userId={{userObj.id}}&x=100&y=100">
+            <div>
+                <h1 class="m-0 {% if userObj.accountstatus == 1 %}text-white{% elif userObj.accountstatus == 2 %}text-warning{% elif userObj.accountstatus == 3%}text-danger{% else %}text-decoration-line-through text-white{%endif%}">{{userObj.username}}<span class="text-secondary"> Login History</span></h1>
+                <p class="text-secondary m-0" style="font-size: 12px;">UserId: <span class="text-white">{{userObj.id}}</span></p>
+            </div>
+        </div>
+        {% if len(AlternateAccounts) != 0 %}
+        <div class="border-top border-bottom p-2 ">
+            <h5 class="m-0 mb-1">Possible Alt Accounts ( {{len( AlternateAccounts )}} )</h5>
+            {% for altAccount in AlternateAccounts %}
+            <a class="d-flex align-items-center text-white text-decoration-none" href="/admin/manage-users/{{altAccount.id}}/login-history">
+                <img height="50px" style="aspect-ratio: 1/1;" class="rounded-2" src="/Thumbs/Avatar.ashx?userId={{altAccount.id}}&x=50&y=50">
+                <div>
+                    <h5 class="m-0 {% if altAccount.accountstatus == 1 %}text-white{% elif altAccount.accountstatus == 2 %}text-warning{% elif altAccount.accountstatus == 3%}text-danger{% else %}text-decoration-line-through text-white{%endif%}">
+                        {{altAccount.username}}
+                        {% if altAccount.flags['hwidmatch'] %}
+                            <span class="badge rounded-pill text-bg-light ms-1" style="font-size: 12px;font-weight: 400;">HWID</span>
+                        {% endif %}
+                        {% if altAccount.flags['sessiontokenmatch'] %}
+                            <span class="badge rounded-pill text-bg-danger ms-1" style="font-size: 12px;font-weight: 400;">SessionToken</span>
+                        {% endif %}
+                        {% if altAccount.flags['ipmatch'] %}
+                            <span class="badge rounded-pill text-bg-warning ms-1" style="font-size: 12px;font-weight: 400;">IPAddress</span>
+                        {% endif %}
+                        {% if altAccount.flags['useragentmatch'] %}
+                            <span class="badge rounded-pill text-bg-primary ms-1" style="font-size: 12px;font-weight: 400;">UserAgent</span>
+                        {% endif %}
+                    </h5>
+                    <p class="text-secondary m-0" style="font-size: 12px;">UserId: <span class="text-white">{{altAccount.id}}</span></p>
+                </div>
+            </a>
+            {%endfor%}
+        </div>
+        {% endif %}
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% if canViewSensitiveInfo %}
+        <div class="p-1">
+            {% for loginRecord in LoginHistory %}
+            <div class="w-100 bg-dark p-2 mb-2 mt-2">
+                <div class="d-flex">
+                    <div>
+                        <h5 class="m-0">{{loginRecord.ip}}</h5>
+                        <p class="m-0 text-secondary" style="font-size: 13px;">Timestamp: <span class="text-white">{{loginRecord.timestamp}} UTC</span></p>
+                    </div>
+                    <a data-bs-toggle="collapse" href="#additional-record-data-{{loginRecord.id}}" role="button" class="ms-auto mt-auto mb-auto me-2" style="font-size: 20px;"><i class="bi bi-info-circle"></i></a>
+                </div>
+                <div class="collapse mt-1" id="additional-record-data-{{loginRecord.id}}">
+                    <div class="border p-1">
+                        <p class="m-0 text-secondary" style="font-size: 13px;">Login Record ID: <span class="text-white">{{loginRecord.id}}</span></p>
+                        <div class="border mt-1" style="font-size: 13px;padding: 4px;">
+                            <p class="m-0 text-secondary">User Agent</p>
+                            <p class="text-white m-0" style="word-break: break-all;white-space: normal;">{{loginRecord.useragent}}</p>
+                        </div>
+                        <div class="border mt-1" style="font-size: 13px;padding: 4px;">
+                            <p class="m-0 text-secondary">Session Token</p>
+                            <p class="text-white m-0" style="word-break: break-all;white-space: normal;">{{loginRecord.session_token}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="align-items-center d-flex justify-content-center mt-2 mb-2">
+            <a class="ms-auto m-0 text-decoration-none {% if not LoginHistory.has_prev %}text-secondary{%endif%}" {% if LoginHistory.has_prev %}href="/admin/manage-users/{{userObj.id}}/login-history?page={{LoginHistory.prev_num}}"{%endif%}>Previous</a>
+            <p class="ms-2 me-2 text-white m-0">Page {{LoginHistory.page}} of {{LoginHistory.pages}}</p>
+            <a class="me-auto m-0 text-decoration-none {% if not LoginHistory.has_next %}text-secondary{%endif%}" {% if LoginHistory.has_next %}href="/admin/manage-users/{{userObj.id}}/login-history?page={{LoginHistory.next_num}}"{%endif%}>Next</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

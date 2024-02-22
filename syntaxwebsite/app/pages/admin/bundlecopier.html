@@ -1,0 +1,39 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Bundle Copier</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <p class="m-0" style="font-size:small;">Do not abuse this tool, some extra modifications may be needed when cloning a bundle as it is not always perfect once cloned. Also it might take awhile for it copy all assets, and we recommend to not use it when anyone is in game.</p>
+        <p class="m-0 text-danger" style="font-size:small;">WARNING: PLEASE make sure the bundle you are copying has not already been uploaded</p>
+        <div class="linebreak"></div>
+        <form method="post" class="d-flex">
+            <input type="text" name="bundle-id" class="form-control" placeholder="Bundle Id">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="submit" class="btn btn-primary ms-3" value="Copy Bundle">
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends '__layout__.html' %}
+{% block title %}Change Email{% endblock %}
+{% block head %}
+<link href="/static/css/settings.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+    .text-secondary {
+        color: rgb(200,200,200) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="settings-container">
+        <h1>Change Email</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div>
+            {% for category, message in messages %}
+                {% if category == 'error': %}
+                <div class="alert border p-2 text-center alert-danger border-danger">
+                    {{ message }}
+                </div>
+                {% endif %}
+                {% if category == 'success': %}
+                <div class="alert border p-2 text-center alert-success border-success">
+                    {{ message }}
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+        <form method="post">
+            <div class="form-floating mt-2">
+                <input type="email" class="form-control" id="new-email-input" name="new-email" placeholder="New Email" required>
+                <label for="floatingPassword">New Email</label>
+            </div>
+            <div class="form-floating mt-1">
+                <input type="password" class="form-control" id="password-input" name="password" placeholder="Password" required>
+                <label for="floatingPassword">Password</label>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="d-flex w-100 align-items-center">
+                <div class="cf-turnstile d-table mt-2" style="margin: 0 0;" data-theme="dark" data-sitekey="{{turnstilekey}}"></div>
+                <div class="ms-2 flex-grow-1 text-center mt-2">
+                    <p class="text-secondary" style="font-size: 14px;">
+                        Please complete the captcha to change your email.
+                    </p>
+                    <button type="submit" class="btn btn-primary w-100 text-center btn-sm">Update Email</button>
+                </div>
+            </div> 
+        </form>
+    </div>
+</div>
+{% endblock %}

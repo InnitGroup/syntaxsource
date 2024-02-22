@@ -1,0 +1,59 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(200,200,200) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Item Release Pool</h1>
+        <p class="m-0 text-secondary" style="font-size:small;">Next Drop Time: <span class="text-white">{{NextItemDropDatetime}}</span></p>
+        <div class="linebreak"></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div>
+            {% for Item in PlannedItems: %}
+            <div class="bg-dark mt-1 mb-1 p-2">
+                <h5 class="m-0 mb-1 text-secondary">Name: <span class="text-white">{{Item.name}}</span></h5>
+                <p class="text-secondary m-0" style="font-size: 14px;">Description: <span class="text-white">{{Item.description}}</span></p>
+                <div class="linebreak"></div>
+                <div class="d-flex">
+                    <p class="text-secondary m-0 ms-auto me-auto" style="font-size: 14px;">AssetId: <span class="text-white">{{Item.id}}</span></p>
+                    <p class="text-secondary m-0 ms-auto me-auto" style="font-size: 14px;">Robux Price: <span class="text-white">{{Item.robux_price}}</span></p>
+                    <p class="text-secondary m-0 ms-auto me-auto" style="font-size: 14px;">Tickets Price: <span class="text-white">{{Item.tickets_price}}</span></p>
+                    <p class="text-secondary m-0 ms-auto me-auto" style="font-size: 14px;">IsLimited: <span class="text-white">{{Item.is_limited}}</span></p>
+                    <p class="text-secondary m-0 ms-auto me-auto" style="font-size: 14px;">IsLimitedUnique: <span class="text-white">{{Item.is_limited_unique}}</span></p>
+                    <p class="text-secondary m-0 ms-auto me-auto" style="font-size: 14px;">Serial Count: <span class="text-white">{{Item.serial_count}}</span></p>
+                    <p class="text-secondary m-0 ms-auto me-auto" style="font-size: 14px;">Offsale After: <span class="text-white">{{Item.offsale_after}}</span></p>
+                </div>
+            </div>
+            {% endfor%}
+        </div>
+        {% if len(PlannedItems) == 0 %}
+        <p class="m-5 text-secondary text-center">No planned items</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

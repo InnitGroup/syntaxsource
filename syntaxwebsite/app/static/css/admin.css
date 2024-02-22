@@ -1,0 +1,48 @@
+#main {
+    display: flex;
+    min-height: 100vh;
+    margin-top: 120px;
+}
+
+.container a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.admin-box {
+    transition: 0.2s;
+    background-color: rgb(27, 27, 27);
+    /* drop shadow*/
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.admin-box p {
+    color: rgb(200,200,200);
+}
+
+.admin-box:hover {
+    transform: scale(1.05);
+}
+
+.gameserver-box {
+    transition: 0.2s;
+    border: 1px solid rgb(60,60,60) !important;
+}
+.greenborder {
+    border-color: rgb(0, 199, 0) !important;
+}
+.redborder {
+    border-color: rgb(199, 0, 0) !important;
+}
+.yellowborder {
+    border-color: rgb(199, 199, 0) !important;
+}
+
+.gameserver-box:hover {
+    transform: scale(1.015);
+}
+
+.messagealerts {
+    background: rgba(255, 0, 0, 0.2);
+    color: rgb(226, 226, 226);
+    word-wrap: break-word;
+}

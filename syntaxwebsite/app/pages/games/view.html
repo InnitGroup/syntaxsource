@@ -1,0 +1,380 @@
+{% extends '__layout__.html' %}
+{% block title %}{{PlaceAssetObj.name}}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/gameview.css">
+<link rel="stylesheet" href="/static/css/icons.css">
+<script src="/static/js/assetrate.js"></script>
+<script src="/static/js/catalog.js?ver=4"></script>
+<div id="X-CSRF-TOKEN" data-xcsrf="{{csrf_token()}}"></div>
+<div id="csrf_token" data-csrf-token="{{ csrf_token() }}"></div>
+<style>
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-size: 13px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height: 100vh;background-color: rgb(30,30,30);max-width: 1100px;">
+    <div class="row ps-md-4 pe-md-4" style="padding-top: 120px;">
+        {% if UniverseObj.root_place_id != PlaceObj.placeid %}
+            <div class="alert alert-info ">
+                <p class="m-0">This game is part of <a href="/games/{{UniverseObj.root_place_id}}/--" class="text-decoration-none">{{UniverseRootPlace.name}}</a>'s universe</p>
+            </div>
+        {% endif %}
+        <div class="col-md-8">
+            <img width="100%" class="rounded" style="aspect-ratio: 16/9;" src="/Thumbs/Asset.ashx?assetId={{PlaceAssetObj.id}}&x=1280&y=720" alt="{{PlaceAssetObj.name}} Thumbnail">
+        </div>
+        <div class="col-md-4 position-relative" style="min-height: 200px;">
+            <h1 class="m-0">{{PlaceAssetObj.name}}</h1>
+            {% if PlaceAssetObj.creator_type == 0 %}
+            <p class="m-0">By <a href="/users/{{PlaceAssetObj.creator_id}}/profile" class="text-decoration-none">{{CreatorObj.username}}</a></p>
+            {% else %}
+            <p class="m-0">By <a href="/groups/{{PlaceAssetObj.creator_id}}/--" class="text-decoration-none">{{CreatorObj.name}}</a></p>
+            {% endif %}
+            <div class="position-absolute w-100 p-2 border-top border-bottom mb-3" style="bottom:0px;">
+                {% if UniverseObj.is_public: %}
+                    {% if UserDoesNotHaveBC == False %}
+                        {% if PlaceAssetObj.moderation_status != 2 or UniverseObj.moderation_status != 2 %}
+                            {% if IsTooYoung: %}
+                                <button class="btn-lg btn btn-success w-100 disabled">PLAY <i class="bi bi-play-fill"></i></button>
+                                <p class="m-0 w-100 text-center text-secondary" style="font-size: 12px;">Your account must be at least {{MinAccountAge}} days old to play this game</p>
+                            {% else %}
+                                <button class="btn-lg btn btn-success w-100 gamelaunch-btn" data-placeid="{{PlaceAssetObj.id}}">PLAY <i class="bi bi-play"></i></button>
+                            {% endif %}
+                        {% else %}
+                            <button class="btn-lg btn btn-success w-100 disabled">PLAY <i class="bi bi-play-fill"></i></button>
+                            <p class="m-0 w-100 text-center text-secondary" style="font-size: 12px;">This place is currently under review</p>
+                        {% endif %}
+                    {% else %}
+                        <button class="btn-lg btn btn-success w-100 disabled">PLAY <i class="bi bi-play-fill"></i></button>
+                        <p class="m-0 w-100 text-center text-secondary" style="font-size: 12px;">A Builders Club membership is required to join this game</p>
+                    {% endif %}
+                {%else%}
+                    <button class="btn-lg btn btn-success w-100 fw-bold disabled">Play</button>
+                    <p class="m-0 w-100 text-center text-secondary" style="font-size: 12px;">This place has been set to private by its creator</p>
+                {%endif%}
+                <div class="d-flex align-items-center" style="margin: 0;height: 36px;display: block;">
+                    <div class="favorite-button-container" data-favorite-count="{{FavoriteCount}}" data-assetid="{{PlaceAssetObj.id}}" data-userfavorite-status="{{UserFavoriteStatus}}">
+                        <div class="icon-favorite"></div>
+                        <span title="{{FavoriteCount}}" class="text-favorite">{{FavoriteCount}}</span>
+                    </div>
+                    <div class="usersVote" data-assetid="{{PlaceAssetObj.id}}" data-likes="{{LikeCount}}" data-dislikes="{{DislikeCount}}" data-uservote-status="{{UserVoteStatus}}">
+                        <div class="upvote">
+                            <span class="icon-like cursor-pointer"></span>
+                        </div>
+                        <div class="votedetails">
+                            <div class="votecontainer">
+                                <div class="votebackground"></div>
+                                <div class="votepercentage" style="width: 50%;"></div>
+                                <div>
+                                    <div class="segment" style="left: 18%;"></div>
+                                    <div class="segment" style="left: 38%;"></div>
+                                    <div class="segment" style="left: 58%;"></div>
+                                    <div class="segment" style="left: 78%;"></div>
+                                </div>
+                            </div>
+                            <div class="votenumbers">
+                                <div class="countleft">
+                                    <span title="5" class="vote-up-text">5</span>
+                                </div>
+                                <div class="countright">
+                                    <span title="5" class="vote-down-text">5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="downvote">
+                            <span class="icon-dislike cursor-pointer"></span>
+                        </div>
+                        <p id="vote-feedback-text text-danger" style="display: none;font-size: 12px;"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    <nav class="mt-4 m-2 rounded-top" style="background-color: rgb(40, 40, 40) !important;overflow: hidden;">
+        <div class="nav nav-underline nav-fill page-tabs" id="nav-tab" role="tablist">
+          <a href="#about" class="nav-link active" id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about" type="button" role="tab" aria-controls="nav-about" aria-selected="true">About</a>
+          <a href="#store" class="nav-link" id="nav-store-tab" data-bs-toggle="tab" data-bs-target="#nav-store" type="button" role="tab" aria-controls="nav-store" aria-selected="false">Store</a>
+          <a href="#servers" class="nav-link" id="nav-servers-tab" data-bs-toggle="tab" data-bs-target="#nav-servers" type="button" role="tab" aria-controls="nav-servers" aria-selected="false">Servers</a>
+        </div>
+    </nav>
+    <div class="tab-content ps-2 pe-2 pt-1 pb-3" id="nav-tabContent">
+        <div class="tab-pane show active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab" tabindex="0">
+            <h2>Description</h2>
+            <div class="ms-2" style="min-height: 200px;">
+                {% for line in SplittedDescription %}
+                    <p class="text-secondary m-0" style="font-size: large;">{{line}}</p>
+                {% endfor %}
+            </div>
+            <div class="border-top border-bottom ms-2 me-2 pt-2 pb-2 row text-center details-container">
+                <div class="col">
+                    <p class="m-0">Active</p>
+                    <h2>{{PlayerCount}}</h2>
+                </div>
+                <div class="col">
+                    <p class="m-0">Visits</p>
+                    <h2>{{PlaceObj.visitcount}}</h2>
+                </div>
+                <div class="col">
+                    <p class="m-0">Created</p>
+                    <h2>{{ConvertDatetimeToDayMonthYear(PlaceAssetObj.created_at)}}</h2>
+                </div>
+                <div class="col">
+                    <p class="m-0">Updated</p>
+                    <h2>{{ConvertDatetimeToDayMonthYear(PlaceAssetObj.updated_at)}}</h2>
+                </div>
+                <div class="col">
+                    <p class="m-0">Server Size</p>
+                    <h2>{{PlaceObj.maxplayers}}</h2>
+                </div>
+            </div>
+            {% if len(GameBadges) != 0: %}
+            <div class="mt-4">
+                <h3 class="m-0">Badges</h3>
+                <div class="p-1" style="max-height: 400px; overflow-y: auto;">
+                    {% for badgeObj in GameBadges: %}
+                    <a href="/badges/{{badgeObj.id}}/--" class="text-decoration-none">
+                        <div class="mb-1 p-2 d-flex" style="background-color: rgb(40,40,40);">
+                            <img style="background-color: rgb(30,30,30);border-radius: 100%;" src="/Thumbs/Asset.ashx?assetId={{badgeObj.icon_image_id}}&x=100&y=100" width="100px" height="100px" alt="{{badgeObj.name}}">
+                            <div>
+                                <h4 class="m-0 ms-2">{{badgeObj.name}}</h4>
+                                <p class="m-0 ms-2 text-secondary" style="font-size: 14px;height: 46px;">{{badgeObj.description}}</p>
+
+                                {% if DoesUserOwnBadge(badgeObj.id, currentuser.id) %}
+                                <p class="m-0 ms-2 text-white" style="font-size: 13px;">You own this badge</p>
+                                {% endif %}
+                            </div>
+                            <div class="ms-auto me-2 mt-auto mb-auto">
+                                <ul style="display: grid;min-width: 200px;grid: repeat(3, 33.333%) / max-content auto;font-size: 15px;">
+                                    <li style="display: contents;">
+                                        <p class="m-0 text-secondary text-end">Rarity</p>
+                                        <p class="m-0 text-white fw-bold text-center style=">{{ round(CalculateBadgeRarity( badgeObj.id ) * 100, 1) }}%</p>
+                                    </li>
+                                    <li style="display: contents;">
+                                        <p class="m-0 text-secondary text-end">Won Yesterday</p>
+                                        <p class="m-0 text-white fw-bold text-center style=">{{ GetBadgeAwardedPastDay( badgeObj.id ) }}</p>
+                                    </li>
+                                    <li style="display: contents;">
+                                        <p class="m-0 text-secondary text-end">Won Ever</p>
+                                        <p class="m-0 text-white fw-bold text-center style=">{{ GetTotalBadgeAwardedCount( badgeObj.id ) }}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="tab-pane" id="nav-store" role="tabpanel" aria-labelledby="nav-store-tab" tabindex="0">
+            <h4 class="m-0 mb-2">Gamepasses</h4>
+            <div class="d-flex" style="flex-wrap: wrap;justify-content: flex-start;gap: 10px;">
+                {% for gamepass in Gamepasses: %}
+                {% if gamepass.gamepass.is_for_sale: %}
+                    <div class="p-1" style="width: 150px; min-height: 200px;background-color: rgb(44, 44, 44);box-shadow: 0 0 5px rgb(0,0,0);">
+                        <a href="/library/{{gamepass.gamepass_id}}/" class="text-decoration-none">
+                            <img style="aspect-ratio: 1/1;width: 100%;background-color: rgb(22, 22, 22);border-radius: 100%;" src="/Thumbs/Asset.ashx?assetId={{gamepass.gamepass_id}}&x=180&y=180">
+                            <h5 class="m-0 mt-1 w-100 text-truncate">{{gamepass.gamepass.name}}</h5>
+                        </a>
+                        <p class="text-robux m-0">R$ {{gamepass.gamepass.price_robux}}</p>
+                        {% if DoesUserownGamepass(gamepass.gamepass_id, currentuser.id) %}
+                        <button class="btn btn-sm btn-light w-100 purchase-button mt-2" disabled>Owned</button>
+                        {% else %}
+                        <button class="btn btn-sm btn-light w-100 purchase-button mt-2" data-asset-id="{{gamepass.gamepass_id}}" data-asset-name="{{gamepass.gamepass.name}}" data-expected-price="{{gamepass.gamepass.price_robux}}" data-currency-type="0">Purchase</button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {%endfor%}
+            </div>
+            {% if len(Gamepasses) == 0: %}
+            <p class="w-100 text-center mt-5 mb-5">No Gamepasses Found</p>
+            {% endif %}
+        </div>
+        <div class="tab-pane" id="nav-servers" role="tabpanel" aria-labelledby="nav-servers-tab" tabindex="0">
+            <h2>Servers</h2>
+            <div class="w-100">
+                {% for PlaceServer in ActiveServers: %}
+                    <div class="w-100 m-2 p-2" style="background-color: rgb(20, 20, 20);">
+                        <div class="d-flex align-items-center w-100">
+                            <div>
+                                <h5 class="m-0">{{PlaceServer.playercount}} of {{PlaceServer.maxplayercount}} players</h5>
+                                <p class="text-secondary m-0" style="font-size: 10px;">{{PlaceServer.id}} - {{PlaceServer.host}}{% if PlaceServer.is_reserved_server %} - Reserved Server{%endif%}</p>
+                            </div>
+                            <div class="ms-auto">
+                                {% if PlaceServer.is_reserved_server == False %}
+                                <button class="btn btn-outline-light btn-sm gamelaunch-btn" data-placeid="{{PlaceAssetObj.id}}" data-jobid="{{PlaceServer.id}}">Join Server</button>
+                                {% else %}
+                                <button class="btn btn-outline-light btn-sm" disabled>Join Server</button>
+                                {% endif %}
+                            </div>
+                            {% if CanShutdownServer %}
+                            <form action="/games/{{PlaceAssetObj.id}}/shutdown-server/{{PlaceServer.id}}" method="post" class="ms-2">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                                <button class="btn btn-outline-danger btn-sm" type="submit">Shutdown Server</button>
+                            </form>
+                            {%endif%}
+                        </div>
+                        <div class="d-flex p-1 mt-2 d-flex" style="flex-wrap: wrap;justify-content: flex-start;min-height: 60px;gap: 2px;background-color: rgb(15,15,15);border-radius: 3px;">
+                            {% for Player in PlaceServer.players: %}
+                                <a href="/users/{{Player.userid}}/profile" class="bg-dark p-1" style="border-radius: 3px;"><img width="60" height="60" src="/Thumbs/Head.ashx?x=60&y=60&userId={{Player.userid}}" style="border-radius: 3px;" alt="{{Player.user.username}}"></a>
+                            {% endfor%}
+                            {% if PlaceServer.playercount == 0 :%}
+                                <p class="m-0 text-center w-100 mb-auto mt-auto text-white" style="font-size: 12px;">Empty Server</p>
+                            {% endif %}
+                        </div>
+                        <div style="min-height: 8px;overflow:hidden;border-color: rgb(45,45,45) !important;border-radius: 3px;" class="w-100 mt-1 border">
+                            {% if PlaceServer.playercount != 0 %}
+                            <div style="width: {{PlaceServer.playercount / PlaceServer.maxplayercount * 100}}%;background-color: rgb(180, 180, 180);min-height: 8px;"></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {%endfor%}
+                {% if ActiveServerCount == 0: %}
+                    <p class="w-100 text-center">No Active Servers Found</p>
+                {%endif%}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    async function GenerateAuthTicket() {
+        var response = await fetch("/Login/NewAuthTicket", {
+            method: "POST"
+        });
+        return await response.text();
+    }
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        const TransparentBackgroundTop = document.getElementById("transparent-background-top");
+        const CloseLauncherBtn = document.getElementById("close-launcher-btn");
+        const LaunchLoadingBar = document.getElementById("launch-loading-bar");
+        const LaunchDownloadBtn = document.getElementById("launch-download-btn");
+
+        CloseLauncherBtn.addEventListener("click", function() {
+            TransparentBackgroundTop.style.display = "none";
+        });
+        CloseLauncherBtn.style.display = "none";
+
+        document.querySelectorAll(".gamelaunch-btn").forEach( async function(element) {
+            element.addEventListener("click", async function() {
+                TransparentBackgroundTop.style.display = "flex";
+                LaunchLoadingBar.style.display = "block";
+                LaunchDownloadBtn.style.display = "none";
+                CloseLauncherBtn.style.display = "none";
+
+                var placeid = element.getAttribute("data-placeid");
+                var authTicket = await GenerateAuthTicket();
+                var authticket2 = await GenerateAuthTicket();
+                var clientyear = {{UniverseObj.place_year.value}};
+
+                if ( clientyear == 2014 ) {
+                    var joinScriptUrl = `http://www.syntax.eco/game/2014Join.lua?placeId=${placeid}`
+                } else {
+                    var joinScriptUrl = `https://www.syntax.eco/Game/placelauncher.ashx?placeId=${placeid}&t=${authticket2}`
+                }
+                
+                var jobid = element.getAttribute("data-jobid");
+                if (jobid) {
+                    joinScriptUrl += `&jobId=${jobid}`;
+                }
+                
+                var needsExtraFowardSlash = false;
+                var isFirefoxBrowser = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+                if (isFirefoxBrowser) {
+                    var FirefoxVersion = parseInt(navigator.userAgent.toLowerCase().split('firefox/')[1]);
+                    if ( FirefoxVersion > 121 ) { // Firefox 122 and above requires an extra forward slash
+                        needsExtraFowardSlash = true;
+                    }
+                }
+
+                window.location.href = `syntax-player://${ needsExtraFowardSlash ? '/' : ''  }1+launchmode:play+gameinfo:${authTicket}+placelauncherurl:${joinScriptUrl}+k:l+clientyear:${clientyear}`
+            
+                setTimeout(function() {
+                    LaunchLoadingBar.style.display = "none";
+                    LaunchDownloadBtn.style.display = "block";
+                    CloseLauncherBtn.style.display = "block";
+                    setTimeout(function() {
+                        TransparentBackgroundTop.style.display = "none";
+                    }, 6000);
+                }, 4000);
+            });
+        });
+
+        var WindowHash = window.location.hash;
+        if (WindowHash) {
+            var TabElement = document.querySelector(`[href="${WindowHash}"]`);
+            if (TabElement) {
+                TabElement.click();
+            }
+        }
+
+        var Navtabs = document.querySelectorAll(".page-tabs a");
+        Navtabs.forEach(function(element) {
+            element.addEventListener("click", function() {
+                var TabTarget = element.getAttribute("href");
+                window.location.hash = TabTarget;
+            });
+        });
+    });
+</script>
+<div class="position-absolute w-100 h-100 justify-content-center align-items-center" id="transparent-background-top" style="top: 0;left: 0;background-color: rgba(0,0,0,0.5);display: none;">
+    <div class="m-auto rounded-2 p-2 position-relative" style="background-color: rgb(30,30,30); box-shadow: 0 0 10px #333333; min-width: 400px; min-height: 255px; ">
+        <div class="d-flex w-100">
+            <img src="/static/img/SyntaxLogo.png" width="90px" height="90px" class="ms-auto me-auto" style="margin-top: 46px;">
+        </div>
+        <div id="launch-loading-bar" >
+            <p class="m-0 w-100 text-center text-white">Syntax is now loading. Get ready to play!</p>
+            <div class="ps-2 pe-2">
+            <div class="progress mt-2" style="min-height: 20px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
+            </div></div>
+        </div>
+        <div id="launch-download-btn" style="display: none;">
+            <p class="m-0 w-100 text-center text-white">You're moments away from getting into the game!</p>
+            <div class="ps-3 pe-3 mt-2">
+                <a class="w-100 btn btn-success text-decoration-none" href="/download">Download and Install Syntax</a>
+            </div>
+        </div>
+        <div class="position-absolute" style="top: 10px; right: 10px;">
+            <button class="btn btn-close" id="close-launcher-btn"></button>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="purchaseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="purchase-modal-title">Confirm purchase</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="purchase-modal-content">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="purchase-modal-close" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" id="purchase-modal-btn">Purchase</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

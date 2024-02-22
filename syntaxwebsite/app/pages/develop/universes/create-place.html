@@ -1,0 +1,15 @@
+{% extends 'develop/universes/manage-template.html' %}
+{% block subcontent %}
+    <div class="d-flex align-items-center">
+        <h4 class="m-0">Create new place</h4>
+        <p class="text-secondary m-0 ms-2" style="font-size: 13px;">{{TotalAmountPlacesCreated}} / 10 Places used</p>
+    </div>
+    <div class="w-100 mt-2">
+        <form method="post">
+            <p class="text-secondary m-0 mb-1">Are you sure you want to create a new place under <span class="text-white">{{RootPlaceAssetObj.name}}</span>?</p>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-success btn-sm w-100">Create Place</button>
+        </form>
+    </div>
+{% endblock %}

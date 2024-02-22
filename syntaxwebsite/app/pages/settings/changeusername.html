@@ -1,0 +1,35 @@
+{% extends '__layout__.html' %}
+{% block title %}Change Username{% endblock %}
+{% block head %}
+<link href="/static/css/settings.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="settings-container">
+        <h1>Change Username</h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post">
+            <div class="form-floating mt-2">
+                <input type="text" class="form-control" id="new-username-input" name="new-username" placeholder="New Username" required>
+                <label for="floatingPassword">New Username</label>
+            </div>
+            <div class="form-floating mt-1">
+                <input type="password" class="form-control" id="password-input" name="password" placeholder="Password" required>
+                <label for="floatingPassword">Password</label>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" class="btn btn-primary mt-2 w-100 text-center">Change Username ( R$ 1000 )</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

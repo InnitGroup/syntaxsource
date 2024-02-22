@@ -1,0 +1,21 @@
+{% extends '__layout__.html' %}
+{% block title %}Email Verified{% endblock %}
+{% block head %}
+<link href="/static/css/settings.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(200,200,200) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="settings-container p-3 d-flex align-items-center" style="background-color: rgb(26, 26, 26);box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);">
+        <img src="/Thumbs/Head.ashx?x=100&y=100&userId={{UserObj.id}}" style="aspect-ratio: 1/1;" class="rounded border" width="100px">
+        <div class="ms-3">
+            <h1>Email Verified!</h1>
+            <p class="m-0 text-secondary">Thank you for verifying your email!{%if RewardObj: %} As a reward you have been given a <a href="/catalog/{{RewardObj.id}}/" class="text-decoration-none">special item</a>{%endif%}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

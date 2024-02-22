@@ -1,0 +1,168 @@
+{% extends '__layout__.html' %}
+{% block title %}Create Offer{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-weight: 600;
+    }
+    .bg-dark {
+        background-color: rgb(30,30,30) !important;
+    }
+    .form-control:disabled ~ label {
+        color: --bs-secondary-bg;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container position-relative" style="min-height: 100vh;margin-top: 200px;max-width: 900px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    <div class="row">
+        <div class="col-8">
+            <form method="post">
+                <div class="d-flex align-items-center mb-1">
+                    <div class="border-top flex-fill me-2"></div>
+                    <h5 class="text-secondary">You are offering</h5>
+                    <div class="border-top flex-fill ms-2"></div>
+                </div>
+                <div class="d-flex">
+                    <div class="form-floating">
+                        <select class="form-control" id="offer-currency-type" name="offer-currency-type" style="min-width: 100px;">
+                            <option value="0">Robux</option>
+                            <option value="1">Tickets</option>
+                        </select>
+                        <label for="offer-currency-type">Currency</label>
+                    </div>
+                    <div class="form-floating ms-2 flex-fill">
+                        <input type="number" class="form-control" id="offer-currency-amount" name="offer-currency-amount" placeholder="0" value="0">
+                        <label for="offer-currency-amount">Amount</label>
+                    </div> 
+                </div>
+                <div class="d-flex align-items-center mt-3 mb-1">
+                    <div class="border-top flex-fill me-2"></div>
+                    <h5 class="text-secondary">In exchange for</h5>
+                    <div class="border-top flex-fill ms-2"></div>
+                </div>
+                <div class="d-flex">
+                    <div class="form-floating">
+                        <select class="form-control" id="exchange-currency-type" name="exchange-currency-type" style="min-width: 100px;" disabled>
+                            <option value="0">Robux</option>
+                            <option value="1" selected>Tickets</option>
+                        </select>
+                        <label for="exchange-currency-type disabled">Currency</label>
+                    </div>
+                    <div class="form-floating ms-2 flex-fill">
+                        <input type="number" class="form-control" id="exchange-currency-amount" name="exchange-currency-amount" placeholder="0" value="0">
+                        <label for="exchange-currency-amount">Amount</label>
+                    </div>
+                </div>
+                <p class="m-0 mt-2 text-secondary">Robux to Tix Ratio: <span class="fw-bold text-white" id="robux-to-tix-ratio">0:0</span></p>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-primary btn-sm mt-3 w-100" id="submit-offer">Create Offer</button>
+            </form>
+        </div>
+        <div class="col-4 border-start">
+            <a class="text-decoration-none w-100 text-end" style="font-size: 12px;" href="/currency-exchange/">Return to Currency Exchange</a>
+            <h3 class="w-100">New Exchange Offer</h3>
+            <p class="text-secondary m-0 ms-2">You can create an offer to be placed onto the currency exchange system, this will allow other users to trade for example Robux to Tickets or vice versa.</p>
+            
+            <p class="text-secondary m-0 mt-2 ms-2">Note: The minimum for Robux to Tix is 1:2 while the maximum is 1:20</p>
+        </div>
+    </div>
+</div>
+<div class="position-absolute w-100 h-100" id="transparent-background-top" style="top: 0;left: 0;background-color: rgba(0,0,0,0.5);display: none;"></div>
+<script>
+    const OfferCurrencyTypeSelect = document.getElementById('offer-currency-type');
+    const ExchangeCurrencyTypeSelect = document.getElementById('exchange-currency-type');
+
+    OfferCurrencyTypeSelect.addEventListener('change', () => {
+        if (OfferCurrencyTypeSelect.value == 0) {
+            ExchangeCurrencyTypeSelect.value = 1;
+        } else {
+            ExchangeCurrencyTypeSelect.value = 0;
+        }
+        UpdateRatio();
+    });
+
+    const OfferCurrencyAmountInput = document.getElementById('offer-currency-amount');
+    const ExchangeCurrencyAmountInput = document.getElementById('exchange-currency-amount');
+    const RobuxToTixRatio = document.getElementById('robux-to-tix-ratio');
+    const SubmitButton = document.getElementById('submit-offer');
+    const TransparentBackgroundTop = document.getElementById('transparent-background-top');
+
+    const DisableButton = () => {
+        if ( SubmitButton.disabled ) return;
+
+        SubmitButton.disabled = true;
+        SubmitButton.classList.add('disabled');
+    }
+    const EnableButton = () => {
+        if ( !SubmitButton.disabled ) return;
+
+        SubmitButton.disabled = false;
+        SubmitButton.classList.remove('disabled');
+    }
+
+    const UpdateRatio = () => {
+        if (OfferCurrencyTypeSelect.value == 0) {
+            var ratio = ExchangeCurrencyAmountInput.value / OfferCurrencyAmountInput.value;
+            // Round to 3 decimal places
+            ratio = Math.round(ratio * 1000) / 1000;
+            RobuxToTixRatio.innerText = `1:${ratio}`;
+
+            if (ratio < 1 || ratio > 50) {
+                DisableButton();
+            } else {
+                EnableButton();
+            }
+
+        } else {
+            var ratio = ExchangeCurrencyAmountInput.value / OfferCurrencyAmountInput.value;
+            // Round to 3 decimal places
+            ratio = Math.round(ratio * 1000) / 1000;
+            RobuxToTixRatio.innerText = `${ratio}:1`;
+
+            var ActualRatio = OfferCurrencyAmountInput.value / ExchangeCurrencyAmountInput.value;
+
+            if ( ActualRatio < 1 || ActualRatio > 50 ) {
+                DisableButton();
+            } else {
+                EnableButton();
+            }
+        }
+    }
+
+    SubmitButton.addEventListener('click', () => {
+        TransparentBackgroundTop.style.display = 'block';
+    })
+
+    OfferCurrencyAmountInput.addEventListener('input', () => {
+        UpdateRatio();
+    });
+
+    ExchangeCurrencyAmountInput.addEventListener('input', () => {
+        UpdateRatio();
+    });
+    DisableButton()
+</script>
+{% endblock %}

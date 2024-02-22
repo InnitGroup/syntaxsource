@@ -1,0 +1,54 @@
+{% extends '__layout__.html' %}
+{% block title %}Messages{% endblock %}
+{% block head %}
+<link href="/static/css/message.css" rel="stylesheet"/>
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .message {
+        color: rgb(60,60,60) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <h1 class="m-0">{%if isOutgoing:%}Outgoing {%endif%}Messages</h1>
+        {% if not isOutgoing: %}
+        <a class="m-0 mb-2 text-decoration-none" href="/messages/outgoing" style="font-size: 11px;">Click here to see your outgoing messages</a>
+        {%else%}
+        <a class="m-0 mb-2 text-decoration-none" href="/messages" style="font-size: 11px;">Click here to see your incoming messages</a>
+        {%endif%}
+        <p class="m-0" style="font-size: 12px;">Do not send any personal or sensitive information about yourself! A staff member will never ask for your password or email.</p>
+        <div class="linebreak"></div>
+        <div>
+            {% for message in UserMessages %}
+                <a href="/messages/view/{{message.id}}" class="text-decoration-none">
+                    <div class="w-100 border p-2 message mb-2 rounded {% if message.read == False %}border-primary{%endif%}">
+                        <div class="d-flex">
+                            <img class="overflow-hidden me-2 " width="48" height="48" src="/Thumbs/Avatar.ashx?x=48&y=48&userId={%if not isOutgoing %}{{message.sender.id}}{%else%}{{message.recipient.id}}{%endif%}" alt="{%if not isOutgoing %}{{message.sender.username}}{%else%}{{message.recipient.username}}{%endif%}"/>
+                            <div class="overflow-hidden w-100">
+                                <div class="d-flex align-items-center w-100">
+                                    <b class="text-white">{%if not isOutgoing %}{{message.sender.username}}{%else%}{{message.recipient.username}}{%endif%}</b>
+                                    <p class="m-0 text-secondary ms-auto" style="font-size:small;">{{message.created.strftime("%b %d, %Y %I:%M %p")}} UTC</p>
+                                </div>
+                                <p class="text-white m-0 text-truncate">{{message.subject}} - <span class="text-secondary fw-normal">{{message.content}}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {%endfor%}
+            {% if len(UserMessages.items) == 0: %}
+                <h5 class="mt-2 mb-2 text-center">No results found</h5>
+            {%endif%}
+        </div>
+        <div class="linebreak"></div>
+        <div class="d-flex">
+            <a class="ms-auto m-0 text-decoration-none {% if not UserMessages.has_prev %}text-secondary{%endif%}" {% if UserMessages.has_prev %}href="/messages/{%if isOutgoing:%}outgoing{%endif%}?page={{UserMessages.prev_num}}"{%endif%}>Previous</a>
+            <p class="ms-2 me-2 text-white m-0">Page {{UserMessages.page}} of {{UserMessages.pages}}</p>
+            <a class="me-auto m-0 text-decoration-none {% if not UserMessages.has_next %}text-secondary{%endif%}" {% if UserMessages.has_next %}href="/messages/{%if isOutgoing:%}outgoing{%endif%}?page={{UserMessages.next_num}}"{%endif%}>Next</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

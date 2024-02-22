@@ -1,0 +1,29 @@
+{% extends 'develop/universes/manage-template.html' %}
+{% block subcontent %}
+    <div class="d-flex align-items-center">
+        <h4 class="m-0">Developer Products</h4>
+        <div class="ms-auto">
+            <a class="btn btn-primary btn-sm" href="/develop/universes/{{UniverseObj.id}}/create-product">Create Developer Product</a>
+        </div>
+    </div>
+    <div class="w-100 mt-2">
+        {% for product in DeveloperProducts: %}
+        <div class="bg-dark p-2 rounded w-100 mt-2">
+            <div class="d-flex">
+                <img src="/Thumbs/Asset.ashx?x=180&y=180&assetId={{product.iconimage_assetid}}" width="100px" height="100px" class="border rounded">
+                <div class="ms-2 h-100">
+                    <h5 class="m-0">{{product.name}}</h5>
+                    <p class="m-0 mt-1 text-secondary" style="font-size: 14px;">Product ID: <span class="text-white">{{product.productid}}</span></p>
+                    <p class="m-0 text-secondary" style="font-size: 14px;">Total sold: <span class="text-white">{{product.sales_count}}</span></p>
+                </div>
+                <div class="ms-auto">
+                    <a class="btn btn-light btn-sm" href="/develop/universes/{{UniverseObj.id}}/developer-products/{{product.productid}}">Edit Product</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% if len(DeveloperProducts) == 0: %}
+        <p class="text-secondary text-center w-100 mt-5 mb-5">No Developer Products found, create one by clicking the button above</p>
+        {% endif %}
+    </div>
+{% endblock %}

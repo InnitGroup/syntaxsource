@@ -1,0 +1,39 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Asset Copier</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <p class="m-0" style="font-size:small;">Do not abuse this tool, allowed assets: ( TShirt, Hat, Shirt, Pants, Head, Face, Gear, Accessories )</p>
+        <p class="m-0 text-danger" style="font-size:small;">WARNING: When cloning accessories please be careful cloning 2016+ assets as some accessories attachments are too new for our client to handle</p>
+        <div class="linebreak"></div>
+        <form method="post" class="d-flex">
+            <input type="text" name="asseturl" class="form-control" placeholder="Asset URL">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="submit" class="btn btn-primary ms-3" value="Copy Asset">
+        </form>
+    </div>
+</div>
+{% endblock %}

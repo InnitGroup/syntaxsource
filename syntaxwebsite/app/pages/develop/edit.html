@@ -1,0 +1,79 @@
+{% extends '__layout__.html' %}
+{% block title %}Edit Item{% endblock %}
+{% block head %}
+<link href="/static/css/develop.css" rel="stylesheet"/>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="d-flex align-items-center ps-4 pe-4 ps-md-1 pe-md-1">
+            <div>
+                <a class="text-decoration-none text-secondary m-0" href="/develop?type={{AssetObj.asset_type.value}}" style="font-size: 12px;">< Return to develop page</a>
+                <h1 class="m-0">Edit Item</h1>
+            </div>
+            {% if AssetObj.asset_type.value != 3 and AssetObj.asset_type.value != 1: %}
+                <a class="text-decoration-none ms-auto" href="/catalog/{{AssetObj.id}}/">View on Catalog</a>
+            {%else%}
+                <a class="text-decoration-none ms-auto" href="/catalog/{{AssetObj.id}}/">View on Library</a>
+            {%endif%}
+        </div>
+        <div class="linebreak"></div>
+        <div class="row">
+            <div class="col-md-5">
+                <img style="aspect-ratio:1/1; max-width: 400px; max-height: 400px;" width="100%" src="/Thumbs/Asset.ashx?assetId={{AssetObj.id}}&x=512&y=512" class="rounded">
+            </div>
+            <div class="col-md-7 border-start pt-2 pb-2 ps-4 pe-4 ps-md-1 pe-md-1">
+                <form method="post">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" id="item-name" name="item-name" placeholder="Awesome Item!" required value="{{AssetObj.name}}">
+                        <label for="item-name">Name</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <textarea class="form-control mt-2" placeholder="Description" style="min-height: 150px;" name="item-description">{{AssetObj.description}}</textarea>
+                        <label for="item-description">Description</label>
+                    </div>
+                    {% if AssetObj.asset_type.value != 3 and AssetObj.asset_type.value != 1: %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" {% if AssetObj.is_for_sale: %}checked{%endif%} id="isForSaleCheckbox" name="is-for-sale">
+                        <label class="form-check-label" for="isForSaleCheckbox">
+                            For Sale
+                        </label>
+                    </div>
+                    <div class="p-1 row">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">R$</span>
+                                <input type="number" class="form-control" placeholder="Robux" aria-label="Robux" name="robux-cost" value="{{AssetObj.price_robux}}">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">T$</span>
+                                <input type="number" class="form-control" placeholder="Tickets" aria-label="Tickets" name="tix-cost" value="{{AssetObj.price_tix}}">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <p style="font-size:13px;">* Syntax will take a 30% fee from the sale</p>
+                        </div>
+                    </div>
+                    {%endif%}
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-primary btn-sm w-100 text-center">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

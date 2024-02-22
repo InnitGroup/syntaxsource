@@ -1,0 +1,15 @@
+#main {
+    display: flex;
+    min-height: 100vh;
+    margin-top: 120px;
+}
+
+.messagealerts {
+    background: rgba(255, 0, 0, 0.2);
+    color: rgb(226, 226, 226);
+    word-wrap: break-word;
+}
+
+.text-secondary {
+    color: rgb(199,199,199) !important;
+}

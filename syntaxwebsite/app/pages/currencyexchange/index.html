@@ -1,0 +1,114 @@
+{% extends '__layout__.html' %}
+{% block title %}Currency Exchange{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-weight: 600;
+    }
+    .text-tickets {
+        color: rgb(224, 224, 60) !important;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container position-relative" style="min-height: 100vh;margin-top: 100px;max-width: 1200px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    <div class="d-flex align-items-center">
+        <div>
+            <h1 class="m-0">Currency Exchange</h1>
+            <div class="d-flex">
+                <a class="text-decoration-none mt-1 ms-1" href="/currency-exchange/create">Create Exchange Offer</a>
+                <a class="text-decoration-none mt-1 ms-2" href="/transactions/">My Transactions</a>
+            </div>
+        </div>
+        <div class="ms-auto form-floating">
+            <select class="form-control" id="change-category-select">
+                <option value="rt" {%if PageCategory == "rt"%}selected{%endif%} selected>Tix to Robux</option>
+                <option value="tr" {%if PageCategory == "tr"%}selected{%endif%}>Robux to Tix</option>
+                <option value="all" {%if PageCategory == "all"%}selected{%endif%}>All</option>
+            </select>
+            <label for="change-category-select">Category</label>
+        </div>
+        <div class="ms-2 form-floating">
+            <select class="form-control" id="change-sort-select">
+                <option value="best" {%if SortType == "best"%}selected{%endif%}>Best Value</option>
+                <option value="worst" {%if SortType == "worst"%}selected{%endif%}>Worst Value</option>
+                <option value="created" {%if SortType == "created"%}selected{%endif%}>Created</option>
+            </select>
+            <label for="change-sort-select">Sort</label>
+        </div>
+    </div>
+    <table class="table table-dark table-striped mt-2">
+        <thead>
+          <tr class="rounded-top">
+            <th scope="col">Date</th>
+            <th scope="col">Expires</th>
+            <th scope="col">Offering</th>
+            <th scope="col">Requesting</th>
+            <th scope="col">R:T Ratio</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider" style="border-color: rgb(20,20,20);">
+            {% for OfferObj in offers: %}
+            <tr>
+                <td>{{ OfferObj.created_at.strftime("%d/%m/%Y") }}</td>
+                <td>{{ OfferObj.expires_at.strftime("%d/%m/%Y") }}</td>
+                <td>
+                    {% if OfferObj.offer_currency_type == 0 %}
+                    <span class="text-robux">R$ {{OfferObj.offer_value}}</span>
+                    {% else %}
+                    <span class="text-tickets">T$ {{OfferObj.offer_value}}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if OfferObj.offer_currency_type == 1 %}
+                    <span class="text-robux">R$ {{OfferObj.receive_value}}</span>
+                    {% else %}
+                    <span class="text-tickets">T$ {{OfferObj.receive_value}}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    1:{{round(OfferObj.ratio, 3)}}
+                </td>
+                <td><a class="text-decoration-none" href="/currency-exchange/view/{{OfferObj.id}}">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      {% if len(offers) == 0: %}
+        <div class="text-center">
+            <p class="text-secondary">No offers found</p>
+        </div>
+      {%endif%}
+      <div class="align-items-center d-flex justify-content-center mt-2">
+        <a class="btn btn-sm text-white btn-primary me-2 pagination-back-btn {% if not hasPrevPage: %}disabled {% endif %}" {% if hasPrevPage: %}href="/currency-exchange/?category={{PageCategory}}&sort={{SortType}}&page={{PageNumber-1}}"{%endif%}>Previous</a>
+        <p class="m-0 pagination-page-number">Page {{PageNumber}}</p>
+        <a class="btn btn-sm text-white btn-primary ms-2 pagination-next-btn {% if not hasNextPage: %}disabled {% endif %}" {% if hasNextPage: %}href="/currency-exchange/?category={{PageCategory}}&sort={{SortType}}&page={{PageNumber+1}}"{%endif%}>Next</a>
+    </div>
+</div>
+<script>const s = document.getElementById("change-category-select");s.addEventListener("change", function() {var u = new URL(window.location.href);var sb = s.value;u.searchParams.set("category", sb);;window.location.href = u;});</script>
+<script>const aa = document.getElementById("change-sort-select");aa.addEventListener("change", function() {var u = new URL(window.location.href);var ab = aa.value;u.searchParams.set("sort", ab);;window.location.href = u;});</script>
+{% endblock %}

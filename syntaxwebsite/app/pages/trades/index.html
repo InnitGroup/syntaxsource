@@ -1,0 +1,65 @@
+{% extends '__layout__.html' %}
+{% block title %}Trades{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height: 100vh; margin-top: 100px;max-width: 1000px;">
+    <div class="d-flex align-items-center">
+        <h1>Trades</h1>
+        <div class="ms-auto">
+            <select class="form-control" id="change-category-select">
+                <option value="inbound" {%if PageCategory == "inbound"%}selected{%endif%}>Inbound</option>
+                <option value="outbound" {%if PageCategory == "outbound"%}selected{%endif%}>Outbound</option>
+                <option value="completed" {%if PageCategory == "completed"%}selected{%endif%}>Completed</option>
+                <option value="inactive" {%if PageCategory == "inactive"%}selected{%endif%}>Inactive</option>
+            </select>
+        </div>
+    </div>
+
+    <table class="table table-dark table-striped">
+        <thead>
+          <tr class="rounded-top">
+            <th scope="col" style="width: 5%;">ID</th>
+            <th scope="col" style="width: 10%;">Date</th>
+            <th scope="col" style="width: 10%;">Expires</th>
+            <th scope="col" style="width: 40%;">Trade Partner</th>
+            <th scope="col" style="width: 15%;">Status</th>
+            <th scope="col" style="width: 10%;">Action</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider" style="border-color: rgb(20,20,20);">
+        {% for TradeObj in TradeInfo: %}
+          <tr>
+            <th scope="row">{{TradeObj.TradeID}}</th>
+            <td>{{TradeObj.Created}}</td>
+            <td>{{TradeObj.Expiration}}</td>
+            <td>
+                <a href="/users/{{TradeObj.OppositeUser.id}}/profile" class="text-decoration-none text-truncate">
+                    <img class="rounded" style="aspect-ratio: 1/1;width: 35px;" src="/Thumbs/Head.ashx?x=48&y=48&userId={{TradeObj.OppositeUser.id}}" alt="{{TradeObj.OppositeUser.username}}">
+                     {{TradeObj.OppositeUser.username}}
+                </a>
+            </td>
+            <td>{{TradeObj.TradeStatus.name}}</td>
+            <td><a href="/trade/view/{{TradeObj.TradeID}}" class="text-decoration-none">View</a></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if len(TradeInfo) == 0: %}
+      <div class="text-center">
+          <p class="text-secondary">No trades found</p>
+      </div>
+    {%endif%}
+    <div class="align-items-center d-flex justify-content-center mt-2 mb-2">
+      <a class="ms-auto m-0 text-decoration-none {% if not TradeListObj.has_prev %}text-secondary{%endif%}" {% if TradeListObj.has_prev %}href="/trade?page={{TradeListObj.prev_num}}&category={{PageCategory}}"{%endif%}>Previous</a>
+      <p class="ms-2 me-2 text-white m-0">Page {{TradeListObj.page}} of {{TradeListObj.pages}}</p>
+      <a class="me-auto m-0 text-decoration-none {% if not TradeListObj.has_next %}text-secondary{%endif%}" {% if TradeListObj.has_next %}href="/trade?page={{TradeListObj.next_num}}&category={{PageCategory}}"{%endif%}>Next</a>
+    </div>
+</div>
+<script>const s = document.getElementById("change-category-select");s.addEventListener("change", function() {var u = new URL(window.location.href);var sb = s.value;u.searchParams.set("category", sb);u.searchParams.set("page",1);window.location.href = u;});</script>
+{%endblock%}

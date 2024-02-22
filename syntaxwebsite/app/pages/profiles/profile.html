@@ -1,0 +1,254 @@
+{% extends '__layout__.html' %}
+{% block title %}{{profile.username}}{% endblock %}
+{% block head %}
+<link href="/static/css/profile.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .border {
+        border-color: rgb(60,60,60) !important;
+    }
+    .nav-link {
+        color: #c7c7c7!important
+    }
+    .nav-link.active {
+        color: #fff!important
+    }
+    .place-card {
+        height: 220px !important;
+        aspect-ratio: 0.640909/1;
+    }
+    .place-card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 0px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="row mb-2">
+            <div class="col-md-7 d-flex">
+                <div class="image-container">
+                    <img class="rounded overflow-hidden" src="/Thumbs/Head.ashx?x=150&y=150&userId={{profile.id}}" width="130px" height="130px" alt="{{profile.username}}"/>
+                    {% if profile.isonline: %}<div class="status-icon {% if profile.ingame: %}status-icon-green{% endif %}"></div>{% endif %}
+                </div>
+                <div>
+                    <div class="d-flex align-items-center">
+                        <h1 class="m-0">{{profile.username}}</h1>
+                        {% if profile.membershipValue == 1: %}
+                            <span class="rbx-icon-bc ms-2"></span>
+                        {%endif%}
+                        {% if profile.membershipValue == 2: %}
+                            <span class="rbx-icon-tbc ms-2"></span>
+                        {%endif%}
+                        {% if profile.membershipValue == 3: %}
+                            <span class="rbx-icon-negative-obc ms-2"></span>
+                        {%endif%}
+                    </div>
+                    {% if profile.id != currentuser.id : %}
+                        {% if profile.doestargetuserfollowviewer: %}
+                            <p class="m-0" style="font-size: 11px;">This user is currently following you</p>
+                        {%endif%}
+                    {%endif%}
+                    <div class="d-flex mt-1">
+                        <div style="width: fit-content;" class="me-3">
+                            <p class="m-0 text-secondary w-100 text-center d-block" style="font-size: 15px;">Friends</p>
+                            <a href="/users/{{profile.id}}/friends" class="m-0 text-decoration-none text-white w-100 text-center d-block" style="font-size: 25px;">{{profile.friendcount}}</a>
+                        </div>
+                        <div style="width: fit-content;" class="me-3">
+                            <p class="m-0 text-secondary w-100 text-center d-block" style="font-size: 15px;">Followers</p>
+                            <a href="/users/{{profile.id}}/followers" class="m-0 text-decoration-none text-white w-100 text-center d-block" style="font-size: 25px;">{{profile.FollowerCount}}</a>
+                        </div>
+                        <div style="width: fit-content;" class="me-3">
+                            <p class="m-0 text-secondary w-100 text-center d-block" style="font-size: 15px;">Following</p>
+                            <a href="/users/{{profile.id}}/following" class="m-0 text-decoration-none text-white w-100 text-center d-block" style="font-size: 25px;">{{profile.FollowingCount}}</a>
+                        </div>
+                        <div style="width: fit-content;">
+                            <p class="m-0 text-secondary w-100 text-center d-block" style="font-size: 15px;">User RAP</p>
+                            <p class="m-0 text-decoration-none text-white w-100 text-center d-block" style="font-size: 25px;">{{profile.UserRAP}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div>
+                    <div class="dropdown d-flex justify-content-end">
+                        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if profile.id != currentuser.id : %}
+                                {% if not profile.isviewerfollowing: %}
+                                <li><form action="/users/{{profile.id}}/followuser" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/><button class="dropdown-item" type="submit">Follow</button></form></li>
+                                {%else%}
+                                <li><form action="/users/{{profile.id}}/unfollowuser" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/><button class="dropdown-item" type="submit">Unfollow</button></form></li>
+                                {%endif%}
+                                <li><a class="dropdown-item" href="/trade/{{profile.id}}/create">Trade</a></li>
+                            {% endif %}
+                          <li><a class="dropdown-item" href="/users/{{profile.id}}/inventory">Inventory</a></li>
+                        </ul>
+                    </div>
+                    {% if profile.id != currentuser.id : %}
+                    <div class="d-flex justify-content-end me-3 mt-4">
+                        <a href="/messages/new/{{profile.id}}"><button class="btn border me-2 text-white">Message</button></a>
+                        {% if profile.isfriends: %}
+                            <form action="/users/{{profile.id}}/unfriend" method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button class="btn border-danger text-danger">Unfriend</button>
+                            </form>
+                        {% else: %}
+                            {% if profile.friendrequestpending: %}
+                                <button class="btn border" disabled>Pending</button>
+                            {% else: %}
+                                {% if profile.friendrequesttoauthenticateduser: %}
+                                <form action="/users/{{profile.id}}/acceptfriend" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <button class="btn border-success">Accept Friend Request</button>
+                                </form>
+                                {% else: %}
+                                <form action="/users/{{profile.id}}/addfriend" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <button class="btn border text-white">Add Friend</button>
+                                </form>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <nav class="mt-3 rounded-top mb-2" style="background-color: rgb(40, 40, 40) !important;overflow: hidden;">
+            <div class="nav nav-underline nav-fill page-tabs" id="nav-tab" role="tablist">
+              <a href="#about" class="nav-link active" id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about" type="button" role="tab" aria-controls="nav-about" aria-selected="true">About</a>
+              <a href="#games" class="nav-link" id="nav-games-tab" data-bs-toggle="tab" data-bs-target="#nav-games" type="button" role="tab" aria-controls="nav-games" aria-selected="false">Games</a>
+            </div>
+        </nav>
+        <div class="tab-content ps-2 pe-2 pt-1 pb-3" id="nav-tabContent">
+            <div class="tab-pane show active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab" tabindex="0">
+                <h5 class="m-0 mb-1">Description</h5>
+                {% for line in descriptionlines: %}
+                    {% if line.strip() != '' %}
+                    <p class="text-secondary m-0">{{line}}</p>
+                    {%else%}
+                    <br>
+                    {%endif%}
+                {% endfor %}
+                <div class="linebreak"></div>
+                <div class="row">
+                    <div class="col-md-6 p-2">
+                        <img src="/Thumbs/Avatar.ashx?x=420&y=420&userId={{profile.id}}" class="w-100 border rounded" alt="{{profile.username}} Avatar" />
+                    </div>
+                    <div class="col-md-6 p-2">
+                        <div class="border rounded w-100 h-100 p-2">
+                            <h5 class="text-center w-100 m-0">Currently wearing</h5>
+                            <div class="row p-1">
+                                {% for asset in profile.wearing %}
+                                <div class="col-3 p-1">
+                                    <a href="/catalog/{{asset.asset_id}}/">
+                                        <img src="/Thumbs/Asset.ashx?assetId={{asset.asset_id}}&x=100&y=100" width="100%" class="rounded p-1" style="background-color: rgb(30,30,30);">
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <h5>Friends</h5>
+                    <div class="ms-auto">
+                        <a href="/users/{{profile.id}}/friends" class="text-decoration-none">View All ( {{profile.friendcount}} )</a>
+                    </div> 
+                </div>
+                <div class="rounded dark-container p-2 d-flex">
+                    {% for friend in profile.friendsdata %}
+                        <a href="/users/{{friend.id}}/profile">
+                            <div style="height: fit-content; width: 90px;" class="me-3">
+                                <div class="image-container-friend">
+                                    <img class="rounded w-100 d-table" src="/Thumbs/Head.ashx?x=100&y=100&userId={{friend.id}}" style="margin: 0 auto; max-width: 100px;aspect-ratio: 1/1;" alt="{{friend.username}}"/>
+                                    {% if friend.isonline: %}<div class="status-icon {% if friend.ingame: %}status-icon-green{% endif %}"></div>{% endif %}
+                                </div>
+                                <p class="text-white w-100 text-center d-inline-block m-0 text-truncate" style="font-size: 12px;">{{friend.username}}</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    {% if profile.friendcount == 0: %}
+                        <p style="margin: auto auto;" class="d-table">This user has no friends{% if profile.id != currentuser.id : %}, maybe you should send them a friend request!{% endif %}</p>
+                    {% endif %}
+                </div>
+                <div class="rounded mt-3 mb-3 p-2 dark-container row d-flex align-items-center" style="min-height: 75px !important;">
+                    <div class="col text-center">
+                        <b class="text-secondary">Join Date</b>
+                        <h4>{{profile.joindate}}</h4>
+                    </div>
+                    <div class="col text-center">
+                        <b class="text-secondary">Place Visits</b>
+                        <h4>{{profile.TotalVisits}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="nav-games" role="tabpanel" aria-labelledby="nav-games-tab" tabindex="0">
+                <h5 class="m-0 mb-1">Games</h5>
+                <div class="w-100 place-card-container">
+                    {% for place in profile.UserGames: %}
+                        <a class="text-decoration-none p-1" href="/games/{{place.id}}/{{place.slug}}">
+                            <div class="overflow-hidden place-card w-100">
+                                <div class="position-relative">
+                                    <img width="100%" style="aspect-ratio: 1/1;" src="/Thumbs/PlaceIcon.ashx?assetId={{place.id}}&x=150&y=150" alt="{{place.name}}">
+                                    <div class="position-absolute" style="bottom: 0px;left: 0px;">
+                                        <div class="fw-bold bg-dark text-white" style="font-size: 12px;padding: 3px;border-top-right-radius: 4px;">{{place.placeyear.value}}</div>
+                                    </div>
+                                </div>
+                                <div class="p-1">
+                                    <h5 class="mb-0" style="font-size: 17px;text-overflow: ellipsis;">{{place.name}}</h5>
+                                    <div class="d-flex align-items-center">
+                                        <p style="margin:0;font-size: 14px;" class="text-secondary"><i class="bi bi-people"></i> {{place.playingcount}} <span style="font-size: 13px;">Playing</span></p>
+                                    </div>
+                                    <div class="w-100 votePercentageBackground">
+                                        <div class="votePercentageFill" style="width: {{place.likePercentage}}%;"></div>
+                                        <div>
+                                            <div class="segment" style="left: 18%;"></div>
+                                            <div class="segment" style="left: 38%;"></div>
+                                            <div class="segment" style="left: 58%;"></div>
+                                            <div class="segment" style="left: 78%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+                {% if len(profile.UserGames) == 0:%}
+                    <p class="text-center w-100 p-5">This user has no games</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        var Navtabs = document.querySelectorAll(".page-tabs a");
+        Navtabs.forEach(function(element) {
+            element.addEventListener("click", function() {
+                var TabTarget = element.getAttribute("href");
+                window.location.hash = TabTarget;
+            });
+        });
+    });
+</script>
+{% endblock %}

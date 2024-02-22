@@ -1,0 +1,203 @@
+{% extends '__layout__.html' %}
+{% block title %}Games{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .place-card {
+        height: 220px !important;
+        aspect-ratio: 0.640909/1;
+    }
+    .place-card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 0px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="w-100 ps-4 pe-4 ms-auto me-auto" style="margin-top:100px;min-height: 100vh;max-width: 1950px;">
+    {% if GameLookupResults %}
+        <form method="get" class="ms-md-2 me-md-2" style="min-width: 250px;max-width: 500px;">
+                <div class="input-group">
+                <div class="form-floating" style="width: 52%;">
+                <input type="text" class="form-control" id="form-control" name="q" value="{% if SearchQuery != None %}{{SearchQuery}}{% endif %}" placeholder="Awesome Game">
+                <label for="search-input">Search</label>
+                </div>
+                
+                <button type="submit" class="btn btn-outline-primary fw-bold" style="min-width: 50px;"><i class="bi bi-search"></i></button>
+                </div>
+        </form>
+        <div class="p-2 w-100 place-card-container">
+            {% for place in GameLookupResults: %}
+            <a class="text-decoration-none p-1" href="/games/{{place.id}}/{{place.slug}}">
+                <div class="overflow-hidden place-card w-100">
+                    <div class="position-relative">
+                        <img width="100%" style="aspect-ratio: 1/1;" src="/Thumbs/PlaceIcon.ashx?assetId={{place.id}}&x=150&y=150" alt="{{place.name}}">
+                        <div class="position-absolute" style="bottom: 0px;left: 0px;">
+                            <div class="fw-bold bg-dark text-white" style="font-size: 12px;padding: 3px;border-top-right-radius: 4px;">{{place.placeyear.value}}</div>
+                        </div>
+                    </div>
+                    <div class="p-1">
+                        <h5 class="mb-0" style="font-size: 17px;text-overflow: ellipsis;">{{place.name}}</h5>
+                        <div class="d-flex align-items-center">
+                            <p style="margin:0;font-size: 14px;" class="text-secondary"><i class="bi bi-people"></i> {{place.playingcount}} <span style="font-size: 13px;">Playing</span></p>
+                        </div>
+                        <div class="w-100 votePercentageBackground">
+                            <div class="votePercentageFill" style="width: {{place.likePercentage}}%;"></div>
+                            <div>
+                                <div class="segment" style="left: 18%;"></div>
+                                <div class="segment" style="left: 38%;"></div>
+                                <div class="segment" style="left: 58%;"></div>
+                                <div class="segment" style="left: 78%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {%endfor%}
+        </div>
+        <div class="d-flex">
+            {% if GameLookupResultsBackendResult.has_prev: %}
+            <a href="/games?q={{SearchQuery}}&page={{GameLookupResultsBackendResult.prev_num}}" class="ms-auto text-decoration-none text-primary">Previous</a>
+            {%else%}
+            <a class="ms-auto text-decoration-none text-secondary">Previous</a>
+            {% endif %}
+            <p class="ms-2 me-2 text-white">Page {{GameLookupResultsBackendResult.page}} of {{GameLookupResultsBackendResult.pages}}</p>
+            {% if GameLookupResultsBackendResult.has_next: %}
+            <a href="/games?q={{SearchQuery}}&page={{GameLookupResultsBackendResult.next_num}}" class="me-auto text-decoration-none text-primary">Next</a>
+            {%else%}
+            <a class="me-auto text-decoration-none text-secondary">Next</a>
+            {% endif %}
+        </div>
+    {% elif not GameLookupResults and SearchQuery %}
+        <form method="get" class="ms-md-2 me-md-2" style="min-width: 250px;max-width: 500px;">
+            <div class="input-group">
+            <div class="form-floating" style="width: 52%;">
+            <input type="text" class="form-control" id="form-control" name="q" value="{% if SearchQuery != None %}{{SearchQuery}}{% endif %}" placeholder="Awesome Game">
+            <label for="search-input">Search</label>
+            </div>
+            
+            <button type="submit" class="btn btn-outline-primary fw-bold" style="min-width: 50px;"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+        <div class="w-100 p-2">
+            <p class="text-white m-auto">No results found for "{{SearchQuery}}"</p>
+        </div>
+    {% else %}
+        <div class="d-md-flex align-items-center w-100">
+            <div class="d-flex align-items-center">
+                <h1>Popular</h1>
+                <a class="ms-3 text-decoration-none" href="/games/popular/view">View All</a> 
+            </div>
+            <form method="get" class="ms-md-auto me-md-4" style="min-width: 300px;">
+                <div class="input-group">
+                <div class="form-floating" style="width: 52%;">
+                <input type="text" class="form-control" id="form-control" name="q" value="{% if SearchQuery != None %}{{SearchQuery}}{% endif %}" placeholder="Awesome Game">
+                <label for="search-input">Search</label>
+                </div>
+                
+                <button type="submit" class="btn btn-outline-primary fw-bold" style="min-width: 50px;"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+        </div>
+        <div class="p-2 w-100 place-card-container">
+            {% for place in PopularPlaces: %}
+            <a class="text-decoration-none p-1" href="/games/{{place.id}}/{{place.slug}}">
+                <div class="overflow-hidden place-card w-100">
+                    <div class="position-relative">
+                        <img width="100%" style="aspect-ratio: 1/1;" src="/Thumbs/PlaceIcon.ashx?assetId={{place.id}}&x=150&y=150" alt="{{place.name}}">
+                        <div class="position-absolute" style="bottom: 0px;left: 0px;">
+                            <div class="fw-bold bg-dark text-white" style="font-size: 12px;padding: 3px;border-top-right-radius: 4px;">{{place.placeyear.value}}</div>
+                        </div>
+                    </div>
+                    <div class="p-1">
+                        <h5 class="mb-0" style="font-size: 17px;text-overflow: ellipsis;">{{place.name}}</h5>
+                        <div class="d-flex align-items-center">
+                            <p style="margin:0;font-size: 14px;" class="text-secondary"><i class="bi bi-people"></i> {{place.playingcount}} <span style="font-size: 13px;">Playing</span></p>
+                        </div>
+                        <div class="w-100 votePercentageBackground">
+                            <div class="votePercentageFill" style="width: {{place.likePercentage}}%;"></div>
+                            <div>
+                                <div class="segment" style="left: 18%;"></div>
+                                <div class="segment" style="left: 38%;"></div>
+                                <div class="segment" style="left: 58%;"></div>
+                                <div class="segment" style="left: 78%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {%endfor%}
+        </div>
+        <div class="d-flex align-items-center">
+            <h1>Featured</h1>
+            <a class="ms-3 text-decoration-none" href="/games/featured/view">View All</a>
+        </div>
+        <div class="p-2 w-100 place-card-container">
+            {% for place in FeaturedPlacesInfo: %}
+            <a class="text-decoration-none p-1" href="/games/{{place.id}}/{{place.slug}}">
+                <div class="overflow-hidden place-card w-100">
+                    <div class="position-relative">
+                        <img width="100%" style="aspect-ratio: 1/1;" src="/Thumbs/PlaceIcon.ashx?assetId={{place.id}}&x=150&y=150" alt="{{place.name}}">
+                        <div class="position-absolute" style="bottom: 0px;left: 0px;">
+                            <div class="fw-bold bg-dark text-white" style="font-size: 12px;padding: 3px;border-top-right-radius: 4px;">{{place.placeyear.value}}</div>
+                        </div>
+                    </div>
+                    <div class="p-1">
+                        <h5 class="mb-0" style="font-size: 17px;text-overflow: ellipsis;">{{place.name}}</h5>
+                        <div class="d-flex align-items-center">
+                            <p style="margin:0;font-size: 14px;" class="text-secondary"><i class="bi bi-people"></i> {{place.playingcount}} <span style="font-size: 13px;">Playing</span></p>
+                        </div>
+                        <div class="w-100 votePercentageBackground">
+                            <div class="votePercentageFill" style="width: {{place.likePercentage}}%;"></div>
+                            <div>
+                                <div class="segment" style="left: 18%;"></div>
+                                <div class="segment" style="left: 38%;"></div>
+                                <div class="segment" style="left: 58%;"></div>
+                                <div class="segment" style="left: 78%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {%endfor%}
+        </div>
+        <div class="d-flex align-items-center">
+            <h1>Recently Updated</h1>
+            <a class="ms-3 text-decoration-none" href="/games/updated/view">View All</a>
+        </div>
+        <div class="p-2 w-100 place-card-container">
+            {% for place in RecentlyUpdatedPlaces: %}
+            <a class="text-decoration-none p-1" href="/games/{{place.id}}/{{place.slug}}">
+                <div class="overflow-hidden place-card w-100">
+                    <div class="position-relative">
+                        <img width="100%" style="aspect-ratio: 1/1;" src="/Thumbs/PlaceIcon.ashx?assetId={{place.id}}&x=150&y=150" alt="{{place.name}}">
+                        <div class="position-absolute" style="bottom: 0px;left: 0px;">
+                            <div class="fw-bold bg-dark text-white" style="font-size: 12px;padding: 3px;border-top-right-radius: 4px;">{{place.placeyear.value}}</div>
+                        </div>
+                    </div>
+                    <div class="p-1">
+                        <h5 class="mb-0" style="font-size: 17px;text-overflow: ellipsis;">{{place.name}}</h5>
+                        <div class="d-flex align-items-center">
+                            <p style="margin:0;font-size: 14px;" class="text-secondary"><i class="bi bi-people"></i> {{place.playingcount}} <span style="font-size: 13px;">Playing</span></p>
+                        </div>
+                        <div class="w-100 votePercentageBackground">
+                            <div class="votePercentageFill" style="width: {{place.likePercentage}}%;"></div>
+                            <div>
+                                <div class="segment" style="left: 18%;"></div>
+                                <div class="segment" style="left: 38%;"></div>
+                                <div class="segment" style="left: 58%;"></div>
+                                <div class="segment" style="left: 78%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {%endfor%}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

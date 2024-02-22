@@ -1,0 +1,64 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(175, 175, 175) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin/gameservers" class="btn border-primary btn-sm mb-2">Back to Game Server Manager</a>
+        <h1>Create Server</h1>
+        <div class="linebreak"></div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post" action="/admin/gameservers/create">
+            <div class="mb-2">
+                <label for="serverNameInput" class="form-label m-0">Server name</label>
+                <input type="text" class="form-control" id="serverNameInput" name="name" placeholder="Name" required>
+            </div>
+            <div class="mb-2">
+                <label for="serverIPinput" class="form-label m-0">Server IP</label>
+                <input type="text" class="form-control" id="serverIPinput" name="serverip" placeholder="1.1.1.1" required>
+            </div>
+            <div class="mb-2">
+                <label for="serverPortInput" class="form-label m-0">Server Port</label>
+                <input type="number" class="form-control" id="serverPortInput" name="serverport" placeholder="80" required>
+            </div>
+            <div class="mb-2">
+                <label for="serverAccessKeyInput" class="form-label m-0">Access Key</label>
+                <input type="password" class="form-control" id="serverAccessKeyInput" name="accesskey" placeholder="Access Key" required>
+            </div>
+            <div class="mb-2 row">
+                <div class="col">
+                    <input class="form-check-input" name="isThumbnailer" type="checkbox" id="isThumbnailerCheckbox" checked>
+                    <label class="form-check-label" for="isThumbnailerCheckbox">
+                        <p>Allow Thumbnail Rendering</p>
+                    </label>
+                </div>
+                <div class="col">
+                    <input class="form-check-input" name="isGameHoster" type="checkbox" id="isGameHosterCheckbox" checked>
+                    <label class="form-check-label" for="isGameHosterCheckbox">
+                        <p>Allow Game server hosting</p>
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Create</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .show-on-hover {
+        filter: blur(4px);
+        transition: 0.2s;
+    }
+    .show-on-hover:hover {
+        filter: blur(0px);
+        transition: 0.2s;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a class="mb-2" href="/admin/manage-users/{{userObj.id}}"> < Return to User Page</a>
+        <div class="d-flex align-items-center">
+            <img height="100px" style="aspect-ratio: 1/1;" class="rounded-2" src="/Thumbs/Avatar.ashx?userId={{userObj.id}}&x=100&y=100">
+            <div>
+                <h1 class="m-0 text-secondary">Ban <span class="text-white">{{userObj.username}}</span></h1>
+                <p class="text-secondary m-0" style="font-size: 12px;">UserId: <span class="text-white">{{userObj.id}}</span></p>
+            </div>
+        </div>
+        {% if LastestUserBanObj != None: %}
+        <div class="alert alert-danger">
+            This user currently has a ongoing ban, please revoke the previous ban before banning again.
+        </div>
+        {% endif %}
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="linebreak"></div>
+        <form method="post">
+            <div class="form-floating">
+                <select name="ban_type" class="form-control" id="ban-type-select">
+                    <option value="0" selected>Warning</option>
+                    <option value="1">1 Day Ban</option>
+                    <option value="2">3 Day Ban</option>
+                    <option value="3">7 Day Ban</option>
+                    <option value="4">14 Day Ban</option>
+                    <option value="5">30 Day Ban</option>
+                    <option value="6">Account Deleted</option>
+                </select>
+                <label for="ban-type-select">Ban Type</label>
+            </div>
+            <div class="form-floating mt-2">
+                <input type="text" class="form-control" name="ban_reason" id="ban-reason-input" placeholder="Reason" required>
+                <label for="ban-reason-input">Reason</label>
+            </div>
+            <div class="form-floating mt-2">
+                <input type="text" class="form-control" name="ban_notes" id="ban-notes-input" placeholder="Notes" required>
+                <label for="ban-notes-input">Moderator Note ( Internal )</label>
+            </div>
+            <p class="m-0 text-secondary" style="font-size: 13px;">Please try to include links to evidence that lead to this ban</p>
+            <div class="form-floating mt-2">
+                <input type="password" class="form-control" name="totp_code" id="totp_code-input" placeholder="2FA Code" required>
+                <label for="ban-notes-public-input">2FA Code</label>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <div class="linebreak"></div>
+            {% if not LastestUserBanObj != None: %}
+            <button type="submit" class="btn btn-danger mt-2 w-100 btn-sm">Ban User</button>
+            {% else%}
+            <button class="btn btn-danger mt-2 w-100 btn-sm" disabled>Ban User</button>
+            {% endif %}
+        </form>
+        {% if LastestUserBanObj != None: %}
+        <form method="post" action="/admin/manage-users/{{userObj.id}}/ban-user/revoke-ban?banid={{LastestUserBanObj.id}}">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <button class="btn btn-warning mt-2 w-100 btn-sm">Unban User</button>
+        </form>
+        {%endif%}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'develop/universes/manage-template.html' %}
+{% block subcontent %}
+    <h4>Basic Settings</h4>
+    <form method="post">
+        <input type="text" name="name" class="form-control" placeholder="Name" value="{{RootPlaceAssetObj.name}}" required>
+        <textarea name="description" class="form-control mt-2" placeholder="Description" style="min-height: 150px;" required>{{RootPlaceAssetObj.description}}</textarea>
+        <p class="text-secondary m-0 mb-1" style="font-size: 13px;">Updating name and description will update the Starting Place name and description</p>
+        <h5 class="mt-2">Place Year</h5>
+        <select name="place_year" class="form-control">
+            <option value="2014" {% if UniverseObj.place_year.value == 2014 %}selected{%endif%}>2014</option>
+            <option value="2016" {% if UniverseObj.place_year.value == 2016 %}selected{%endif%}>2016</option>
+            <option value="2018" {% if UniverseObj.place_year.value == 2018 %}selected{%endif%}>2018</option>
+            <option value="2020" {% if UniverseObj.place_year.value == 2020 %}selected{%endif%}>2020</option>
+            <option value="2021" {% if UniverseObj.place_year.value == 2021 %}selected{%endif%}>2021</option>
+        </select>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mt-2">
+            <button type="submit" class="btn btn-success btn-sm w-100">Save</button>
+        </div>
+    </form>
+{% endblock %}

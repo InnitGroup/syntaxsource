@@ -1,0 +1,41 @@
+{% extends '__layout__.html' %}
+{% block title %}Clothing Migrator{% endblock %}
+{% block head %}
+<link href="/static/css/settings.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="settings-container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h1>Clothing Migrator</h1>
+        <p class="m-0 text-secondary" style="font-size:12px;">This will take a clothing from the Roblox website and will be sold for 5 robux. ( Allowed assets: TShirt, Shirt, Pants )</p>
+        <div class="linebreak"></div>
+        <form method="post">
+            <input type="text" name="asseturl" class="form-control w-100" placeholder="Asset URL ( eg. https://www.roblox.com/catalog/123456789/shirt )" required>
+            <div class="d-flex justify-content-end align-items-top mt-2">
+                <div class="cf-turnstile" data-theme="dark" data-sitekey="{{turnstilekey}}"></div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="ms-3">
+                    <button type="submit" class="btn btn-primary btn-sm">Migrate Clothing</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

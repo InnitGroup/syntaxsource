@@ -1,0 +1,47 @@
+{% extends '__layout__.html' %}
+{% block title %}Redeem{% endblock %}
+{% block head %}
+<link href="/static/css/settings.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="settings-container" style="max-width: 700px;">
+        <h1 class="mb-2">Giftcard Redeem</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post">
+            <input type="text" name="giftcard-key" class="form-control w-100" placeholder="Giftcard Key ( eg. AAAAA-12345-BBBBB-67890-CCCCC )" required>
+            <div class="d-flex justify-content-end align-items-top mt-2">
+                <p class="m-0 text-secondary me-1" style="font-size:11px;">Note: If you are redeeming a higher membership than your current one, your expiration date will not be brought over and will be resetted</p>
+                <div class="cf-turnstile" data-theme="dark" data-sitekey="{{turnstilekey}}"></div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="ms-3">
+                    <button type="submit" class="btn btn-primary btn-sm">Redeem</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'develop/universes/manage-template.html' %}
+{% block subcontent %}
+    <div class="d-flex align-items-center">
+        <h4 class="m-0">Edit Developer Product</h4>
+        <div class="ms-auto">
+            <a href="/develop/universes/{{UniverseObj.id}}/developer-products" class="text-decoration-none m-0">Manage Developer Products</a>
+        </div>
+    </div>
+    <div class="linebreak"></div>
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-5">
+                <img style="aspect-ratio:1/1; max-width: 400px; max-height: 400px;" width="100%" src="/Thumbs/Asset.ashx?assetId={{ProductObj.iconimage_assetid}}&x=352&y=352" class="rounded">
+                <div class="mt-2">
+                    <input type="file" class="form-control" name="icon-file" id="file" class="mt-2">
+                    <p class="text-secondary m-0 mt-1" style="font-size: 12px;">Must be a PNG, minimum 128x128 and maximum 1024x1024, less than 1mb</p>
+                </div>
+            </div>
+            <div class="col-md-7 pt-2 pb-2 ps-4 pe-4 ps-md-1 pe-md-1">
+                <form method="post">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" id="item-name" name="product-name" placeholder="Awesome Item!" required value="{{ProductObj.name}}">
+                        <label for="item-name">Name</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <textarea class="form-control mt-2" placeholder="Description" style="min-height: 150px;" name="product-description">{{ProductObj.description}}</textarea>
+                        <label for="item-description">Description</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" {% if ProductObj.is_for_sale: %}checked{%endif%} id="isForSaleCheckbox" name="is-for-sale">
+                        <label class="form-check-label" for="isForSaleCheckbox">
+                            For Sale
+                        </label>
+                    </div>
+                    <div class="p-1 row">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">R$</span>
+                                <input type="number" class="form-control" placeholder="Robux" aria-label="Robux" name="robux-cost" value="{{ProductObj.robux_price}}">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <p style="font-size:13px;">* Syntax will take a 30% fee from the sale</p>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-primary btn-sm w-100 text-center">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </form>
+{% endblock %}

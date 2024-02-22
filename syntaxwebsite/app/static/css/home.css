@@ -1,0 +1,37 @@
+#main {
+    display: flex;
+    min-height: 100vh;
+    margin-top: 120px;
+}
+
+.card-container {
+    background-color: rgb(30,30,30) !important;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+
+.status-icon {
+    position: absolute;
+    bottom : -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgb(0, 139, 219);
+    border: 2px solid rgb(30,30,30);
+}
+
+.status-icon-green {
+    background-color: rgb(15, 211, 80) !important;
+}
+
+.image-container {
+    position: relative;
+    display: table;
+    margin: 0 auto;
+
+}
+
+.text-secondary {
+    color: rgb(180, 180, 180) !important;
+}

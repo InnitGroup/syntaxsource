@@ -1,0 +1,69 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .show-on-hover {
+        filter: blur(4px);
+        transition: 0.2s;
+    }
+    .show-on-hover:hover {
+        filter: blur(0px);
+        transition: 0.2s;
+    }
+    .bg-dark {
+        background-color: rgb(32, 32, 32) !important;
+        box-shadow: 0px 0px 5px 0px rgb(0,0,0);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a class="mb-2" href="/admin/manage-users/{{userObj.id}}"> < Return to User Page</a>
+        <div class="d-flex align-items-center">
+            <img height="100px" style="aspect-ratio: 1/1;" class="rounded-2" src="/Thumbs/Avatar.ashx?userId={{userObj.id}}&x=100&y=100">
+            <div>
+                <h1 class="m-0 {% if userObj.accountstatus == 1 %}text-white{% elif userObj.accountstatus == 2 %}text-warning{% elif userObj.accountstatus == 3%}text-danger{% else %}text-decoration-line-through text-white{%endif%}">{{userObj.username}}<span class="text-secondary"> Ban History</span></h1>
+                <p class="text-secondary m-0" style="font-size: 12px;">UserId: <span class="text-white">{{userObj.id}}</span></p>
+            </div>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="p-1">
+            {% for banRecord in BanHistory %}
+            <div class="w-100 bg-dark p-2 mb-2 mt-2">
+                <h4 class="m-0">{{banRecord.ban_type.name}}</h4>
+                <p class="m-0 text-secondary" style="font-size: 14px;">Reason: <span class="text-white">{{banRecord.reason}}</span></p>
+                <p class="m-0 text-secondary" style="font-size: 14px;">Moderator Note: <span class="text-white">{{banRecord.moderator_note}}</span></p>
+                <p class="m-0 text-secondary" style="font-size: 12px;">Ban Author: <a href="/admin/manage-users/{{banRecord.author_userid}}">{{GetBanAuthorName(banRecord)}}</a></p>
+                <div class="linebreak"></div>
+                <div class="d-flex">
+                    <p class="m-0 text-secondary me-auto ms-auto" style="font-size: 14px;">Banned At: <span class="text-white">{{banRecord.created_at}}</span></p>
+                    <p class="m-0 text-secondary me-auto ms-auto" style="font-size: 14px;">Expires At: <span class="text-white">{{banRecord.expires_at}}</span></p>
+                    <p class="m-0 text-secondary me-auto ms-auto" style="font-size: 14px;">Acknowledged: <span class="text-white">{{banRecord.acknowledged}}</span></p>
+                </div>
+            </div>
+            {% endfor %}
+            {% if len(BanHistory.items) == 0 %}
+            <p class="text-secondary m-5 text-center w-100">No previous bans</p>
+            {% endif %}
+        </div>
+        <div class="align-items-center d-flex justify-content-center mt-2 mb-2">
+            <a class="ms-auto m-0 text-decoration-none {% if not BanHistory.has_prev %}text-secondary{%endif%}" {% if BanHistory.has_prev %}href="/admin/manage-users/{{userObj.id}}/ban-history?page={{BanHistory.prev_num}}"{%endif%}>Previous</a>
+            <p class="ms-2 me-2 text-white m-0">Page {{BanHistory.page}} of {{BanHistory.pages}}</p>
+            <a class="me-auto m-0 text-decoration-none {% if not BanHistory.has_next %}text-secondary{%endif%}" {% if BanHistory.has_next %}href="/admin/manage-users/{{userObj.id}}/ban-history?page={{BanHistory.next_num}}"{%endif%}>Next</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

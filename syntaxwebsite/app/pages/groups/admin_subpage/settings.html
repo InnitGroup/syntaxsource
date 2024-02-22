@@ -1,0 +1,60 @@
+{% extends 'groups/admin_template.html' %}
+{% block page_content%}
+<h3>
+    Settings
+</h3>
+<form enctype="multipart/form-data" method="post" class="ms-2">
+    <div>
+        <h5 class="mb-1">Requires Approval</h5>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="approval-required" id="approval-required1" value="off"{%if group.settings.approval_required == False %}checked{%endif%}>
+            <label class="form-check-label" for="approval-required1">
+              Anyone can join
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="approval-required" id="approval-required2" value="on"{%if group.settings.approval_required %}checked{%endif%}>
+            <label class="form-check-label" for="approval-required2">
+              Manual approval
+            </label>
+        </div>
+    </div>
+    <div class="mt-3">
+        <h5 class="mb-1">Entry Qualifications</h5>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="membership-required" id="membership-required"{%if group.settings.membership_required %}checked{%endif%}>
+            <label class="form-check-label" for="membership-required">
+                User must have Builders Club
+            </label>
+        </div>
+    </div>
+    <div class="mt-3">
+        <h5 class="mb-1">Miscellaneous</h5>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="declaration-allowed" id="declaration-allowed"{%if group.settings.enemies_allowed %}checked{%endif%}>
+            <label class="form-check-label" for="declaration-allowed">
+                Allow enemy declarations
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="funds-visible" id="funds-visible"{%if group.settings.funds_visible %}checked{%endif%}>
+            <label class="form-check-label" for="funds-visible">
+                Group funds are publicly visible
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="games-visible" id="games-visible"{%if group.settings.games_visible %}checked{%endif%}>
+            <label class="form-check-label" for="games-visible">
+                Group games are visible on the group home page
+            </label>
+        </div>
+    </div> 
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary" {%if group.owner_id != user.id %}disabled{%endif%}>Save</button>
+        {%if group.owner_id != user.id %}
+        <p class="text-secondary m-0 mt-1">Only the owner of the group can modify the group settings</p>
+        {%endif%}
+    </div>
+</form>
+{%endblock%}

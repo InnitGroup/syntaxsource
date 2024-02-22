@@ -1,0 +1,45 @@
+{% extends '__layout__.html' %}
+{% block title %}Signup{% endblock %}
+{% block head %}
+<link href="/static/css/signup.css" rel="stylesheet"/>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="signup-container d-flex align-items-center justify-content-center">
+        <div style="padding: 10px;min-width:300px;" class="ps-md-4 pe-md-4">
+            <h1>SYNTAX</h1>
+            <p>experience joy with freedom</p>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div>
+            {% for message in messages %}
+                <div class="alert border border-danger p-2 text-center messagealerts">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <form action="/signup" method="post">
+                <input type="text" id="username" name="username" class="form-control" placeholder="Username" value="" required>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password" value="" required>
+                <!-- <input type="text" id="invite-key" name="invite-key" class="form-control mb-2" placeholder="Invite Key" value="" required> -->
+                <div id="checkboxTerms">
+                    <input class="form-check-input" name="agreetoTermsandPrivacy" type="checkbox" id="agreeCheckbox" required>
+                    <label class="form-check-label" for="agreeCheckbox">
+                        <p>I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a></p>
+                    </label>
+                </div>
+                <div class="cf-turnstile d-table mb-2" style="margin: 0 auto;" data-theme="dark" data-sitekey="{{turnstilekey}}"></div>
+                {% if SignupEnabled: %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>{%endif%}
+                <button type="submit" class="btn btn-primary mb-3" {% if not SignupEnabled: %}disabled{% endif %}>Signup</button>
+            </form>
+            <div class="text-center mt-2">
+                <p>Already have an account? <a href="/login">Login</a> • <a href="https://discord.gg/cBMp3Z52UM">Discord</a></p>
+            </div>
+        </div>
+        <img style="aspect-ratio: 7/4;min-height: 400px;max-height: 550px;" class="d-lg-block d-none" src="/static/img/LoginImage2.png" alt="Signup Image">
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends '__layout__.html' %}
+{% block title %}View Payment{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div style="min-height: 100vh;width: 100%;padding: 20px;margin-top: 100px;max-width: 1200px;min-width: 900px;" class="ms-auto me-auto">
+    <a href="/cryptomus_service/dashboard" class="text-white text-decoration-none"><i class="bi bi-caret-left"></i> Return to payment dashboard</a>
+    <div class="w-100 p-2">
+        <div class="d-flex align-items-center">
+            <div>
+                <h2 class="m-0">Invoice</h2>
+                <p class="text-secondary m-0">ID: {{InvoiceObj.cryptomus_invoice_id}}</p>
+            </div>
+            <div class="ms-auto">
+                <a href="/cryptomus_service/pay_invoice/{{ InvoiceObj.id }}" class="btn btn-lg btn-light ms-auto {% if InvoiceObj.is_final %}disabled{% endif %}" style="font-weight: 600;"><i class="bi bi-coin"></i> Pay Invoice</a>
+            </div>
+        </div>
+        <div class="linebreak"></div>
+        <div class="d-flex">
+            <div class="p-1" style="width: 50%;">
+                <div class="border-bottom" style="border-color: rgb(60,60,60) !important;">
+                    <h4 class="m-0">Invoice Details</h4>
+                    <div class="p-1">
+                        <p class="text-secondary m-0">Created at: <span class="text-white">{{InvoiceObj.created_at.strftime("%d/%m/%Y %H:%M:%S UTC")}}</span></p>
+                        <p class="text-secondary m-0">Expires at: <span class="text-white">{{InvoiceObj.expires_at.strftime("%d/%m/%Y %H:%M:%S UTC")}}</span></p>
+                        <p class="text-secondary m-0">Last Status Update: <span class="text-white">{{InvoiceObj.updated_at.strftime("%d/%m/%Y %H:%M:%S UTC")}}</span></p>
+                        <p class="text-secondary m-0">Invoice Status: <span class="text-white">{{InvoiceObj.status.name}}</span></p>
+                        <p class="text-secondary m-0">Is Finalised: <span class="text-white">{% if InvoiceObj.is_final %}Yes{% else %}No{% endif %}</span></p>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <h4 class="m-0">Payment Details</h4>
+                    <div class="p-1">
+                        <p class="text-secondary m-0">Required Amount: <span class="text-white">{{ round( InvoiceObj.required_amount, 2 )}} {{InvoiceObj.currency}}</span></p>
+                        <p class="text-secondary m-0">USD received: <span class="text-white">{{ round( InvoiceObj.paid_amount_usd, 2 )}} USD</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-1" style="width: 50%;">
+                <div>
+                    <h4 class="m-0">Additional Details</h4>
+                    <div class="p-1">
+                        {% if InvoiceObj.assigned_key == None %}
+                        <p class="text-secondary w-100 text-center m-2" style="font-size: 14px;">No additional details</p>
+                        {% else %}
+                        <div class="p-2" style="background-color: rgb(15,15,15);border: 1px solid rgb(60,60,60);border-radius: 4px;">
+                            <p class="text-secondary m-0 mb-1" style="font-size: 13px;">Outrageous Builders Club 1 Month</p>
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="assigned-key" value="{{InvoiceObj.assigned_key}}" readonly>
+                                <label for="assigned-key">Assigned Key</label>
+                            </div>
+                            <p class="text-secondary m-0 mt-1" style="font-size: 13px;">Redeem this key at <a href="/giftcard-redeem" class="text-decoration-none">www.syntax.eco/giftcard-redeem</a> or give it to a friend</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="linebreak"></div>
+        <p class="text-secondary" style="font-size: 14px;">If you have any issues with paying, viewing or receving your item please open a billing ticket in our <a href="https://discord.gg/cBMp3Z52UM" class="text-decoration-none">Discord Server</a></p>
+    </div>
+</div>
+{% endblock %}

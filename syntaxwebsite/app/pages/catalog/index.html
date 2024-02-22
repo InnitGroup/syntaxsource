@@ -1,0 +1,185 @@
+{% extends '__layout__.html' %}
+{% block title %}Catalog{% endblock %}
+{% block head %}
+<link href="/static/css/catalog.css" rel="stylesheet"/>
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    a {
+        text-decoration: none !important;
+        color: inherit;
+    }
+    .text-tickets {
+        color: rgb(224, 224, 60) !important;
+        font-size: small;
+        font-weight: 600;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-size: small;
+        font-weight: 600;
+    }
+    .text-limited {
+        color: rgb(255,255,255) !important;
+        background-color: rgb(9, 136, 62);
+        width: fit-content;
+        padding-left: 10px;
+        font-size: 10px;
+        border-top-right-radius: 5px;
+        margin: 0;
+    }
+    .text-limitedu {
+        color: rgb(0,0,0) !important;
+        background-color: rgb(245, 245, 52);
+        padding-right: 3px;
+        font-weight: 800;
+        border-top-right-radius: 5px;
+        padding-left: 3px;
+    }
+    .text-remaining {
+        color: rgb(197, 21, 21) !important;
+        font-size: 10px;
+        font-weight: 600;
+    }
+</style>
+<meta id="catalog-info" data-category-id="{{categoryid}}">
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 1200px;">
+        <div class="d-md-flex">
+            <h1>Catalog</h1>
+            <div class="ms-md-5 row d-flex w-100 align-items-center">
+                <form method="post">
+                    <div class="input-group">
+                        <div class="form-floating" style="width: 52%;">
+                            <input type="text" class="form-control" id="search-input" name="search-input" {%if query != None: %}value="{{query}}"{%endif%} placeholder="Awesome Shirt">
+                            <label for="search-input">Search</label>
+                        </div>
+                        <div class="form-floating" style="min-width: 160px;">
+                            <select class="form-select" id="order-by" name="order-by">
+                                <option value="0">Relevance</option>
+                                <option value="1" {%if SortType == 1 %}selected{%endif%}>Price (Low to High)</option>
+                                <option value="2" {%if SortType == 2 %}selected{%endif%}>Price (High to Low)</option>
+                                <option value="3" {%if SortType == 3 %}selected{%endif%}>Recently Updated</option>
+                                <option value="4" {%if SortType == 4 %}selected{%endif%}>Best Selling</option>
+                            </select>
+                            <label for="order-by">Order By</label>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary fw-bold" style="min-width: 50px;"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 p-0 mt-3 pb-3">
+                <div class="border rounded p-2" style="background-color: rgb(19, 19, 19);">
+                    <h5 class="text-center m-1" style="font-size: 20px;">Categories</h5>
+                    <div class="row">
+                        <div class="text-white col-md-12 col-sm-6">
+                            <a href="/catalog/?category=0"><b>Featured</b></a>
+                            <div class="ms-2 text-secondary">
+                                <a href="/catalog/?category=1"><p class="m-0">Featured Hats</p></a>
+                                <a href="/catalog/?category=2"><p class="m-0">Featured Gears</p></a>
+                                <a href="/catalog/?category=3"><p class="m-0">Featured Faces</p></a>
+                            </div>
+                        </div>
+                        <div class="text-white col-md-12 col-sm-6">
+                            <a href="/catalog/?category=4"><b>Collectibles</b></a>
+                            <div class="ms-2 text-secondary">
+                                <a href="/catalog/?category=5"><p class="m-0">Collectible Hats</p></a>
+                                <a href="/catalog/?category=6"><p class="m-0">Collectible Gears</p></a>
+                                <a href="/catalog/?category=7"><p class="m-0">Collectible Faces</p></a>
+                            </div>
+                        </div>
+                        <div class="text-white col-md-12 col-sm-6">
+                            <a  href="/catalog/?category=8"><b>Clothing</b></a>
+                            <div class="ms-2 text-secondary">
+                                <a href="/catalog/?category=9"><p class="m-0">Hats</p></a>
+                                <a href="/catalog/?category=10"><p class="m-0">Shirts</p></a>
+                                <a href="/catalog/?category=11"><p class="m-0">T-Shirts</p></a>
+                                <a href="/catalog/?category=12"><p class="m-0">Pants</p></a>
+                                <a href="/catalog/?category=13"><p class="m-0">Packages</p></a>
+                            </div>
+                        </div>
+                        <div class="text-white col-md-12 col-sm-6">
+                            <a href="/catalog/?category=14"><b>Body Parts</b></a>
+                            <div class="ms-2 text-secondary">
+                                <a href="/catalog/?category=41"><p class="m-0">Hairs</p></a>
+                                <a href="/catalog/?category=15"><p class="m-0">Heads</p></a>
+                                <a href="/catalog/?category=16"><p class="m-0">Faces</p></a>
+                                <a href="/catalog/?category=13"><p class="m-0">Packages</p></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mt-3">
+                <h3 class="mb-1">{{categoryname}}</h3>
+                <div class="row">
+                    {% for item in queryResults %}
+                        <div class="col-md-2 col-3 p-1">
+                            <a href="/catalog/{{item.id}}/">
+                            <div class="rounded item-card p-2">
+                                <div class="border rounded overflow-hidden position-relative">
+                                    <img src="/Thumbs/Asset.ashx?x=180&y=180&assetId={{item.id}}" width="100%" style="aspect-ratio: 1/1;" alt="{{item.name}}">
+                                    {% if item.is_limited: %}<p class="position-absolute m-0 fw-bold text-limited" style="bottom:-1px;left:0px;">LIMITED {%if item.is_limited_unique: %}<span class="text-limitedu">U</span>{%else%}<span class="me-2"></span>{%endif%}</p>{% endif %}
+                                    {% if item.offsale_at != None %}<p class="position-absolute bg-danger m-0" style="top: 0px;right: 0px;border-bottom-left-radius: 10px;padding: 5px;"><i class="bi bi-alarm text-white"></i></p>{% endif %}
+                                </div>
+                                <p class="text-secondary m-0" style="font-size:12px;">{{item.name}}</p>
+                                {% if item.is_for_sale: %}
+                                    {% if item.price_robux == 0 and item.price_tix == 0: %}
+                                        <p class="text-robux m-0 ">FREE</p>
+                                    {% else %}
+                                        {% if item.price_robux != 0: %}
+                                            <p class="text-robux m-0">R$ {{item.price_robux}}</p>
+                                        {% endif %}
+                                        {% if item.price_tix != 0: %}
+                                            <p class="text-tickets m-0">T$ {{item.price_tix}}</p>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if item.is_limited_unique : %}
+                                        <p class="text-remaining m-0">Remaining: <span class="text-white">{{item.serial_count - item.sale_count}}</span></p>
+                                    {%endif%}
+                                {% else %}
+                                    {% if item.is_limited: %}
+                                        {% if item.price_robux == 0 and item.price_tix != 0: %}
+                                            <p class="text-tickets m-0"><span class="text-secondary fw-normal">was</span> T$ {{item.price_tix or "-"}}</p>
+                                        {% elif item.price_robux != 0 and item.price_tix != 0: %}
+                                            <p class="text-robux m-0"><span class="text-secondary fw-normal">was</span> R$ {{item.price_robux or "-"}}</p>
+                                        {% elif item.price_robux != 0 and item.price_tix == 0: %}
+                                            <p class="text-robux m-0"><span class="text-secondary fw-normal">was</span> R$ {{item.price_robux or "-"}}</p>
+                                        {% else %}
+                                        <p class="text-robux m-0"><span class="text-secondary fw-normal">was</span> FREE</p>
+                                        {% endif %}
+                                        <p class="text-robux m-0"><span class="text-secondary fw-normal">now</span> R$ {{item.best_price}}</p>
+                                    {%else%}
+                                        <p class="text-secondary m-0 ">Offsale</p>
+                                    {% endif %}
+                                {% endif %}
+                            </div></a>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if len(queryResults) == 0: %}
+                <p class="w-100 text-center mt-5 mb-5">No results found</p>
+                {% endif %}
+                <div class="d-flex">
+                    {% if PreviousPage > 0: %}
+                    <a href="/catalog/?category={{CatalogType}}&page={{PreviousPage}}&sort={{SortType}}" class="ms-auto text-decoration-none text-primary">Previous</a>
+                    {%else%}
+                    <a class="ms-auto text-decoration-none text-secondary">Previous</a>
+                    {% endif %}
+                    <p class="ms-2 me-2 text-white">Page {{PageNumber}} of {{totalPages}}</p>
+                    {% if NextPage > 0: %}
+                    <a href="/catalog/?category={{CatalogType}}&page={{NextPage}}&sort={{SortType}}" class="me-auto text-decoration-none text-primary">Next</a>
+                    {%else%}
+                    <a class="me-auto text-decoration-none text-secondary">Next</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

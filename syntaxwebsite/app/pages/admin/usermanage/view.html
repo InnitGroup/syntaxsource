@@ -1,0 +1,191 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .show-on-hover {
+        filter: blur(4px);
+        transition: 0.2s;
+    }
+    .show-on-hover:hover {
+        filter: blur(0px);
+        transition: 0.2s;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="min-width: 1100px;">
+        <div class="d-flex">
+            <a href="/admin/manage-users" class="btn border-success btn-sm mb-2">Back to User Manager</a>
+            <a href="/users/{{userObj.id}}/profile" class="btn border-primary btn-sm mb-2 ms-3">View user profile</a>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert alert-danger p-2 text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="row">
+            <div class="col-3">
+                <div class="border rounded-2">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <img width="30px" height="30px" class="rounded me-2" src="/Thumbs/Head.ashx?x=48&y=48&userId={{userObj.id}}" style="aspect-ratio: 1/1;">
+                            <h5 class="m-0">{{userObj.username}}</h5>
+                        </div>
+                    </div>
+                    <img width="100%" class="p-2" src="/Thumbs/Avatar.ashx?x=420&y=420&userId={{userObj.id}}" style="aspect-ratio: 1/1;">
+                    {% if isAdministrator: %}
+                    <div class="border-top" style="background-color: rgba(24, 220, 255,0.5);font-size:12px;padding:3px;">
+                        <p class="m-0 fw-bold text-white text-center">Administrator</p>
+                    </div>
+                    {% endif %}
+                    {% if userObj.accountstatus == 2: %}
+                    <div class="border-top" style="background-color: rgba(255, 201, 24, 0.5);font-size:12px;padding:3px;">
+                        <p class="m-0 fw-bold text-white text-center">This account is temporarily banned</p>
+                    </div>
+                    {% endif %}
+                    {% if userObj.accountstatus == 3: %}
+                    <div class="border-top" style="background-color: rgba(255, 24, 24, 0.5);font-size:12px;padding:3px;">
+                        <p class="m-0 fw-bold text-white text-center">This account has been deleted</p>
+                    </div>
+                    {% endif %}
+                    {% if userObj.accountstatus == 4: %}
+                    <div class="border-top" style="background-color: rgba(255, 24, 243, 0.5);font-size:12px;padding:3px;">
+                        <p class="m-0 fw-bold text-white text-center">This account is GDPR deleted</p>
+                    </div>
+                    {% endif %}
+                    <div class="bg-dark p-2 rounded-2 rounded-top-0 border-top text-secondary" style="font-size: 13px;">
+                        <span>Created: <span class="text-white">{{userObj.created}}</span></span>
+                        <br>
+                        <span>Last Online: <span class="text-white">{{userObj.lastonline}}</span></span>
+                        <br>
+                        <span>2FA Enabled: <span class="text-white">{{userObj.TOTPEnabled}}</span></span>
+                        <br>
+                        <span>Place Visits: <span class="text-white">{{TotalVisits}}</span></span>
+                    </div>
+                </div>
+                <div class="border rounded-2 mt-2">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0 border-bottom">
+                        <h5 class="m-0">Economy</h5>
+                    </div>
+                    <div class="text-secondary p-2 pt-1" style="font-size: 13px;">
+                        <span>Robux: <span class="text-success fw-bold">R${{UserEconomyObj.robux}}</span></span>
+                        <br>
+                        <span>Tickets: <span class="text-warning fw-bold">T${{UserEconomyObj.tix}}</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-7">
+                {% if LastestUserBanObj != None: %}
+                <div class="border rounded-2 mb-2">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0 border-bottom">
+                        <h5 class="m-0">Ban Information</h5>
+                    </div>
+                    <div class="p-2 text-secondary text-truncate" style="font-size: 14px;">
+                        <span>Ban Type: <span class="text-white">{{LastestUserBanObj.ban_type.name}}</span></span>
+                        <br>
+                        <span>Banned On: <span class="text-white">{{LastestUserBanObj.created_at}}</span></span>
+                        <br>
+                        <span>Expires On: <span class="text-white">{{LastestUserBanObj.expires_at}}</span></span>
+                        <br>
+                        <span>Reason: <span class="text-white">{{LastestUserBanObj.reason}}</span></span>
+                        <br>
+                        <span>Moderator Note: <span class="text-white" style="word-break: break-all;white-space: normal;">{{LastestUserBanObj.moderator_note}}</span></span>
+                        <br>
+                        <span>Banned By: <a class="text-decoration-underline text-primary" href="/admin/manage-users/{{LastestUserBanObj.author_userid}}">{{LastestUserBanObj.author_userid}}</a></span>
+                    </div>
+                </div>
+                {%endif%}
+                <div class="border rounded-2" style="min-height: 150px;">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0 border-bottom">
+                        <h5 class="m-0">Description</h5>
+                    </div>
+                    <div class="p-2">
+                        {% for line in DescriptionLines %}
+                            <p class="text-white m-0">{{line}}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if LastLogin != None: %}
+                <div class="border rounded-2 mt-2">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0 border-bottom">
+                        <h5 class="m-0">Latest Login</h5>
+                    </div>
+                    <div class="p-2 text-secondary text-truncate" style="font-size: 14px;">
+                        <span>User-Agent: <span class="text-white">{{LastLogin.useragent}}</span></span>
+                        <br>
+                        <span>Login Timestamp: <span class="text-white">{{LastLogin.timestamp}}</span></span>
+                    </div>
+                </div>
+                {%endif%}
+                {% if LinkedDiscordObj != None: %}
+                <div class="border rounded-2 mt-2">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0 border-bottom">
+                        <h5 class="m-0">Discord Account</h5>
+                    </div>
+                    <div class="p-2 text-secondary text-truncate" style="font-size: 14px;">
+                        <div class="row">
+                            <div class="col-10">
+                                <span>Discord ID: <span class="text-white">{{DiscordUserInfo.UserId}}</span></span>
+                                <br>
+                                <span>Username: <span class="text-white">{{DiscordUserInfo.Username}}</span></span>
+                                <br>
+                                <span>Discriminator: <span class="text-white">{{DiscordUserInfo.Discriminator}}</span></span>
+                                <br>
+                                <span>Linked On: <span class="text-white">{{LinkedDiscordObj.linked_on}}</span></span>
+                                <br>
+                                <span>Last Refresh: <span class="text-white">{{LinkedDiscordObj.last_updated}}</span></span>
+                            </div>
+                            <div class="col-2">
+                                <img width="100%" style="aspect-ratio: 1/1;" class="border rounded" src="{{DiscordUserInfo.GetAvatarURL()}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
+                {% if InviteKeyUsed != None: %}
+                <div class="border rounded-2 mt-2">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0 border-bottom">
+                        <h5 class="m-0">Invite Key Info</h5>
+                    </div>
+                    <div class="p-2 text-secondary text-truncate" style="font-size: 14px;">
+                        <span>Invite Key: <span class="text-white show-on-hover">{{InviteKeyUsed.key}}</span></span>
+                        <br>
+                        <span>Creator: {% if InviteKeyUsed.created_by != None: %}<a class="text-decoration-none text-primary" href="/admin/manage-users/{{InviteKeyUsed.created_by}}">{{InviteKeyUsed.creator.username}}</a>{%else%}<span class="text-white">Unknown</span>{%endif%}</span>
+                        <br>
+                        <span>Created At: <span class="text-white">{{InviteKeyUsed.created_at}}</span></span>
+                    </div>
+                </div>
+                {%endif%}
+            </div>
+            <div class="col-2">
+                <div class="border rounded-2">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0">
+                        <h5 class="m-0">Actions</h5>
+                    </div>
+                    <a class="btn border-top rounded-0 w-100 text-decoration-none" href="/admin/manage-users/{{userObj.id}}/ban-user"><i class="bi bi-hammer"></i> Ban User</a>
+                    {% if HasAdminPermission("ManageAdminPermissions") %}<a class="btn border-top rounded-0 w-100 text-decoration-none" href="/admin/manage-users/{{userObj.id}}/manage-admin-permissions"><i class="bi bi-shield"></i> Manage Permissions</a>{%endif%}
+                </div>
+                <div class="border rounded-2 mt-2">
+                    <div class="bg-dark p-2 rounded-2 rounded-bottom-0">
+                        <h5 class="m-0">View</h5>
+                    </div>
+                    <a class="btn border-top rounded-0 w-100 text-decoration-none" href="/admin/manage-users/{{userObj.id}}/moderator-notes"><i class="bi bi-journal-text"></i></i> Moderator Notes</a>
+                    <a class="btn border-top rounded-0 w-100 text-decoration-none" href="/admin/manage-users/{{userObj.id}}/login-history"><i class="bi bi-clock-history"></i></i> Login History</a>
+                    <a class="btn border-top rounded-0 w-100 text-decoration-none" href="/admin/manage-users/{{userObj.id}}/invite-keys"><i class="bi bi-key"></i></i> Invite Keys</a>
+                    <a class="btn border-top rounded-0 w-100 text-decoration-none" href="/admin/manage-users/{{userObj.id}}/game-sessions"><i class="bi bi-controller"></i></i> Game Sessions</a>
+                    <a class="btn border-top rounded-0 w-100 text-decoration-none" href="/admin/manage-users/{{userObj.id}}/transactions"><i class="bi bi-bank"></i></i> Transactions</a>
+                    <a class="btn border-top rounded-0 w-100 text-decoration-none" href="/admin/manage-users/{{userObj.id}}/ban-history"><i class="bi bi-exclamation-triangle"></i></i> Ban History</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

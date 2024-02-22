@@ -1,0 +1,41 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <div class="d-md-flex align-items-center mb-1">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <img src="/Thumbs/Head.ashx?x=100&y=100&userId={{user.id}}" class="rounded-2" width="90px" height="90px">
+                <div class="ms-2">
+                    <h3 class="m-0">Welcome, {{user.username}}!</h3>
+                    <p class="m-0" style="font-size: 12px; color: rgb(200,200,200);">Server Time: {{stats.SystemTime}} UTC</b></p>
+                </div>
+            </div>
+            <div class="row text-center ms-auto p-2 me-2" style="background-color: rgb(27,27,27);box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);">
+                <p class="col-6 col-md-3 m-0">Users Online: <b class="text-white">{{stats.UsersOnline}}</b></p>
+                <p class="col-6 col-md-3 m-0">Users In-Game: <b class="text-white">{{stats.UsersPlaying}}</b></p>
+                <p class="col-6 col-md-3 m-0">Active Servers: <b class="text-white">{{stats.PlaceServersCount}}</b></p>
+                <p class="col-6 col-md-3 m-0">New users today: <b class="text-white">{{stats.UsersSignedUpToday}}</b></p>
+                <p class="col-6 col-md-3 m-0">Pending Assets: <b class="text-white">{{stats.PendingAssets}}</b></p>
+            </div>
+        </div>
+        <div class="row p-2">
+            {% for permission in permissions %}
+                {% if "Hidden" not in permission: %}
+                <div class="col-md-4 mb-1 p-1">
+                    <a href="{{permission.route}}">
+                        <div class="admin-box p-2">
+                            <h2 class="mb-1 text-truncate"><i class="bi {{permission.icon}} me-2"></i>{{permission.Name}}</h2>
+                            <p class="m-0 mb-2 text-truncate">{{permission.Description}}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

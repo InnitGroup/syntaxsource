@@ -1,0 +1,1608 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Syntax Public API",
+    "description": "Documentation for the Public API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/public-api/v1/users/{userid}": {
+      "get": {
+        "summary": "Get User by ID",
+        "tags": [
+          "Get User Info"
+        ],
+        "description": "Retrieve user information by user ID.",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the user."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "created_at": {
+                          "type": "integer"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "integer"
+                        },
+                        "is_banned": {
+                          "type": "boolean"
+                        },
+                        "last_online": {
+                          "type": "integer"
+                        },
+                        "membership": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "inventory_rap": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": {
+                      "created_at": "Unix Timestamp",
+                      "description": "Example Description",
+                      "id": "Input ID",
+                      "is_banned": "Input Status",
+                      "last_online": "Unix Timestamp",
+                      "membership": "Input Membership",
+                      "username": "Input Username",
+                      "inventory_rap": "Inventory Rap"
+                    },
+                    "message": "",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "User not found",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/users/username/{username}": {
+      "get": {
+        "summary": "Get User by Username",
+        "tags": [
+          "Get User Info"
+        ],
+        "description": "Retrieve user information by username.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The username of the user."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "created_at": {
+                          "type": "integer"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "integer"
+                        },
+                        "is_banned": {
+                          "type": "boolean"
+                        },
+                        "last_online": {
+                          "type": "integer"
+                        },
+                        "membership": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "inventory_rap": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": {
+                      "created_at": "Unix Timestamp",
+                      "description": "Example Description",
+                      "id": "Input ID",
+                      "is_banned": "Input Status",
+                      "last_online": "Unix Timestamp",
+                      "membership": "Input Membership",
+                      "username": "Input Username",
+                      "inventory_rap": "Inventory Rap"
+                    },
+                    "message": "",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "User not found",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/users/discord_id/{discordid}": {
+      "get": {
+        "summary": "Get User by Discord ID",
+        "tags": [
+          "Get User Info"
+        ],
+        "description": "Retrieve user information by Discord ID.",
+        "parameters": [
+          {
+            "name": "discordid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The User Discord Id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "created_at": {
+                          "type": "integer"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "integer"
+                        },
+                        "is_banned": {
+                          "type": "boolean"
+                        },
+                        "last_online": {
+                          "type": "integer"
+                        },
+                        "membership": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "inventory_rap": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": {
+                      "created_at": "Unix Timestamp",
+                      "description": "Example Description",
+                      "id": "Input ID",
+                      "is_banned": "Input Status",
+                      "last_online": "Unix Timestamp",
+                      "membership": "Input Membership",
+                      "username": "Input Username",
+                      "inventory_rap": "Inventory Rap"
+                    },
+                    "message": "",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user is linked to the requested Discord ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "No SYNTAX account is associated with this Discord ID",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/asset/{assetid}": {
+      "get": {
+        "summary": "Get Asset by ID",
+        "tags": [
+          "Get Asset Info"
+        ],
+        "description": "Retrieve asset information by asset ID.",
+        "parameters": [
+          {
+            "name": "assetid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the asset."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "asset_rap": {
+                          "type": "integer",
+                          "nullable": true
+                        },
+                        "asset_type": {
+                          "type": "string"
+                        },
+                        "asset_type_value": {
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "type": "integer"
+                        },
+                        "creator": {
+                          "type": "object",
+                          "properties": {
+                            "created_at": {
+                              "type": "integer"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "id": {
+                              "type": "integer"
+                            },
+                            "is_banned": {
+                              "type": "boolean"
+                            },
+                            "last_online": {
+                              "type": "integer"
+                            },
+                            "membership": {
+                              "type": "string"
+                            },
+                            "username": {
+                              "type": "string"
+                            },
+                            "inventory_rap": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "creator_id": {
+                          "type": "integer"
+                        },
+                        "creator_type": {
+                          "type": "integer"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "integer"
+                        },
+                        "is_for_sale": {
+                          "type": "boolean"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "price_robux": {
+                          "type": "integer"
+                        },
+                        "price_tickets": {
+                          "type": "integer"
+                        },
+                        "sales": {
+                          "type": "integer"
+                        },
+                        "updated_at": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  },
+                  "example": {
+                    "data": {
+                      "asset_rap": "Rap of the item",
+                      "asset_type": "asset type",
+                      "asset_type_value": "asset type value",
+                      "created_at": "Unix Timestamp",
+                      "creator": {
+                        "created_at": "Unix Timestamp",
+                        "description": "User Description",
+                        "id": "User ID",
+                        "is_banned": "User Status",
+                        "last_online": "Unix Timestamp",
+                        "membership": "User Membership",
+                        "username": "Creator Name",
+                        "inventory_rap": "Inventory Rap"
+                      },
+                      "creator_id": "User ID",
+                      "creator_type": "Type of Creator (group or user)",
+                      "description": "Asset Description",
+                      "id": "Asset ID",
+                      "is_for_sale": "Asset Status",
+                      "is_limited": "Asset Limited",
+                      "is_limited_unique": "Asset Limited U",
+                      "name": "Asset Name",
+                      "price_robux": "Asset Price (R)",
+                      "price_tickets": "Asset Price (T)",
+                      "sales": "Amount Of Sales",
+                      "updated_at": "Unix Timestamp"
+                    },
+                    "message": "",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Asset Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "Asset not found",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/inventory/collectibles/{userid}": {
+      "get": {
+        "summary": "Get User's Collectibles",
+        "tags": [
+          "Inventory and Collectibles"
+        ],
+        "description": "Retrieve a user's collectibles.",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the user."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page number (optional)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "asset": {
+                            "type": "object",
+                            "properties": {
+                              "asset_rap": {
+                                "type": "integer",
+                                "nullable": true
+                              },
+                              "asset_type": {
+                                "type": "string"
+                              },
+                              "asset_type_value": {
+                                "type": "integer"
+                              },
+                              "created_at": {
+                                "type": "integer"
+                              },
+                              "creator_id": {
+                                "type": "integer"
+                              },
+                              "creator_type": {
+                                "type": "integer"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "id": {
+                                "type": "integer"
+                              },
+                              "is_for_sale": {
+                                "type": "boolean"
+                              },
+                              "is_limited": {
+                                "type": "boolean"
+                              },
+                              "is_limited_unique": {
+                                "type": "boolean"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "price_robux": {
+                                "type": "integer"
+                              },
+                              "price_tickets": {
+                                "type": "integer"
+                              },
+                              "sales": {
+                                "type": "integer"
+                              },
+                              "updated_at": {
+                                "type": "integer"
+                              }
+                            }
+                          },
+                          "price": {
+                            "type": "integer"
+                          },
+                          "serial": {
+                            "type": "integer"
+                          },
+                          "uaid": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "example": {
+                    "data": [
+                      {
+                        "asset": {
+                          "asset_rap": "Asset Rap",
+                          "asset_type": "Asset Type",
+                          "asset_type_value": "Asset Type Value",
+                          "created_at": "Unix Timestamp",
+                          "creator_id": "User ID",
+                          "creator_type": "Type of Creator (group or user)",
+                          "description": "Asset Description",
+                          "id": "Asset ID",
+                          "is_for_sale": "Asset Status",
+                          "is_limited": "Asset Limited",
+                          "is_limited_unique": "Asset Limited U",
+                          "name": "Asset Name",
+                          "price_robux": "Asset Price (R)",
+                          "price_tickets": "Asset Price (T)",
+                          "sales": "Amount Of Sales",
+                          "updated_at": "Unis Timestamp"
+                        },
+                        "price": "Resell Price",
+                        "serial": "Serial Owned",
+                        "uaid": "User Asset ID"
+                      }
+                    ],
+                    "message": "",
+                    "next_page": "Next Page",
+                    "page": "Current Page",
+                    "success": true,
+                    "total_pages": "Total Pages"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "User not found",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/inventory/assets/{userid}/{assettypeid}": {
+      "get": {
+        "summary": "Get User's Assets by Type",
+        "tags": [
+          "Inventory and Collectibles"
+        ],
+        "description": "Retrieve a user's assets of a specific type.",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the user."
+          },
+          {
+            "name": "assettypeid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the asset type. Refer to the [Roblox Documentation](https://create.roblox.com/docs/reference/engine/enums/AssetType) for valid values."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page number (optional)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "asset": {
+                            "type": "object",
+                            "properties": {
+                              "asset_rap": {
+                                "type": "integer",
+                                "nullable": true
+                              },
+                              "asset_type": {
+                                "type": "string"
+                              },
+                              "asset_type_value": {
+                                "type": "integer"
+                              },
+                              "created_at": {
+                                "type": "integer"
+                              },
+                              "creator_id": {
+                                "type": "integer"
+                              },
+                              "creator_type": {
+                                "type": "integer"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "id": {
+                                "type": "integer"
+                              },
+                              "is_for_sale": {
+                                "type": "boolean"
+                              },
+                              "is_limited": {
+                                "type": "boolean"
+                              },
+                              "is_limited_unique": {
+                                "type": "boolean"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "price_robux": {
+                                "type": "integer"
+                              },
+                              "price_tickets": {
+                                "type": "integer"
+                              },
+                              "sales": {
+                                "type": "integer"
+                              },
+                              "updated_at": {
+                                "type": "integer"
+                              }
+                            }
+                          },
+                          "price": {
+                            "type": "integer"
+                          },
+                          "serial": {
+                            "type": "integer"
+                          },
+                          "uaid": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "example": {
+                    "data": [
+                      {
+                        "asset": {
+                          "asset_rap": "Asset Rap",
+                          "asset_type": "Asset Type",
+                          "asset_type_value": "Asset Type Value",
+                          "created_at": "Unix Timestamp",
+                          "creator_id": "User ID",
+                          "creator_type": "Type of Creator (group or user)",
+                          "description": "Asset Description",
+                          "id": "Asset ID",
+                          "is_for_sale": "Asset Status",
+                          "is_limited": "Asset Limited",
+                          "is_limited_unique": "Asset Limted U",
+                          "name": "Asset Name",
+                          "price_robux": "Asset Price (R)",
+                          "price_tickets": "Asset Price (T)",
+                          "sales": "Amount Of Sales",
+                          "updated_at": "Unix Timestamp"
+                        },
+                        "price": "Resell Price",
+                        "serial": "Serial Owner",
+                        "uaid": "User Asset ID"
+                      }
+                    ],
+                    "message": "",
+                    "next_page": "Next Page",
+                    "page": "Current Page",
+                    "success": true,
+                    "total_pages": "Total Pages"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "User not found",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/economy/my-balance": {
+      "get": {
+        "summary": "Get My Balance",
+        "tags": [
+          "Economy"
+        ],
+        "description": "Retrieve the balance of the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "robux": {
+                          "type": "integer",
+                          "description": "The amount of Robux in the user's account."
+                        },
+                        "tickets": {
+                          "type": "integer",
+                          "description": "The amount of Tickets in the user's account."
+                        }
+                      }
+                    }
+                  },
+                  "example": {
+                    "data": {
+                      "robux": "User Robux Amount",
+                      "tickets": "User Tickets Amount"
+                    },
+                    "message": "",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Logged In",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "You are not logged in",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/users/my-profile": {
+      "get": {
+        "summary": "Get My Profile",
+        "tags": [
+          "Get User Info"
+        ],
+        "description": "Retrieve the profile for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "created_at": {
+                          "type": "integer"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "integer"
+                        },
+                        "is_banned": {
+                          "type": "boolean"
+                        },
+                        "last_online": {
+                          "type": "integer"
+                        },
+                        "membership": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "inventory_rap": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  },
+                  "example": {
+                    "data": {
+                      "created_at": "Unix Timestamp",
+                      "description": "User Description",
+                      "id": "User ID",
+                      "is_banned": "User Status",
+                      "last_online": "Unix Timestamp",
+                      "membership": "User Memberhip",
+                      "username": "Username",
+                      "inventory_rap": "Inventory Rap"
+                    },
+                    "message": "",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Logged In",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "You are not logged in",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/trade/list": {
+      "get": {
+        "summary": "List Trades",
+        "tags": [
+          "Trading"
+        ],
+        "description": "List trades for the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "created_at": {
+                            "type": "integer"
+                          },
+                          "expires_at": {
+                            "type": "integer"
+                          },
+                          "id": {
+                            "type": "integer"
+                          },
+                          "recipient_userid": {
+                            "type": "integer"
+                          },
+                          "sender_userid": {
+                            "type": "integer"
+                          },
+                          "status": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "created_at": "Unix Timestamp",
+                          "expires_at": "Unix Timestamp",
+                          "id": "Trade ID",
+                          "recipient_userid": "User ID",
+                          "sender_userid": "Target User ID",
+                          "status": "Trade Status"
+                        }
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "next_page": {
+                      "type": "integer"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "total_pages": {
+                      "type": "integer"
+                    }
+                  },
+                  "example": {
+                    "data": [
+                      {
+                        "created_at": "Unix Timetamp",
+                        "expires_at": "Unix Timestamp",
+                        "id": "Trade ID",
+                        "recipient_userid": "User ID",
+                        "sender_userid": "Target User ID",
+                        "status": "Trade Status"
+                      }
+                    ],
+                    "message": "",
+                    "next_page": "Next Page",
+                    "page": "Current Page",
+                    "success": true,
+                    "total_pages": "Total Pages"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not Logged In",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "You are not logged in",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/trade/{tradeid}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "tradeid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the trade."
+          }
+        ],
+        "summary": "Get Trade by ID",
+        "tags": [
+          "Trading"
+        ],
+        "description": "Retrieve trade information by trade ID.",
+        "responses": {
+          "200": {
+            "400": {
+              "description": "Not Logged In",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "properties": {
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "example": {
+                      "message": "You are not logged in",
+                      "success": false
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "created_at": "integer",
+                        "expires_at": "integer",
+                        "id": "integer",
+                        "recipient_items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "asset": {
+                                "type": "object",
+                                "properties": {
+                                  "asset_rap": "integer",
+                                  "asset_type": "string",
+                                  "asset_type_value": "integer",
+                                  "created_at": "integer",
+                                  "creator_id": "integer",
+                                  "creator_type": "integer",
+                                  "description": "string",
+                                  "id": "integer",
+                                  "is_for_sale": "boolean",
+                                  "is_limited": "boolean",
+                                  "is_limited_unique": "boolean",
+                                  "name": "string",
+                                  "price_robux": "integer",
+                                  "price_tickets": "integer",
+                                  "sales": "integer",
+                                  "updated_at": "integer"
+                                }
+                              },
+                              "price": "integer",
+                              "serial": "integer",
+                              "uaid": "integer"
+                            }
+                          }
+                        },
+                        "recipient_robux": "integer",
+                        "recipient_userid": "integer",
+                        "sender_items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "asset": {
+                                "type": "object",
+                                "properties": {
+                                  "asset_rap": "integer",
+                                  "asset_type": "string",
+                                  "asset_type_value": "integer",
+                                  "created_at": "integer",
+                                  "creator_id": "integer",
+                                  "creator_type": "integer",
+                                  "description": "string",
+                                  "id": "integer",
+                                  "is_for_sale": "boolean",
+                                  "is_limited": "boolean",
+                                  "is_limited_unique": "boolean",
+                                  "name": "string",
+                                  "price_robux": "integer",
+                                  "price_tickets": "integer",
+                                  "sales": "integer",
+                                  "updated_at": "integer"
+                                }
+                              },
+                              "price": "integer",
+                              "serial": "integer",
+                              "uaid": "integer"
+                            }
+                          }
+                        },
+                        "sender_robux": "integer",
+                        "sender_userid": "integer",
+                        "status": "string"
+                      }
+                    },
+                    "message": "string",
+                    "success": "boolean"
+                  }
+                },
+                "example": {
+                  "data": {
+                    "created_at": "Unix Timestamp",
+                    "expires_at": "Unix Timestamp",
+                    "id": "Trade ID",
+                    "recipient_items": [
+                      {
+                        "asset": {
+                          "asset_rap": "Asset Rap",
+                          "asset_type": "Asset Type",
+                          "asset_type_value": "Asset Type Value",
+                          "created_at": "Unix Timestamp",
+                          "creator_id": "Asset Creator ID",
+                          "creator_type": "Type of Creator (group or user)",
+                          "description": "Will the test be successful? Or go up in flames?!",
+                          "id": "Asset ID",
+                          "is_for_sale": "Asset Status",
+                          "is_limited": "Asset Limted",
+                          "is_limited_unique": "Asset Limited U",
+                          "name": "Asset Name",
+                          "price_robux": "Asset Price (R)",
+                          "price_tickets": "Asset Price (T)",
+                          "sales": "Amount Of Sales",
+                          "updated_at": "Unix Timestamp"
+                        },
+                        "price": "Resell Price",
+                        "serial": "Serial Owned",
+                        "uaid": "User Asset ID"
+                      }
+                    ],
+                    "recipient_robux": "Robux Offered",
+                    "recipient_userid": "User ID",
+                    "sender_items": [
+                      {
+                        "asset": {
+                          "asset_rap": "Asset Rap",
+                          "asset_type": "Asset Type",
+                          "asset_type_value": "Asset Type Value",
+                          "created_at": "Unix Timestamp",
+                          "creator_id": "Asset Creator ID",
+                          "creator_type": "Type of Creator (group or user)",
+                          "description": "Asset Description",
+                          "id": "Asset ID",
+                          "is_for_sale": "Asset Status",
+                          "is_limited": "Asset Limited",
+                          "is_limited_unique": "Asset Limited U",
+                          "name": "Asset Name",
+                          "price_robux": "Asset Price (R)",
+                          "price_tickets": "Asset Price (T)",
+                          "sales": "Amount Of Sales",
+                          "updated_at": "Unix Timestamp"
+                        },
+                        "price": "Resell Price",
+                        "serial": "Serial Owned",
+                        "uaid": "User Asset ID"
+                      }
+                    ],
+                    "sender_robux": "Robux Offered",
+                    "sender_userid": "User ID",
+                    "status": "Trade Status"
+                  },
+                  "message": "",
+                  "success": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/trade/create/{recipient_userid}": {
+      "parameters": [
+        {
+          "name": "recipient_userid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The ID of the recipient user."
+        }
+      ],
+      "post": {
+        "summary": "Create Trade",
+        "tags": [
+          "Trading"
+        ],
+        "description": "Create a trade request with the specified recipient user.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "RequesterOfferRobux": {
+                    "type": "integer"
+                  },
+                  "TargetOfferRobux": {
+                    "type": "integer"
+                  },
+                  "RequesterOfferUAIDs": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "TargetOfferUAIDs": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "TOTPCode": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trade request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "tradeId": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "",
+                  "tradeId": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or error in trade creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/trade/accept/{tradeid}": {
+      "parameters": [
+        {
+          "name": "tradeid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The ID of the trade."
+        }
+      ],
+      "post": {
+        "summary": "Accept Trade",
+        "tags": [
+          "Trading"
+        ],
+        "description": "Accept a trade with the specified trade ID.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "TOTPCode": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trade acceptance was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": null
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "success",
+                  "data": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or error in trade acceptance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": null
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "error",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/trade/decline/{tradeid}": {
+      "parameters": [
+        {
+          "name": "tradeid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The ID of the trade."
+        }
+      ],
+      "post": {
+        "summary": "Accept Trade",
+        "tags": [
+          "Trading"
+        ],
+        "description": "Accept a trade with the specified trade ID.",
+        "responses": {
+          "200": {
+            "description": "Trade acceptance was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": null
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "success",
+                  "data": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or error in trade acceptance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": null
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "error",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-api/v1/trade/cancel/{tradeid}": {
+      "parameters": [
+        {
+          "name": "tradeid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "The ID of the trade."
+        }
+      ],
+      "post": {
+        "summary": "Accept Trade",
+        "tags": [
+          "Trading"
+        ],
+        "description": "Accept a trade with the specified trade ID.",
+        "responses": {
+          "200": {
+            "description": "Trade acceptance was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": null
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "success",
+                  "data": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or error in trade acceptance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": null
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "error",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

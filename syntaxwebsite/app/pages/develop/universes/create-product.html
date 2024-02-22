@@ -1,0 +1,27 @@
+{% extends 'develop/universes/manage-template.html' %}
+{% block subcontent %}
+    <div class="d-flex align-items-center">
+        <h4 class="m-0">Create Developer Product</h4>
+        <div class="ms-auto">
+            <a href="/develop/universes/{{UniverseObj.id}}/developer-products" class="text-decoration-none m-0">Manage Developer Products</a>
+        </div>
+    </div>
+    <div class="linebreak"></div>
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Product Name" required>
+            <label for="name">Product Name</label>
+        </div>
+        <div class="form-floating mt-2">
+            <textarea class="form-control" id="description" name="description" placeholder="Gamepass Description" style="height: 100px;" required></textarea>
+            <label for="description">Product Description</label>
+        </div>
+        <div class="mt-2">
+            <h5 class="m-0 mb-1">Product Icon</h5>
+            <input type="file" class="form-control" name="file" id="file" class="mt-2" required>
+            <p class="text-secondary m-0 mt-1" style="font-size: 12px;">Must be a PNG, minimum 128x128 and maximum 1024x1024, less than 1mb</p>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Create Developer Product</button>
+    </form>
+{% endblock %}

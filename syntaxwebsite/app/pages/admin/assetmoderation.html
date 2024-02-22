@@ -1,0 +1,119 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Asset Moderation</h1>
+        <p class="m-0" style="font-size:small;">Do not approve any controversial, NSFW, racist, anti semitism, furry content and aggressive swearing</p>
+        <p class="m-0" style="font-size:small;">For images every second any transparent part of the image will change colors this will help find any hidden content</p>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="linebreak"></div>
+        {% for pendingAsset in PendingAssets: %}
+            <div class="border p-2 mb-1">
+                {% if 'Asset' in pendingAsset %}
+                <h5 class="m-0">{{pendingAsset.Asset.name}}</h5>
+                <div class="d-flex mb-2" style="font-size: small;">
+                    <p class="m-0 text-secondary">AssetId: <span class="text-white">{{pendingAsset.Asset.id}}</span></p>
+                    <p class="m-0 text-secondary ms-2">Created: <span class="text-white">{{pendingAsset.Asset.created_at}}</span></p>
+                    <p class="m-0 text-secondary ms-2">CreatorId: <span class="text-white">{{pendingAsset.Asset.creator_id}}</span></p>
+                    <p class="m-0 text-secondary ms-2">Creator Type: <span class="text-white">{% if pendingAsset.Asset.creator_type == 1%}Group{%else%}User{%endif%}</span></p>
+                    <p class="m-0 text-secondary ms-2">AssetType: <span class="text-white">{{pendingAsset.Asset.asset_type.name}}</span></p>
+                </div>
+                {%endif%}
+                {% if 'Group' in pendingAsset %}
+                <h5 class="m-0">{{pendingAsset.Group.name}}</h5>
+                <div class="d-flex mb-2" style="font-size: small;">
+                    <p class="m-0 text-secondary">GroupId: <span class="text-white">{{pendingAsset.Group.id}}</span></p>
+                    <p class="m-0 text-secondary ms-2">Created: <span class="text-white">{{pendingAsset.Icon.created_at}}</span></p>
+                    <p class="m-0 text-secondary ms-2">CreatorId: <span class="text-white">{{pendingAsset.Creator.id}}</span></p>
+                </div>
+                {%endif%}
+                {% if pendingAsset.ParentAsset: %}
+                <div class="d-flex border p-1" style="font-size: small;">
+                    <p class="m-0 text-secondary">Parent AssetId: <span class="text-white">{{pendingAsset.ParentAsset.id}}</span></p>
+                    <p class="m-0 text-secondary ms-2">Parent Name: <span class="text-white">{{pendingAsset.ParentAsset.name}}</span></p>
+                    <p class="m-0 text-secondary ms-2">Parent AssetType: <span class="text-white">{{pendingAsset.ParentAsset.asset_type.name}}</span></p>
+                </div>
+                {% endif %}
+                {% if 'Asset' in pendingAsset %}
+                    {% if pendingAsset.Asset.asset_type.value == 1 and not pendingAsset.AssetThumbnail: %}
+                    <div class="d-flex justify-content-center">
+                        <img width="512" height="512" class="mt-2 content-image" src="https://cdn.syntax.eco/{{pendingAsset.AssetVersion.content_hash}}">
+                    </div>
+                    {%endif%}
+                    {% if pendingAsset.Asset.asset_type.value == 9: %}
+                        {% if pendingAsset.PlaceIcon: %}
+                            <div class="d-flex justify-content-center">
+                                <img width="512" height="512" class="mt-2 content-image" src="https://cdn.syntax.eco/{{pendingAsset.AssetVersion.contenthash}}">
+                            </div>
+                        {%endif%}
+                    {%endif%}
+                    {% if pendingAsset.Asset.asset_type.value == 3 %}
+                    <audio controls class="ms-auto me-auto">
+                        <source src="https://cdn.syntax.eco/{{pendingAsset.AssetVersion.content_hash}}" type="audio/mpeg">
+                    </audio>
+                    {%endif%}
+                {%endif%}
+                {% if pendingAsset.AssetThumbnail: %}
+                    <div class="d-flex justify-content-center">
+                        <img class="mt-2 content-image" src="https://cdn.syntax.eco/{{pendingAsset.AssetVersion.content_hash}}" style="max-width: 512px;height: auto;max-height: 1024px;">
+                    </div>        
+                {%endif%}
+                {% if 'Group' in pendingAsset %}
+                    {% if pendingAsset.Icon: %}
+                        <div class="d-flex justify-content-center">
+                            <img width="512" height="512" class="mt-2 content-image" src="https://cdn.syntax.eco/{{pendingAsset.Icon.content_hash}}">
+                        </div>
+                    {%endif%}
+                {%endif%}
+                {% if 'Asset' in pendingAsset %}
+                <div class="row">
+                    <div class="col">
+                        <form method="post" action="/admin/pending-assets/{%if pendingAsset.AssetThumbnail%}{{pendingAsset.AssetVersion.id}}{%else%}{{pendingAsset.Asset.id}}{%endif%}/approve{%if pendingAsset.PlaceIcon%}-icon{%endif%}{%if pendingAsset.AssetThumbnail%}-thumbnail{%endif%}"><button class="btn btn-success w-100 btn-sm mt-2">Approve Content</button></form>
+                    </div>
+                    <div class="col">
+                        <form method="post" action="/admin/pending-assets/{%if pendingAsset.AssetThumbnail%}{{pendingAsset.AssetVersion.id}}{%else%}{{pendingAsset.Asset.id}}{%endif%}/decline{%if pendingAsset.PlaceIcon%}-icon{%endif%}{%if pendingAsset.AssetThumbnail%}-thumbnail{%endif%}"><button type="submit" class="btn btn-danger w-100 btn-sm mt-2">Deny Content</button></form>
+                    </div>
+                </div>
+                {%else%}
+                <div class="row">
+                    <div class="col">
+                        <form method="post" action="/admin/pending-assets/{{pendingAsset.Icon.content_hash}}/approve-group-icon"><button class="btn btn-success w-100 btn-sm mt-2">Approve Content</button></form>
+                    </div>
+                    <div class="col">
+                        <form method="post" action="/admin/pending-assets/{{pendingAsset.Icon.content_hash}}/deny-group-icon"><button type="submit" class="btn btn-danger w-100 btn-sm mt-2">Deny Content</button></form>
+                    </div>
+                </div>
+                {%endif%}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    /* Every second get every image with the classname "content-image" and change the background color to a random gradient */
+    setInterval(() => {
+        let images = document.getElementsByClassName("content-image");
+        for (let i = 0; i < images.length; i++) {
+            let image = images[i];
+            let randomColor = Math.floor(Math.random()*16777215).toString(16);
+            let randomColor2 = Math.floor(Math.random()*16777215).toString(16);
+            let randomAngle = Math.floor(Math.random()*360);
+            image.style.background = `linear-gradient(${randomAngle}deg, #${randomColor}, #${randomColor2})`;
+        }
+    }, 500);
+</script>
+{% endblock %}

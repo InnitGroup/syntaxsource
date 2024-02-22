@@ -1,0 +1,112 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(200,200,200)!important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a>
+        <h1>Asset Moderation</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post" class="d-flex" action="/admin/moderate-asset">
+            <input type="text" name="asset-id" class="form-control" placeholder="Asset ID" required {% if AssetObj %}value="{{AssetObj.id}}"{%endif%}>
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="submit" class="btn btn-primary ms-3" value="Search Asset">
+        </form>
+        {% if AssetObj %}
+        <div class="linebreak"></div>
+        <div class="mt-2 p-2">
+            <div class="row">
+                <div class="col-2">
+                    <img src="/Thumbs/Asset.ashx?assetId={{AssetObj.id}}&x=512&y=512" width="100%" style="aspect-ratio: 1/1;" class="rounded border">
+                </div>
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <h3 class="m-0">{{AssetObj.name}}</h3>
+                        <a class="btn btn-light btn-sm ms-auto text-black" href="/catalog/{{AssetObj.id}}/">View Asset Page</a>
+                    </div>
+                    <div class="border p-2 mt-2 rounded">
+                        <h5>Description</h5>
+                        <p class="m-0 text-secondary mt-2">{{AssetObj.description}}</p>
+                    </div>
+                    <div class="mt-2 d-flex" style="flex-wrap: wrap;justify-content: flex-start;gap: 9px;">
+                        <p class="text-secondary m-0" style="font-size: 14px;">AssetID: <span class="text-white">{{AssetObj.id}}</span></p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">Roblox AssetID: <span class="text-white">{{AssetObj.roblox_asset_id}}</span></p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">Creator: {% if AssetObj.creator_type == 0 %}<a class="text-decoration-none text-primary" href="/admin/manage-users/{{AssetObj.creator_id}}">{{CreatorObj.username}} ( {{CreatorObj.id}} )</a>{%endif%}</p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">CreatorType: <span class="text-white">{% if AssetObj.creator_type == 0 %}User{%else%}Group{%endif%}</span></p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">Created: <span class="text-white">{{AssetObj.created_at}}</span></p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">Last Updated: <span class="text-white">{{AssetObj.updated_at}}</span></p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">AssetType: <span class="text-white">{{AssetObj.asset_type.name}}</span></p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">Moderation Status: <span class="text-white">{% if AssetObj.moderation_status == 0: %}Allowed{%elif AssetObj.moderation_status == 2: %}Deleted{%else%}Pending{%endif%}</span></p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">IsForSale: <span class="text-white">{{AssetObj.is_for_sale}}</span></p>
+                        <p class="text-secondary m-0" style="font-size: 14px;">SaleCount: <span class="text-white">{{AssetObj.sale_count}}</span></p>
+                    </div>
+                    <h4 class="m-0 mt-3">Quick Moderation Actions</h4>
+                    <div class="d-flex border rounded p-2 mt-2">
+                        {% if AssetObj.moderation_status != 0 %}
+                        <form action="/admin/moderate-asset/{{AssetObj.id}}/quick-approve" method="post">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <input type="submit" class="btn btn-success" value="Restore Asset to Approved status">
+                        </form>
+                        {% endif %}
+                        {% if AssetObj.moderation_status != 1 %}
+                        <form action="/admin/moderate-asset/{{AssetObj.id}}/quick-pending" method="post">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <input type="submit" class="btn btn-warning ms-2" value="Set Asset to Pending status">
+                        </form>
+                        {% endif %}
+                        {% if AssetObj.moderation_status != 2 %}
+                        <form action="/admin/moderate-asset/{{AssetObj.id}}/quick-delete" method="post">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <input type="submit" class="btn btn-danger ms-2" value="Content Delete Asset">
+                        </form>
+                        {% endif %}
+                    </div>
+                    <h4 class="m-0 mt-3">Linked Assets</h4>
+                    <div class="border p-2 mt-2 rounded">
+                        {% for asset in RelatedAssets: %}
+                        <div class="bg-dark p-2 w-100 rounded mt-1 mb-1">
+                            <h5 class="m-0">{{asset.name}}</h5>
+                            <div class="d-flex align-items-center w-100" style="flex-wrap: wrap;justify-content: flex-start;gap: 9px;">
+                                <p class="text-secondary m-0" style="font-size: 14px;">AssetID: <span class="text-white">{{asset.id}}</span></p>
+                                <p class="text-secondary m-0 ms-2" style="font-size: 14px;">AssetType: <span class="text-white">{{asset.asset_type.name}}</span></p>
+                                <p class="text-secondary m-0 ms-2" style="font-size: 14px;">Creator: {% if asset.creator_type == 0 %}<a class="text-decoration-none text-primary" href="/admin/manage-users/{{asset.creator_id}}">{{asset.creator_id}}</a>{%endif%}</p>
+                                <p class="text-secondary m-0 ms-2" style="font-size: 14px;">CreatorType: <span class="text-white">{% if asset.creator_type == 0 %}User{%else%}Group{%endif%}</span></p>
+                                <a class="btn btn-primary ms-auto btn-sm" href="/admin/moderate-asset/{{asset.id}}">View Asset</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% if len(RelatedAssets) == 0: %}
+                        <p class="text-secondary m-0 w-100 text-center mt-2 mb-2">No Linked Assets</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

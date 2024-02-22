@@ -1,0 +1,66 @@
+{% extends '__layout__.html' %}
+{% block title %}Manage Place{% endblock %}
+{% block head %}
+<link href="/static/css/develop.css" rel="stylesheet"/>
+<style>
+    .page-tabs a {
+        color: #dadada !important;
+        font-size: medium;
+        margin-top: 5px;
+        margin-bottom: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        width: 100%;
+        text-align: center;
+        display: block;
+        padding: 8px;
+        background-color: #1f1f1f;
+        box-shadow: 0 0 1px 0 rgba(0,0,0,.2), 0 1px 2px 0 rgba(0,0,0,.2);
+    }
+    .page-tabs a:hover {
+        color: #fff !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 1000px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div>
+            {% for category, message in messages %}
+                {% if category == 'error': %}
+                <div class="alert border p-2 text-center alert-danger border-danger">
+                    {{ message }}
+                </div>
+                {% endif %}
+                {% if category == 'success': %}
+                <div class="alert border p-2 text-center alert-success border-success">
+                    {{ message }}
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+        <div>
+            <h1 class="m-0">{{PlaceAssetObj.name}}</h1>
+            <a href="/develop/universes/{{UniverseObj.id}}/places" class="text-decoration-none">Return to Manage Universe</a>
+        </div>
+        <div class="linebreak"></div>
+        <div class="row">
+            <div class="col-md-3 border-end page-tabs">
+                <a href="/develop/universes/{{UniverseObj.id}}/place/{{PlaceAssetObj.id}}/manage" class="w-100">Basic Settings</a>
+                <a href="/develop/universes/{{UniverseObj.id}}/place/{{PlaceAssetObj.id}}/access" class="w-100">Access</a>
+                <a href="/develop/universes/{{UniverseObj.id}}/place/{{PlaceAssetObj.id}}/upload-version" class="w-100">Upload File</a>
+                <a href="/develop/universes/{{UniverseObj.id}}/place/{{PlaceAssetObj.id}}/placeicon" class="w-100">Game Icon</a>
+                <a href="/develop/universes/{{UniverseObj.id}}/place/{{PlaceAssetObj.id}}/thumbnails" class="w-100">Thumbnails</a>
+                <a href="/develop/universes/{{UniverseObj.id}}/place/{{PlaceAssetObj.id}}/version-history" class="w-100">Version History</a>
+            </div>
+            <div class="col-md-9">
+                {% block subcontent %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends '__layout__.html' %}
+{% block title %}{{message.subject}}{% endblock %}
+{% block head %}
+<link href="/static/css/message.css" rel="stylesheet"/>
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container" style="max-width: 800px;">
+        <h3>{{message.subject}}</h3>
+        <p class="text-secondary m-0" style="font-size:12px;">To: <a href="/users/{{reciever.id}}/profile" class="text-white text-decoration-none">{{reciever.username}}</a></p>
+        <div class="linebreak"></div>
+        <a href="/users/{{sender.id}}/profile" class="text-decoration-none text-white">
+            <div class="d-flex">
+                <img class="overflow-hidden me-2 " width="60" height="60" src="/Thumbs/Avatar.ashx?x=60&y=60&userId={{sender.id}}" alt="{{sender.username}}"/>
+                <div>
+                    <b>{{sender.username}}</b>
+                    <p class="m-0 text-secondary">{{created}} UTC</p>
+                </div>
+            </div>
+        </a>
+        {% for line in messagelines: %}
+            {% if line.strip() != '' %}
+            <p class="text-secondary m-0">{{line}}</p>
+            {%else%}
+            <br>
+            {%endif%}
+        {% endfor %}
+        <div class="linebreak"></div>
+        <div class="d-flex">
+            <a class="btn btn-border border-primary p-1 ps-2 pe-2 btn-sm mb-2 me-2" href="/messages">Back to messages</a>
+            {% if sender.id != currentuser.id %}
+            <a class="btn btn-border border-success p-1 ps-2 pe-2 btn-sm mb-2" href="/messages/new/{{sender.id}}?reply={{message.id}}">Reply</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

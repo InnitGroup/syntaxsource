@@ -1,0 +1,52 @@
+{% extends 'develop/games/manage-template.html' %}
+{% block subcontent %}
+    <h4>Basic Settings</h4>
+    <form method="post">
+        <input type="text" name="name" class="form-control" placeholder="Name" value="{{PlaceAssetObj.name}}" required>
+        <textarea name="description" class="form-control mt-2" placeholder="Description" style="min-height: 150px;" required>{{PlaceAssetObj.description}}</textarea>
+        <h5 class="mt-3">Chat Style</h5>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="chat-style-type" id="chat-style-type-radio1" value="0" {% if PlaceObj.chat_style.value == 0: %}checked{% endif %}>
+            <label class="form-check-label" for="chat-style-type-radio1">
+                Classic
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="chat-style-type" id="chat-style-type-radio2" value="1" {% if PlaceObj.chat_style.value == 1: %}checked{% endif %}>
+            <label class="form-check-label" for="chat-style-type-radio2">
+                Bubble
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="chat-style-type" id="chat-style-type-radio3" value="2" {% if PlaceObj.chat_style.value == 2: %}checked{% endif %}>
+            <label class="form-check-label" for="chat-style-type-radio3">
+                Classic and Bubble
+            </label>
+        </div>
+        {% if UniverseObj.place_year.value == 2018 or UniverseObj.place_year.value == 2020 or UniverseObj.place_year.value == 2021 %}
+        <h5 class="mt-3">Avatar Rig Type</h5>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="avatar-rig-type" id="avatar-rig-type-radio1" value="0" {% if PlaceObj.rig_choice.value == 0: %}checked{% endif %}>
+            <label class="form-check-label" for="avatar-rig-type-radio1">
+                User Choice
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="avatar-rig-type" id="avatar-rig-type-radio2" value="1" {% if PlaceObj.rig_choice.value == 1: %}checked{% endif %}>
+            <label class="form-check-label" for="avatar-rig-type-radio2">
+                Force R6
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="avatar-rig-type" id="avatar-rig-type-radio3" value="2" {% if PlaceObj.rig_choice.value == 2: %}checked{% endif %}>
+            <label class="form-check-label" for="avatar-rig-type-radio3">
+                Force R15
+            </label>
+        </div>
+        {% endif %}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mt-2">
+            <button type="submit" class="btn btn-success btn-sm w-100">Save</button>
+        </div>
+    </form>
+{% endblock %}

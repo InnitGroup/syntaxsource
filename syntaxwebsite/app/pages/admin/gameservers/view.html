@@ -1,0 +1,84 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(175, 175, 175) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <div class="d-flex align-items-center">
+            <a href="/admin/gameservers" class="btn border-primary btn-sm mb-2">Back to Game Server Manager</a>
+            <a href="/admin/gameservers/{{gameserver.serverId}}/delete" class="btn border-danger btn-sm mb-2 ms-2">Delete Server</a>
+            <a href="/admin/gameservers/{{gameserver.serverId}}/refresh-accesskey" class="btn border-success btn-sm mb-2 ms-2">Refresh AccessKey</a>
+        </div>
+        <h1 class="m-0">{{gameserver.serverName}}</h1>
+        <p class="m-0 d-flex">{{gameserver.serverId}}</p>
+        <div class="p-2 border mt-2 mb-2 rounded {% if not gameserver.isRCCOnline: %}redborder {% else %} {% if gameserver.heartbeatResponseTime > 0.6 %}yellowborder{% else %}greenborder{% endif %}{% endif %}">
+            <div class="row">
+                <div class="col-md-4">
+                    <p class="text-secondary m-0">Last heartbeat: <span class="text-white">{{gameserver.lastHeartbeat}}</span></p>
+                </div>
+                <div class="col-md-3">
+                    <p class="text-secondary m-0">RCC Memory Usage: <span class="text-white">{{gameserver.RCCmemoryUsage}} MB</span></p>
+                </div>
+                <div class="col-md-3">
+                    <p class="text-secondary m-0">Response Time: <span class="text-white">{{ round(gameserver.heartbeatResponseTime,3) }} secs</span></p>
+                </div>
+                <div class="col-md-2">
+                    <p class="text-secondary m-0">Thumbnail Queue Size: <span class="text-white">{{gameserver.thumbnailQueueSize}}</span></p>
+                </div>
+            </div>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+        {% for message in messages %}
+            <div class="alert border border-danger p-2 text-center messagealerts">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post" action="/admin/gameservers/{{gameserver.serverId}}/edit">
+            <div class="mb-2">
+                <label for="serverNameInput" class="form-label m-0">Server name</label>
+                <input type="text" class="form-control" id="serverNameInput" name="name" placeholder="Name" value="{{gameserver.serverName}}" required>
+            </div>
+            <div class="mb-2">
+                <label for="serverIPinput" class="form-label m-0">Server IP</label>
+                <input type="text" class="form-control" id="serverIPinput" name="serverip" placeholder="1.1.1.1" value="{{gameserver.serverIP}}" required>
+            </div>
+            <div class="mb-2">
+                <label for="serverPortInput" class="form-label m-0">Server Port</label>
+                <input type="number" class="form-control" id="serverPortInput" name="serverport" placeholder="80" value="{{gameserver.serverPort}}" required>
+            </div>
+            <div class="mb-2">
+                <label for="serverAccessKeyInput" class="form-label m-0">Access Key</label>
+                <input type="password" class="form-control" id="serverAccessKeyInput" name="accesskey" placeholder="Access Key" value="{{gameserver.accessKey}}" required>
+            </div>
+            <div class="mb-2 row">
+                <div class="col">
+                    <input class="form-check-input" name="isThumbnailer" type="checkbox" id="isThumbnailerCheckbox" {% if gameserver.allowThumbnailGen: %}checked{% endif %}>
+                    <label class="form-check-label" for="isThumbnailerCheckbox">
+                        <p>Allow Thumbnail Rendering</p>
+                    </label>
+                </div>
+                <div class="col">
+                    <input class="form-check-input" name="isGameHoster" type="checkbox" id="isGameHosterCheckbox" {% if gameserver.allowGameServerHost: %}checked{% endif %}>
+                    <label class="form-check-label" for="isGameHosterCheckbox">
+                        <p>Allow Game server hosting</p>
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

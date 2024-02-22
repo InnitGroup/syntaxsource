@@ -1,0 +1,78 @@
+{% extends '__layout__.html' %}
+{% block title %}View Offer{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-weight: 600;
+    }
+    .text-tickets {
+        color: rgb(224, 224, 60) !important;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container position-relative" style="min-height: 100vh;margin-top: 200px;max-width: 900px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    
+    <a class="text-decoration-none mb-3" href="/currency-exchange/">Return to Currency Exchange</a>
+    <h1 class="m-0">Viewing Offer</h1>
+    {% if offer.creator_id == AuthenticatedUser.id: %}
+        <p class="text-secondary m-0">This offer was created by you</p>
+    {% endif %}
+    <div class="row mt-2 p-2">
+        <div class="col border p-2">
+            <h5 class="text-center">Offering</h5>
+            <h2 style="font-size: 3.5rem;" class="{% if offer.offer_currency_type == 0: %}text-robux{%else%}text-tickets{%endif%} w-100 text-center">{% if offer.offer_currency_type == 0: %}R${%else%}T${%endif%}{{offer.offer_value}}</h2>
+        </div>
+        <div class="col border p-2">
+            <h5 class="text-center">R:T Ratio</h5>
+            <h2 style="font-size: 3.5rem;" class="text-secondary w-100 text-center">1:{{round(offer.ratio,3)}}</h2>
+        </div>
+        <div class="col border p-2">
+            <h5 class="text-center">Requesting</h5>
+            <h2 style="font-size: 3.5rem;" class="{% if offer.offer_currency_type == 1: %}text-robux{%else%}text-tickets{%endif%} w-100 text-center">{% if offer.offer_currency_type == 1: %}R${%else%}T${%endif%}{{offer.receive_value}}</h2>
+        </div>
+    </div>
+    <div class="d-flex mt-2">
+        <p class="text-secondary m-0">Created: <span class="text-white">{{offer.created_at.strftime("%b %d, %Y %I:%M %p")}} UTC</span></p>
+        <p class="text-secondary m-0 ms-3">Expires: <span class="text-white">{{offer.expires_at.strftime("%b %d, %Y %I:%M %p")}} UTC</span></p>
+        {% if offer.reciever_id != None: %}
+            <p class="text-danger m-0 ms-auto">This order has already been filled</p>
+        {% else: %}
+            {% if offer.creator_id == AuthenticatedUser.id: %}
+                <form method="post" action="/currency-exchange/delete/{{offer.id}}" class="ms-auto">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-outline-danger">Delete Offer</button>
+                </form>
+            {%else%}
+            <form method="post" action="/currency-exchange/fill/{{offer.id}}" class="ms-auto">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-outline-primary">Fufill Offer</button>
+            </form>
+            {%endif%}
+        {%endif%}
+    </div>
+</div>
+{% endblock %}

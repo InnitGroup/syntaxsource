@@ -1,0 +1,13 @@
+class Config:
+    DISCORD_CLIENT_ID : str = 0
+    DiscordBotToken : str = ""
+    DISCORD_CLIENT_SECRET : str = ""
+
+    BackendServerUrl : str = "https://www.syntax.eco"
+    BackendAuthenticationToken : str = ""
+
+    AuthorisedGuilds : list = []
+
+    VerifiedRoleId : int = 0
+    OBCRoleId : int = 0
+    ServerBoosterRole : int = 0

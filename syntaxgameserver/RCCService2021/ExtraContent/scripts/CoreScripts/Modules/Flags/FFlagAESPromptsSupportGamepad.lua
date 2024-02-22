@@ -1,0 +1,1 @@
+return game:DefineFastFlag("AESPromptsSupportGamepad2", false)

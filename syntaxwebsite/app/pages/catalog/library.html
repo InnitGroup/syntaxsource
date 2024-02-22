@@ -1,0 +1,186 @@
+{% extends '__layout__.html' %}
+{% block title %}{{asset.name}}{% endblock %}
+{% block head %}
+<link href="/static/css/catalog.css" rel="stylesheet"/>
+<script src="/static/js/catalog.js"></script>
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+    .text-limited {
+        color: rgb(255,255,255) !important;
+        background-color: rgb(9, 136, 62);
+        width: fit-content;
+        padding-left: 10px;
+        font-size: 20px;
+        border-top-right-radius: 5px;
+        margin: 0;
+    }
+    .text-limitedu {
+        color: rgb(0,0,0) !important;
+        background-color: rgb(245, 245, 52);
+        padding-right: 3px;
+        font-weight: 800;
+        border-top-right-radius: 5px;
+        padding-left: 3px;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-size: small;
+        font-weight: 600;
+    }
+</style>
+<div id="csrf_token" data-csrf-token="{{ csrf_token() }}"></div>
+<meta id="asset-info" data-asset-name="{{asset.name}}" data-asset-id="{{asset.id}}" data-asset-onsale="{% if asset.is_for_sale: %}true{%else%}false{%endif%}" {% if doesUserOwnAsset: %}data-user-ownasset="true"{% endif %} {% if asset.is_limited: %}data-islimited="true"{%endif%}>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container ps-5 pe-5 ps-md-0 pe-md-0" style="max-width: 800px;">
+        <h1>{{asset.name}}</h1>
+        <div class="row">
+            <div class="col-md-5 col-12">
+                <div class="p-2 rounded overflow-hidden position-relative{% if GamepassLinkObj != None: %} rounded-bottom-0 {%endif%}" style="background-color: rgb(36, 36, 36);">
+                    <img width="100%" src="/Thumbs/Asset.ashx?assetId={{asset.id}}&x=420&y=420" style="aspect-ratio: 1/1;" alt="{{asset.name}}">
+                    {% if asset.is_limited: %}<p class="position-absolute m-0 fw-bold text-limited" style="bottom:-2px;left:0px;">LIMITED {%if asset.is_limited_unique: %}<span class="text-limitedu">U</span>{%else%}<span class="me-2"></span>{%endif%}</p>{% endif %}
+                </div>
+                {% if GamepassLinkObj != None: %}
+                <div class="rounded-bottom overflow-hidden d-flex p-1" style="background-color: rgb(29, 29, 29);">
+                    <p class="m-0 text-white me-2" style="font-size: 13px;">Use this Gamepass in: <a class="text-decoration-none" href="/games/{{GamepassRootPlaceAsset.id}}/">{{GamepassRootPlaceAsset.name}}</a></p>
+                    <a class="text-decoration-none ms-auto" href="/games/{{GamepassRootPlaceAsset.id}}/"><img src="/Thumbs/PlaceIcon.ashx?assetId={{GamepassRootPlaceAsset.id}}&x=60&y=60" height="60px" width="60px" class="rounded"></a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 p-1">
+                <div class="d-flex mt-3 mt-md-0">
+                    {% if asset.creator_type == 0 :%}
+                    <img width="80" height="80" src="/Thumbs/Avatar.ashx?userId={{creator.id}}&x=100&y=100" alt="{{creator.username}}">
+                    <div style="font-size:13px;">
+                        <p class="m-0 text-secondary">Creator: <a href="/users/{{creator.id}}/profile" class="text-decoration-none">{{creator.username}}</a></p>
+                        <p class="m-0 text-secondary">Created: <span class="text-white">{{createddate}}</span></p>
+                        <p class="m-0 text-secondary">Updated: <span class="text-white">{{updateddate}}</span></p>
+                    </div>
+                    {% else %}
+                    <img width="80" height="80" src="/Thumbs/GroupIcon.ashx?groupid={{creator.id}}&x=100&y=100" alt="{{creator.name}}">
+                    <div style="font-size:13px;">
+                        <p class="m-0 text-secondary">Creator: <a href="/groups/{{creator.id}}/--" class="text-decoration-none">{{creator.name}}</a></p>
+                        <p class="m-0 text-secondary">Created: <span class="text-white">{{createddate}}</span></p>
+                        <p class="m-0 text-secondary">Updated: <span class="text-white">{{updateddate}}</span></p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="linebreak"></div>
+                <p>
+                    {{asset.description}}
+                </p>
+            </div>
+            <div class="col-md-3 p-1" >
+                <div class="border rounded p-2 text-center">
+                    {% if asset.is_for_sale: %}
+                        {% if asset.price_robux == 0 and asset.price_tix == 0: %}
+                        <p class="m-0 text-secondary" style="font-size:14px;">Price: <span class="text-white">FREE</span></p>
+                        <a class="btn btn-primary fw-bold w-100 btn-sm purchase-button" data-currency-type="0" data-expected-price="{{asset.price_robux}}">Take One</a>
+                        {% endif %}
+                        {% if asset.price_robux > 0: %}
+                        <p class="m-0 text-secondary" style="font-size:14px;">Price: <span class="text-white">{{asset.price_robux}} Robux</span></p>
+                        <a class="btn btn-primary fw-bold w-100 btn-sm purchase-button" data-currency-type="0" data-expected-price="{{asset.price_robux}}">Buy with Robux</a>
+                        {% endif %}
+                        {% if asset.price_robux > 0 and asset.price_tix > 0: %}
+                        <div class="d-flex align-items-center mt-2 mb-2">
+                            <div class="border-top flex-fill me-2"></div>
+                            <p class="text-secondary m-0" style="font-size: 13px;">OR</p>
+                            <div class="border-top flex-fill ms-2"></div>
+                        </div>
+                        {% endif %}
+                        {% if asset.price_tix > 0: %}
+                        <p class="m-0 text-secondary" style="font-size:14px;">Price: <span class="text-white">{{asset.price_tix}} Tickets</span></p>
+                        <a class="btn btn-primary fw-bold w-100 btn-sm purchase-button" data-currency-type="1" data-expected-price="{{asset.price_tix}}">Buy with Tickets</a>
+                        {% endif %}
+                    {% else: %}
+                        {% if asset.is_limited: %}
+                            {% if BestPrice != "None": %}
+                                <p class="m-0 text-secondary" style="font-size:14px;">Best Price: <span class="text-white">R$ {{BestPrice}}</span></p>
+                                {% if BestPriceResult.userid != currentuser.id %}
+                                <a class="btn btn-primary fw-bold w-100 btn-sm purchase-button" data-currency-type="0" data-islimited="true" data-expectedowner="{{BestPriceResult.userid}}" data-expectedid="{{BestPriceResult.id}}" data-expected-price="{{BestPrice}}">Buy Now</a>
+                                {%else%}
+                                <btn class="btn btn-primary fw-bold w-100 btn-sm disabled">Buy with Robux</btn>
+                                {%endif%}
+                            {%else%}
+                            <btn class="btn btn-primary fw-bold w-100 btn-sm disabled">No Resellers Available</btn>
+                            {%endif%}
+                            {% if userOwnAmountCount > 0: %}
+                            <p class="m-0 text-secondary" style="font-size:12px;">( {{userOwnAmountCount}} owned )</p>
+                            {%endif%}
+                        {%else%}
+                        <p class="m-0 text-secondary" style="font-size:14px;">Price: <span class="text-white">Offsale</span></p>
+                        <btn class="btn btn-primary fw-bold w-100 btn-sm disabled">Buy with Robux</btn>
+                        {%endif%}
+                    {% endif %}
+                    <p class="m-0 mt-1 text-secondary" style="font-size:12px;">( {{asset.sale_count}} sold )</p>
+                </div>
+                {% if asset.is_limited and userOwnAmountCount > 0 and not asset.is_for_sale: %}
+                    <div class="border rounded p-2 text-center mt-2">
+                        <a href="/catalog/resell/{{asset.id}}" class="btn btn-success fw-bold btn-sm w-100">Manage your items</a>
+                    </div>
+                {%endif%}
+            </div>
+        </div>
+        {% if asset.is_limited and not asset.is_for_sale: %}
+        <div class="linebreak mt-3"></div>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Private Sales</h5>
+                {% for sale in PrivateSales: %}
+                    <div class="w-100 m-2 d-flex">
+                        <img class="rounded-2 overflow-hidden" width="60" height="60" src="/Thumbs/Avatar.ashx?x=60&y=60&userId={{sale.sellerid}}" alt="{{sale.seller}}"/>
+                        <div class="ms-2">
+                            <a href="/users/{{sale.sellerid}}/profile" class="text-decoration-none text-white m-0">{{sale.seller}}</a>
+                            <p class="m-0 text-robux">R$ {{sale.price}}</p>
+                            <p class="m-0 text-secondary" style="font-size:13px;">Serial: {%if asset.is_limited_unique: %}{{sale.serial}}{%else%}N/A{%endif%}</p>
+                        </div>
+                        <div class="ms-auto align-items-center d-flex">
+                            {% if sale.sellerid != currentuser.id: %}
+                            <button class="btn btn-sm btn-primary purchase-button" data-currency-type="0" data-islimited="true" data-expectedowner="{{sale.sellerid}}" data-expectedid="{{sale.uaid}}" data-expected-price="{{sale.price}}">Buy Now</button>
+                            {%else%}
+                            <button class="btn btn-sm btn-primary disabled">Buy Now</button>
+                            {%endif%}
+                        </div>
+                    </div>
+                {%endfor%}
+                <div class="d-flex">
+                    {% if PreviousPage > 0: %}
+                    <a href="/catalog/{{asset.id}}/?page={{PreviousPage}}" class="ms-auto text-decoration-none">Previous</a>
+                    {%else%}
+                    <a class="ms-auto text-decoration-none text-secondary">Previous</a>
+                    {% endif %}
+                    <p class="ms-1 me-1">{{PageNumber}}</p>
+                    {% if NextPage > 0: %}
+                    <a href="/catalog/{{asset.id}}/?page={{NextPage}}" class="me-auto text-decoration-none">Next</a>
+                    {%else%}
+                    <a class="me-auto text-decoration-none text-secondary">Next</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <p class="m-0 text-secondary" style="font-size:small;">Recent Average Price: <span class="text-robux">R${{AssetRap}}</span></p>
+            </div>
+        </div>
+        {%endif%}
+    </div>
+</div>
+<div class="modal fade" id="purchaseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="purchase-modal-title">Confirm purchase</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="purchase-modal-content">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="purchase-modal-close" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" id="purchase-modal-btn">Purchase</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

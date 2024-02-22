@@ -1,0 +1,54 @@
+{% extends '__layout__.html' %}
+{% block title %}Audio Migrator{% endblock %}
+{% block head %}
+<link href="/static/css/settings.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="settings-container" style="max-width: 700px;">
+        <h1 class="mb-2">Audio Migrator</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+        {% for category, message in messages %}
+            {% if category == 'error': %}
+            <div class="alert border p-2 text-center alert-danger border-danger">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% if category == 'success': %}
+            <div class="alert border p-2 text-center alert-success border-success">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="post">
+            <div class="form-floating">
+                <input type="text" name="placeid" class="form-control w-100" placeholder="PlaceId associated with Audio" required>
+                <label for="placeid">PlaceID</label>
+            </div>
+            <div class="form-floating mt-2">
+                <textarea name="audio-ids" class="form-control w-100 mt-2" placeholder="Audio IDs, please enter a new line for each audio id" required style="min-height: 200px;"></textarea>
+                <label for="audio-ids">Audio IDs, separate each audio with a new line</label>
+            </div>
+            <div class="d-flex justify-content-end align-items-top mt-2">
+                <p class="m-0 text-secondary me-1" style="font-size:11px;">Note: As a processing fee, each Audio will cost R$5 even if audio migration fails, this is to prevent spam and abuse of our systems. It can take a few minutes for audios to be processed so please be patient, you will not be charged for any audios that already exist on SYNTAX.</p>
+                <div class="cf-turnstile" data-theme="dark" data-sitekey="{{turnstilekey}}"></div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="ms-3">
+                    <button type="submit" class="btn btn-primary btn-sm">Migrate</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

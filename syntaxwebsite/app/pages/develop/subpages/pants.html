@@ -1,0 +1,32 @@
+{% extends 'develop/template.html' %}
+{% block subcontent %}
+    <p class="m-0 text-secondary mb-2">Want to create Pants? <a class="text-decoration-none" href="/static/img/TemplatePants.png">Download</a> the template</p>
+    <form action="/develop/create/12" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <input class="form-control" type="file" id="file" name="file" required>
+        </div>
+        <div class="mb-3">
+            <input class="form-control" type="text" id="name" name="name" placeholder="Name" required>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if GroupIdContext != None %}<input type="hidden" name="groupIdContext" value="{{GroupIdContext}}">{%endif%}
+        <button type="submit" class="btn btn-success btn-sm w-100">Create Pants</button>
+    </form>
+    <div class="mt-2">
+        {% for pants in UserClothing: %}
+            <div class="w-100 m-1 p-1 d-flex">
+                <img src="/Thumbs/Asset.ashx?assetId={{pants.id}}&x=100&y=100" class="rounded" height="100px" width="100px">
+                <div class="ms-2">
+                    <a class="text-white text-decoration-none" href="/catalog/{{pants.id}}/"><h5 class="m-0">{{pants.name}}</h5></a>
+                    <p class="text-secondary m-0" style="font-size:13px;">Sales: <span class="text-white">{{pants.sale_count}}</span></p>
+                </div>
+                <div class="ms-auto mt-auto mb-auto">
+                    <a class="btn btn-sm border-primary text-white" href="/develop/{{pants.id}}/edit">Edit</a>
+                </div>
+            </div>
+        {%endfor%}
+        {% if len(UserClothing) == 0: %}
+            <h5 class="text-center mt-3 mb-3">No items found</h5>
+        {%endif%}
+    </div>
+{% endblock %}

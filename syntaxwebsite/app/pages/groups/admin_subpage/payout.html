@@ -1,0 +1,42 @@
+{% extends 'groups/admin_template.html' %}
+{% block page_content%}
+<style>
+    h5 {
+        font-size: 15px;
+        margin-bottom: 5px !important;
+    }
+</style>
+<div class="d-flex align-items-center mb-1">
+    <h3 class="m-0">One-time Payout</h3>
+</div>
+<form method="post" action="/groups/admin/{{group.id}}/payouts/one-time">
+    <div class="d-flex align-items-center">
+        <div style="width: 20%;" class="p-1">
+            <div class="form-floating">
+                <select class="form-control" id="payout-currency" name="payout-currency" required>
+                    <option value="robux">Robux</option>
+                    <option value="tickets">Tickets</option>
+                </select>
+                <label for="payout-currency">Currency Type</label>
+            </div>
+        </div>
+        <div style="width: 80%;" class="p-1">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="payout-amount" name="payout-amount" placeholder="0" required>
+                <label for="payout-amount">Amount</label>
+            </div>
+        </div>
+    </div>
+    <div style="width: 100%;" class="p-1 mt-1">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="payout-recipient" name="payout-recipient" placeholder="ROBLOX" required>
+            <label for="payout-recipient">Recipient Username</label>
+        </div>
+        <p class="mt-1 m-0 text-secondary" style="font-size:12px;">Enter the username of the recipient you want to pay! This is CaSe SeNsItIvE and please double check before clicking payout, all payments are final and cannot be reversed</p>
+    </div>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mt-2 d-flex">
+        <button type="submit" class="btn btn-light ms-auto" onclick="return confirm('Are you sure you want to pay this user?')">Payout</button>
+    </div>
+</form>
+{%endblock%}

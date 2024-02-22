@@ -1,0 +1,66 @@
+{% extends '__layout__.html' %}
+{% block title %}Downloads{% endblock %}
+{% block head %}
+<style>
+    .text-secondary {
+        color: rgb(199, 199, 199) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="margin-top:128px;min-height: 100vh;max-width: 1000px;">
+    <div class="d-flex mb-2 align-items-center">
+        <h1>Downloads</h1>
+        <div class="ms-auto">
+            <a class="btn btn-outline-light fw-bold" href="https://github.com/PrintedScript/syntax-bootstrapper" target="_blank"><i class="bi bi-github"></i> Github Repo</a>
+        </div>
+    </div>
+    <div class="p-3 border d-flex rounded">
+        <div>
+            <h4 class="mb-0"><i class="bi bi-windows"></i> Windows Client Bootstrapper</h4>
+            <p class="m-0 text-secondary" style="font-size: 14px;">MD5: <span class="text-white">ec3104998c809682c74c8dca5476b91d</span></p>
+            <div class="d-flex mt-1">
+                <a href="https://www.virustotal.com/gui/file/459b179b5e38c650df272e9ca4435c5031722fa5808ffc227053a4b221039490" target="_blank" class="text-decoration-none m-0" style="font-size: 11px;">Bootstrapper VirusTotal</a>
+                <p class="text-secondary m-0 ms-1" style="font-size: 11px;">
+                    | Windows 10 or newer required |
+                </p>
+                <a href="https://d2f3pa9j0u8v6f.cloudfront.net/SyntaxPlayerLauncher.exe" target="_blank" class="text-decoration-none m-0 ms-1" style="font-size: 11px;">Mirror Download</a>
+            </div>
+        </div>
+        <div class="ms-auto">
+            <a href="https://setup.syntax.eco/SyntaxPlayerLauncher.exe" target="_blank" class="text-decoration-none m-0 btn btn-outline-primary btn fw-bold"><i class="bi bi-download me-2"></i>Download</a>
+        </div>
+    </div>
+    <div class="p-3 border d-flex mt-3 rounded">
+        <div>
+            <h4 class="mb-0 text-white"><i class="bi bi-ubuntu"></i> Linux Client Bootstrapper</h4>
+            <p class="m-0 text-secondary" style="font-size: 14px;">MD5: <span class="text-white">895ea276c3ffcd82cbac7f56856cf734</span></p>
+            <div class="d-flex mt-1">
+                <a href="https://www.virustotal.com/gui/file/4ca7a69a1d05457510873e9aa8ba79a26f1e13d1087ca4e38ec6205eff093927" target="_blank" class="text-decoration-none m-0" style="font-size: 11px;">Bootstrapper VirusTotal</a>
+                <p class="text-secondary m-0 ms-1" style="font-size: 11px;">
+                    | Wine is required, run <span style="background-color: rgb(40,40,40, 0.8);border-radius: 4px;padding: 1px;">chmod +x ./SyntaxPlayerLinuxLauncher && ./SyntaxPlayerLinuxLauncher</span> |
+                </p>
+                <a href="https://d2f3pa9j0u8v6f.cloudfront.net/SyntaxPlayerLinuxLauncher" target="_blank" class="text-decoration-none m-0 ms-1" style="font-size: 11px;">Mirror Download</a>
+            </div>
+        </div>
+        <div class="ms-auto">
+            <a href="https://setup.syntax.eco/SyntaxPlayerLinuxLauncher" target="_blank" class="text-decoration-none m-0 btn btn-outline-primary btn fw-bold"><i class="bi bi-download me-2"></i>Download</a>
+        </div>
+    </div>
+    <div class="p-3 border d-flex mt-3 rounded">
+        <div>
+            <h4 class="mb-0 text-white"><i class="bi bi-android2"></i></i> Android 2020 ( BETA )</h4>
+            <p class="m-0 text-secondary" style="font-size: 14px;">MD5: <span class="text-white">c1261b01020efbffb7a2ad1cd955353d</span></p>
+            <div class="d-flex mt-1">
+                <p class="text-secondary m-0" style="font-size: 11px;">
+                    Note: This will overwrite the original Roblox app if you have it installed! And is still very buggy | 
+                </p>
+                <a href="https://d2f3pa9j0u8v6f.cloudfront.net/SyntaxAndroid2020.apk" target="_blank" class="text-decoration-none m-0 ms-1" style="font-size: 11px;">Mirror Download</a>
+            </div>
+        </div>
+        <div class="ms-auto">
+            <a href="https://setup.syntax.eco/SyntaxAndroid2020.apk" target="_blank" class="text-decoration-none m-0 btn btn-outline-primary btn fw-bold"><i class="bi bi-download me-2"></i>Download</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

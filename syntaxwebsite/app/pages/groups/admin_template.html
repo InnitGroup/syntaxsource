@@ -1,0 +1,125 @@
+{% extends '__layout__.html' %}
+{% block title %}Group Admin{% endblock %}
+{% block head %}
+<style>
+    .group-bg {
+        background-color: rgb(30,30,30);
+    }
+    .text-secondary {
+        color: rgb(200,200,200) !important;
+    }
+    .text-tickets {
+        color: rgb(224, 224, 60) !important;
+        font-weight: 600;
+    }
+    .text-robux {
+        color: rgb(26, 212, 103) !important;
+        font-weight: 600;
+    }
+    .bg-drop {
+        box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);
+    }
+
+    .inner-sidenav {
+        border-right: 1px solid rgb(50,50,50);
+    }
+    .sidenav {
+        min-width: 200px;
+    }
+    .sidenav a {
+        background-color: rgb(31, 31, 31);
+        color: rgb(200,200,200);
+        padding: 10px;
+        transition: 0.2s;
+        box-shadow: 0px 0px 10px 0px rgb(0,0,0,0.5);
+        margin-top: 6px;
+        margin-bottom: 6px;
+        text-decoration: none;
+    }
+    .sidenav a:hover {
+        background-color: rgb(50,50,50);
+        cursor: pointer;
+        transition: 0.2s;
+        color: #fff;
+    }
+    .sidenav a.selected {
+        background-color: rgb(50,50,50);
+        color: #fff;
+        cursor: default;
+    }
+</style>
+<script src="/static/js/groupMembers.js"></script>
+{% endblock %}
+{% block content %}
+<div id="main" class="position-relative">
+    <div class="ms-auto me-auto ps-2 pe-2 mb-3" style="min-height: 100vh;margin-top: 120px;width: 1000px;">
+        <h1 class="m-0">{{group.name}}</h1>
+        <div class="d-flex">
+            <p class="m-0">Owned By {% if group.owner_id != None: %}<a href="/users/{{group.owner.id}}/profile" class="text-decoration-none">{{group.owner.username}}</a>{%else%}<span class="text-white">No One!</span>{%endif%}</p>
+            {% if permissions.spend_group_funds: %}
+                <p class="m-0 ms-3">Group Funds <span class="text-robux">R${{group.economy.robux_balance}}</span><span class="text-tickets ms-2">T${{group.economy.tix_balance}}</span></p>
+            {%endif%}
+            <a class="ms-auto text-decoration-none" href="/groups/{{group.id}}/">Return to group page</a>
+        </div>
+        <div class="linebreak"></div>
+        <div class="w-100 d-flex">
+            <div class="sidenav">
+                <div class="ps-2 pe-2 inner-sidenav">
+                    <a class="w-100 d-block p-2 {%if page == 'info'%}selected{%endif%}" href="/groups/admin/{{group.id}}/info">
+                        Group Info
+                    </a>
+                    <a class="w-100 d-block p-2 {%if page == 'members'%}selected{%endif%}" href="/groups/admin/{{group.id}}/members">
+                        Members
+                    </a>
+                    <a class="w-100 d-block p-2 {%if page == 'settings'%}selected{%endif%}" href="/groups/admin/{{group.id}}/settings">
+                        Settings
+                    </a>
+                    {%if permissions.manage_relationships: %}
+                    <a class="w-100 d-block p-2 ">
+                        Relationships
+                    </a>
+                    {%endif%}
+                    <a class="w-100 d-block p-2 {%if page == 'roles'%}selected{%endif%}" href="/groups/admin/{{group.id}}/roles">
+                        Roles
+                    </a>
+                    <a class="w-100 d-block p-2 ">
+                        Revenue
+                    </a>
+                    {%if permissions.spend_group_funds: %}
+                    <a class="w-100 d-block p-2 {%if page == 'payouts'%}selected{%endif%}" href="/groups/admin/{{group.id}}/payouts">
+                        Payouts
+                    </a>
+                    {%endif%}
+                    {% if permissions.view_audit_logs: %}
+                    <a class="w-100 d-block p-2 ">
+                        Audit Log
+                    </a>
+                    {%endif%}
+                </div>
+            </div>
+            <div class="flex-fill ps-2 pe-2">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div>
+                    {% for category, message in messages %}
+                        {% if category == 'error': %}
+                        <div class="alert border p-2 text-center alert-danger border-danger">
+                            {{ message }}
+                        </div>
+                        {% endif %}
+                        {% if category == 'success': %}
+                        <div class="alert border p-2 text-center alert-success border-success">
+                            {{ message }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endwith %}
+                {% block page_content%}{%endblock%}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="position-absolute w-100 h-100 justify-content-center align-items-center" id="transparent-background-top" style="top: 0;left: 0;background-color: rgba(0,0,0,0.5);z-index: 100;display: none;"></div>
+{% endblock %}

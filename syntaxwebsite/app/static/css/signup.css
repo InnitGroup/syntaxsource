@@ -1,0 +1,81 @@
+body {
+    background: radial-gradient(circle, #333 10%, transparent 11%),radial-gradient(circle at bottom left, #333 5%, transparent 6%),radial-gradient(circle at bottom right, #333 5%, transparent 6%),radial-gradient(circle at top left, #333 5%, transparent 6%),radial-gradient(circle at top right, #333 5%, transparent 6%);
+    background-size: 3em 3em;
+    background-color: rgb(20,20,20);
+}
+
+#main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.signup-container {
+    min-width: 330px;
+    display: inline-block;
+    background-color: rgba(25,25,25, 1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+/* only align h1 tags */
+.signup-container h1 {
+    text-align: center;
+    margin-bottom: 0;
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+.signup-container p {
+    text-align: center;
+    padding: 0;
+    margin-bottom: 15px; 
+    font-size: small;
+}
+
+.signup-container button {
+    width: 100%;
+    font-weight: 600;
+    font-size: larger;
+    padding: 3px;
+    margin-bottom: 0 !important;
+    color: #fff;
+}
+
+.signup-container a {
+    font-size: small;
+    font-weight: 400 !important;
+}
+
+.col {
+    padding: 0 !important;
+}
+
+#password {
+    min-width: 300px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.messagealerts {
+    background: rgba(255, 0, 0, 0.2);
+    color: rgb(226, 226, 226);
+    word-wrap: break-word;
+}
+
+.form-text {
+    /* wrap the text*/
+    word-wrap: break-word;
+}
+
+a {
+    text-decoration: none !important;
+    color: rgb(32, 147, 255) !important;
+    font-weight: 500 !important;
+    transition: 0.2s;
+}
+
+a:hover {
+    text-decoration: none !important;
+    color: rgb(3, 133, 255) !important;
+    transition: 0.2s;
+}

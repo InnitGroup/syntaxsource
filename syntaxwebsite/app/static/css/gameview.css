@@ -1,0 +1,135 @@
+.text-secondary {
+    color: rgb(199, 199, 199) !important;
+}
+.nav-link {
+    color: rgb(199, 199, 199) !important;
+}
+.nav-link.active {
+    color: rgb(255, 255, 255) !important;
+}
+.details-container h2 {
+    font-size: 29px;
+    font-weight: 500;
+}
+.details-container p {
+    font-size: 12px;
+}
+.redBg {
+    background: #CE645B;
+    width: 100%;
+    height: 5px;
+}
+
+.greenBg {
+    background: #52A846;
+    height: 5px;
+}
+
+.borderLeft {
+    border-left: 1px solid #c3c3c3;
+}
+
+.thumbsText {
+    font-size: 12px;
+}
+
+.usersVote {
+    padding: 0 28px;
+    height: 30px;
+    position: relative;
+    max-width: 300px;
+    width: 70%;
+    display: block;
+    float: right;
+    margin-top: .5rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.upvote {
+    left: 0;
+    position: absolute;
+    top: -3px;
+    right: 0;
+}
+
+.downvote {
+    right: 0;
+    position: absolute;
+    top: -3px;
+}
+
+.votedetails {
+    display: block;
+    width: 100%;
+}
+
+.votecontainer {
+    width: 100%;
+    height: 6px;
+    margin: 6px 0 0 0;
+    position: relative;
+    display: block;
+}
+
+.votenumbers {
+    display: block;
+}
+
+.votebackground {
+    background-color: #E27676;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 2px;
+}
+
+.votepercentage {
+    background-color: #02b757;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 2px;
+}
+
+.segment {
+    background-color: rgba(20, 20, 20, 0.3);
+    height: 6px;
+    width: 2px;
+    position: absolute;
+    top: 0;
+}
+
+.countleft {
+    float: left;
+    color: rgb(200, 200, 200);
+}
+
+.countright {
+    float: right;
+    color: rgb(200, 200, 200);
+    text-align: right;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.vote-up-text {
+    color: #02b757;
+}
+.vote-down-text {
+    color: #E27676;
+}
+.text-favorite {
+    color: #F6B702;
+    font-size: 16px;
+    font-weight: 400;
+}
+.favorite-button-container {
+    float: left;
+    margin-left: 10px;
+    width: 15%;
+    cursor: pointer;
+}

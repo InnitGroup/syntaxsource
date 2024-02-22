@@ -1,0 +1,47 @@
+{% extends '__layout__.html' %}
+{% block title %}Admin{% endblock %}
+{% block head %}
+<link href="/static/css/admin.css" rel="stylesheet"/> <!-- Its just easier to resuse this-->
+<style>
+    .text-secondary {
+        color: rgb(175, 175, 175) !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="main">
+    <div class="container">
+        <a href="/admin" class="btn border-primary btn-sm mb-2">Back to Admin Panel</a><a href="/admin/gameservers/create" class="btn border-success btn-sm mb-2 ms-2">Create server</a>
+        <h1>Game Server Manager</h1>
+        <p class="m-0 d-flex text-secondary">Please be careful when adding and editing gameservers!</p>
+        <div class="linebreak"></div>
+        <div class="row">
+            {% for gameserver in gameservers %}
+                <div class="col-12">
+                    <a href="/admin/gameservers/{{gameserver.serverId}}">
+                        <div class="gameserver-box rounded border p-2 mb-2 {% if not gameserver.isRCCOnline: %}redborder {% else %} {% if gameserver.heartbeatResponseTime > 0.6 %}yellowborder{% else %}greenborder{% endif %}{% endif %}">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h2 class="m-0">{{gameserver.serverName}}</h2>
+                                    <p class="m-0 text-secondary">{{gameserver.serverId}}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="text-secondary m-0">Last heartbeat: <span class="text-white">{{gameserver.lastHeartbeat}}</span></p>
+                                    <p class="text-secondary m-0">RCC Memory Usage: <span class="text-white">{{gameserver.RCCmemoryUsage}} MB</span></p>
+                                    <p class="text-secondary m-0">Response Time: <span class="text-white">{{ round(gameserver.heartbeatResponseTime,3) }} secs</span></p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="text-secondary m-0">Thumbnail Queue Size: <span class="text-white">{{gameserver.thumbnailQueueSize}}</span></p>
+                                    <p class="text-secondary m-0">isThumbnailer: <span class="text-white">{{gameserver.allowThumbnailGen}}</span></p>
+                                    <p class="text-secondary m-0">isGameHoster: <span class="text-white">{{ gameserver.allowGameServerHost }}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="linebreak"></div>
+    </div>
+</div>
+{% endblock %}

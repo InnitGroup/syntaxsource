@@ -1,0 +1,35 @@
+{% extends 'develop/universes/manage-template.html' %}
+{% block subcontent %}
+    <div class="d-flex align-items-center">
+        <h4 class="m-0">Edit Badge</h4>
+        <div class="ms-auto">
+            <a href="/develop/universes/{{UniverseObj.id}}/badges" class="text-decoration-none m-0">Manage Badges</a>
+        </div>
+    </div>
+    <div class="linebreak"></div>
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-5">
+                <img style="aspect-ratio:1/1; max-width: 400px; max-height: 400px;" width="100%" src="/Thumbs/Asset.ashx?assetId={{BadgeObj.icon_image_id}}&x=352&y=352" class="rounded">
+                <div class="mt-2">
+                    <input type="file" class="form-control" name="icon-file" id="file" class="mt-2">
+                    <p class="text-secondary m-0 mt-1" style="font-size: 12px;">Must be a PNG, minimum 128x128 and maximum 1024x1024, less than 1mb</p>
+                </div>
+            </div>
+            <div class="col-md-7 pt-2 pb-2 ps-4 pe-4 ps-md-1 pe-md-1">
+                <form method="post">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" id="item-name" name="badge-name" placeholder="Awesome Badge!" required value="{{BadgeObj.name}}">
+                        <label for="item-name">Name</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <textarea class="form-control mt-2" placeholder="Description" style="min-height: 150px;" name="badge-description">{{BadgeObj.description}}</textarea>
+                        <label for="item-description">Description</label>
+                    </div>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-primary btn-sm w-100 text-center">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </form>
+{% endblock %}
